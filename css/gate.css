@@ -1,0 +1,112 @@
+/* ==========================================================================
+   TEMPORARY FRONT DOOR — css/gate.css
+   Styles for the gate page (index.html) and the guard rule used by home.html.
+   Delete this file when the gate comes down.
+   ========================================================================== */
+
+/* home.html: keep the page invisible while the guard decides (it redirects if not signed in). */
+html.gated body { visibility: hidden; }
+
+.gate-page { min-height: 100vh; }
+
+.gate {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: clamp(28px, 6vw, 80px) var(--gutter);
+  overflow: hidden;
+}
+.gate__media { position: absolute; inset: 0; z-index: -2; }
+.gate__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse at 28% 18%, rgba(11, 11, 12, .1), rgba(11, 11, 12, .9) 72%),
+    linear-gradient(to top, rgba(11, 11, 12, .7), transparent 50%);
+}
+
+.gate__content {
+  display: grid;
+  gap: 22px;
+  justify-items: start;
+  width: min(100%, 580px);
+}
+.gate__content > * { animation: rise 1s var(--ease) both; }
+.gate__content > :nth-child(2) { animation-delay: .06s; }
+.gate__content > :nth-child(3) { animation-delay: .12s; }
+.gate__content > :nth-child(4) { animation-delay: .18s; }
+.gate__content > :nth-child(5) { animation-delay: .26s; }
+.gate__content > :nth-child(6) { animation-delay: .34s; }
+.gate__content > :nth-child(7) { animation-delay: .42s; }
+
+.gate__title {
+  font-size: clamp(2.6rem, 7vw, 5.6rem);
+  line-height: .95;
+  letter-spacing: -.035em;
+}
+.gate__title em { font-style: normal; color: var(--accent); }
+.gate__lede { max-width: 46ch; color: rgba(244, 241, 234, .82); font-size: 1.1em; }
+
+.gate__form { display: grid; gap: 14px; width: 100%; margin-top: 6px; }
+.gate__field {
+  display: grid;
+  gap: 7px;
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.gate__field input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid rgba(244, 241, 234, .22);
+  border-radius: 12px;
+  background: rgba(244, 241, 234, .05);
+  color: var(--ink);
+  font: 500 1.05rem/1.2 var(--font-body);
+  letter-spacing: 0;
+  text-transform: none;
+  transition: border-color .3s var(--ease), background-color .3s var(--ease);
+}
+.gate__field input:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: rgba(244, 241, 234, .08);
+}
+.gate__form .btn { justify-self: start; margin-top: 4px; }
+.gate__error { color: #ff8a6b; font-size: .95rem; }
+
+.gate__form.is-shaking { animation: shake .4s var(--ease); }
+@keyframes shake {
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+.gate__hint {
+  padding: 16px 18px;
+  border: 1px dashed hsl(var(--accent-hsl) / .6);
+  border-radius: 12px;
+  font-size: 1.02rem;
+}
+.gate__hint p { margin: 0; }
+.gate__hint strong { color: var(--accent); font-weight: 600; }
+.gate__small { color: var(--ink-muted); font-size: .9rem; }
+
+html.gate-open .gate__content {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity .35s var(--ease), transform .35s var(--ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gate__content > * { animation: none; }
+  .gate__form.is-shaking { animation: none; }
+}
+
+/* Without JavaScript the form cannot check anything, so it stays out of the way. */
+html:not(.js) .gate__form { display: none; }
