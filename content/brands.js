@@ -30,5 +30,17 @@ window.BRANDS = [
   { name: "FX Networks",            logo: "assets/brands/fx.png",                status: "confirmed" },
   { name: "Cloudera",               logo: "assets/brands/cloudera.png",          status: "confirmed" },
   { name: "Iron Maiden",            logo: "assets/brands/iron-maiden.png",       status: "confirmed" },
-  { name: "PHP",                    logo: "assets/brands/php.png",               status: "confirmed" }
+  { name: "PHP",                    logo: "assets/brands/php.png",               status: "confirmed" },
+  // Added 2026-09-24 from the review sheet's "check me" tiles, at the owner's instruction.
+  { name: "Stranger Things",        logo: "assets/brands/stranger-things.png",   status: "confirmed" },
+  { name: "FIFA",                   logo: "assets/brands/fifa.png",              status: "confirmed" },
+  { name: "Marshmello",             logo: "assets/brands/marshmello.png",        status: "confirmed" },
+  { name: "ServiceNow",             logo: "assets/brands/servicenow.png",        status: "confirmed" },
+  { name: "OVO",                    logo: "assets/brands/ovo.png",               status: "confirmed" },
+  { name: "Formula E",              logo: "assets/brands/formula-e.png",         status: "confirmed" },
+  { name: "Life is Beautiful",      logo: "assets/brands/life-is-beautiful.png", status: "confirmed" },
+  { name: "U2",                     logo: "assets/brands/u2.png",                status: "confirmed" },
+  { name: "Mana",                   logo: "assets/brands/mana.png",              status: "confirmed" },
+  { name: "Bon Jovi",               logo: "assets/brands/bon-jovi.png",          status: "confirmed" },
+  { name: "EDC",                    logo: "assets/brands/edc.png",               status: "confirmed" }
 ];
