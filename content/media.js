@@ -6,7 +6,7 @@
 
    To fill a slot:
      1. Generate the asset in Higgsfield to the slot's `spec`.
-     2. Save the file into site/media at the slot's `src` path (plus `poster` for video).
+     2. Save the file into media/ at the slot's `src` path (plus `poster` for video).
      3. Set status: "ready" and write real `alt` text.
      4. Log the prompt + settings in brand/shot-list.md (kept out of the public site).
 
@@ -16,8 +16,9 @@
 
    Open the site with ?dev on the URL to see every slot, its spec and status.
 
-   NOTE: this file is public (the browser downloads it). Keep prompts and
-   private notes in brand/shot-list.md instead.
+   The site never shows client work: every visual here is abstract brand
+   imagery, not a project. This file is public; keep prompts and private
+   notes in brand/shot-list.md instead.
    ========================================================================== */
 
 window.MEDIA_SLOTS = {
@@ -29,16 +30,16 @@ window.MEDIA_SLOTS = {
     src: "media/hero.mp4",
     poster: "media/hero-poster.jpg",
     alt: "",
-    spec: "Video · 16:9 · 1920×1080 · 6–10s seamless loop · no audio · MP4 (H.264) · aim < 8 MB. Text sits bottom-left, so keep that area calm and dark."
+    spec: "Video · 16:9 · 1920×1080 · 6–10s seamless loop · no audio · MP4 (H.264) · aim < 8 MB. Abstract, not a project. Text sits bottom-left, so keep that area calm and dark."
   },
 
-  /* ---- About ----------------------------------------------------------- */
+  /* ---- Thesis portrait --------------------------------------------------- */
   "about": {
     type: "image",
     status: "empty",
     src: "media/about.jpg",
     alt: "",
-    spec: "Image · 4:5 portrait · min 1200×1500 · JPG/WebP · aim < 400 KB."
+    spec: "Image · 4:5 portrait · min 1200×1500 · JPG/WebP · aim < 400 KB. Sits beside the thesis text; moody, abstract."
   },
 
   /* ---- What we do (3 cards) --------------------------------------------- */
@@ -47,59 +48,21 @@ window.MEDIA_SLOTS = {
     status: "empty",
     src: "media/offer-1.jpg",
     alt: "",
-    spec: "Image · 4:3 · min 1200×900 · JPG/WebP · aim < 300 KB. The three offer images should feel like one series."
+    spec: "Image · 4:3 · min 1200×900 · JPG/WebP · aim < 300 KB. Flagship cultural moments. The three offer images should feel like one series."
   },
   "offer-2": {
     type: "image",
     status: "empty",
     src: "media/offer-2.jpg",
     alt: "",
-    spec: "Image · 4:3 · min 1200×900 · JPG/WebP · aim < 300 KB. Series with offer-1 / offer-3."
+    spec: "Image · 4:3 · min 1200×900 · JPG/WebP · aim < 300 KB. Embedded experiential partner. Series with offer-1 / offer-3."
   },
   "offer-3": {
     type: "image",
     status: "empty",
     src: "media/offer-3.jpg",
     alt: "",
-    spec: "Image · 4:3 · min 1200×900 · JPG/WebP · aim < 300 KB. Series with offer-1 / offer-2."
-  },
-
-  /* ---- Showcase ---------------------------------------------------------- */
-  "reel": {
-    type: "video",
-    status: "empty",
-    src: "media/reel.mp4",
-    poster: "media/reel-poster.jpg",
-    alt: "",
-    spec: "Video · 16:9 · 1920×1080 · 20–60s · audio OK (plays with controls, never autoplays) · MP4 (H.264) · aim < 25 MB."
-  },
-  "work-1": {
-    type: "image",
-    status: "empty",
-    src: "media/work-1.jpg",
-    alt: "",
-    spec: "Image or silent loop · wide ~16:10 · min 1600×1000 · cropped to fill its tile, keep the subject centred. For a loop: set type to \"video\", src to media/work-1.mp4, add a poster."
-  },
-  "work-2": {
-    type: "image",
-    status: "empty",
-    src: "media/work-2.jpg",
-    alt: "",
-    spec: "Image or silent loop · tall ~4:5 · min 1200×1500 · cropped to fill its tile, keep the subject centred."
-  },
-  "work-3": {
-    type: "image",
-    status: "empty",
-    src: "media/work-3.jpg",
-    alt: "",
-    spec: "Image or silent loop · tall ~4:5 · min 1200×1500 · cropped to fill its tile, keep the subject centred."
-  },
-  "work-4": {
-    type: "image",
-    status: "empty",
-    src: "media/work-4.jpg",
-    alt: "",
-    spec: "Image or silent loop · wide ~16:10 · min 1600×1000 · cropped to fill its tile, keep the subject centred."
+    spec: "Image · 4:3 · min 1200×900 · JPG/WebP · aim < 300 KB. Artist- and athlete-led platforms. Series with offer-1 / offer-2."
   },
 
   /* ---- Contact call-to-action ------------------------------------------- */
