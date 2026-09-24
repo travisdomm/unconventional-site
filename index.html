@@ -17,7 +17,7 @@
   <meta name="robots" content="noindex">
 
   <title>Unconventional — Private preview</title>
-  <meta name="description" content="Unconventional is not open yet. The door is closed, and the key is on the door.">
+  <meta name="description" content="Unconventional is not open yet. The door is closed. If you're meant to be in, you already have the key.">
   <link rel="canonical" href="https://www.unconventional.pro/">
   <meta name="theme-color" content="#0b0b0c">
 
@@ -57,8 +57,10 @@
       <h1 class="gate__title" id="gate-title">Glad we got your <em>attention.</em></h1>
       <p class="gate__lede">The site isn't open yet. We're keeping it behind a door while we finish.</p>
 
-      <!-- Filled by js/gate.js when its SHOW_HINT switch is on. -->
-      <div class="gate__hint" data-gate-hint hidden></div>
+      <!-- The wink. js/gate.js swaps in the real login and password only when its HINT_TEXT is filled in. -->
+      <div class="gate__hint" data-gate-hint>
+        <p data-gate-hint-closed>You came all this way, so here is the key. Ha. No. 😛 If you're meant to be in, you already have it.</p>
+      </div>
 
       <form class="gate__form" data-gate-form novalidate>
         <label class="gate__field">
@@ -69,11 +71,11 @@
           Password
           <input name="password" type="password" autocomplete="current-password" required>
         </label>
-        <p class="gate__error" data-gate-error role="alert" hidden>Not quite.</p>
+        <p class="gate__error" data-gate-error role="alert" hidden>Not quite. And no, it isn't written on this page anymore.</p>
         <button class="btn btn--accent" type="submit">Let me in</button>
       </form>
 
-      <p class="gate__small">Selective by design. Just not about the door. For now.</p>
+      <p class="gate__small">Selective by design. The door included.</p>
       <noscript><p class="gate__small">This door needs JavaScript switched on.</p></noscript>
     </div>
   </main>
