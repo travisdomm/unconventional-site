@@ -193,34 +193,39 @@
   /* ---- 4. Brand wall ---------------------------------------------------- */
   // Only confirmed brands with a logo file are rendered; the strip stays hidden otherwise.
   var brandsSection = document.querySelector('[data-brands]');
-  var brandsList = document.querySelector('[data-brands-list]');
+  var brandsLists = [].slice.call(document.querySelectorAll('[data-brands-list]'));
   var brands = (window.BRANDS || []).filter(function (brand) {
     return brand && brand.status === 'confirmed' && brand.logo && brand.name;
   });
 
-  if (brandsSection && brandsList && brands.length) {
-    brands.forEach(function (brand) {
-      var item = document.createElement('li');
-      var img = document.createElement('img');
-      img.className = 'brand-logo';
-      img.src = brand.logo;
-      img.alt = brand.name;
-      img.decoding = 'async';
-      img.addEventListener('load', scheduleMarquee);
-      item.appendChild(img);
-      brandsList.appendChild(item);
+  if (brandsSection && brandsLists.length && brands.length) {
+    brandsLists.forEach(function (list) {
+      // A list marked "reverse" gets the marks in the opposite order, so the two bars never mirror each other.
+      var order = list.getAttribute('data-brands-list') === 'reverse' ? brands.slice().reverse() : brands;
+      order.forEach(function (brand) {
+        var item = document.createElement('li');
+        var img = document.createElement('img');
+        img.className = 'brand-logo';
+        img.src = brand.logo;
+        img.alt = brand.name;
+        img.decoding = 'async';
+        img.addEventListener('load', scheduleMarquee);
+        item.appendChild(img);
+        list.appendChild(item);
+      });
     });
     brandsSection.hidden = false;
   }
 
-  var track = document.querySelector('[data-marquee]');
+  var tracks = [].slice.call(document.querySelectorAll('[data-marquee]'));
   var marqueeTimer;
   function scheduleMarquee() {
     clearTimeout(marqueeTimer);
     marqueeTimer = setTimeout(buildMarquee, 150);
   }
-  function buildMarquee() {
-    if (!track || !track.children.length) return;
+  function buildMarquee() { tracks.forEach(buildTrack); }
+  function buildTrack(track) {
+    if (!track.children.length) return;
     var group = track.children[0];
     if (!group.children.length) return;
     while (track.children.length > 1) track.removeChild(track.lastChild);
@@ -236,7 +241,7 @@
     }
     track.style.animationDuration = Math.round((groupWidth * copies) / 2 / 70) + 's'; // ~70px per second
   }
-  if (track) {
+  if (tracks.length) {
     window.addEventListener('resize', scheduleMarquee);
     window.addEventListener('load', scheduleMarquee);
     buildMarquee();
