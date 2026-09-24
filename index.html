@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Security policy: only this site's own files, plus Google Fonts, may load.
+       Adding an embed, analytics or a form service later? Its domain has to be allowed here first. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; media-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self'">
+
+  <!-- LAUNCH CHECKLIST: delete the next line once real copy is in, or search engines will never list the site. -->
+  <meta name="robots" content="noindex">
+
+  <!--
+    Anything marked data-placeholder is stand-in copy waiting for the real thing.
+    Replace the words, then delete the attribute. Open the site with ?dev to see what's left.
+  -->
+  <title data-placeholder>Unconventional</title>
+  <meta name="description" data-placeholder content="Unconventional — for people who'd rather be remembered than be safe. Full site coming soon.">
+  <link rel="canonical" href="https://www.unconventional.pro/">
+  <meta name="theme-color" content="#0b0b0c">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Unconventional">
+  <meta property="og:title" data-placeholder content="Unconventional">
+  <meta property="og:description" data-placeholder content="For people who'd rather be remembered than be safe.">
+  <meta property="og:url" content="https://www.unconventional.pro/">
+  <meta property="og:image" content="https://www.unconventional.pro/media/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="favicon.ico" sizes="64x64">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+
+  <script src="js/boot.js"></script>
+  <script src="content/media.js" defer></script>
+  <script src="js/main.js" defer></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ===== Header ===================================================== -->
+  <header class="site-header" data-header>
+    <div class="container site-header__inner">
+      <a class="wordmark" href="#top" aria-label="Unconventional, back to top">unconventional<span class="wordmark__dot" aria-hidden="true">.</span></a>
+
+      <!-- The toggle sits before the nav so keyboard focus moves from it straight into the open menu. -->
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-nav-toggle>
+        <span class="nav-toggle__bars" aria-hidden="true"></span>
+        <span class="visually-hidden">Menu</span>
+      </button>
+
+      <nav class="site-nav" id="site-nav" aria-label="Primary">
+        <ul class="site-nav__list">
+          <li><a href="#about">About</a></li>
+          <li><a href="#offer">What we do</a></li>
+          <li><a href="#showcase">Showcase</a></li>
+          <li><a href="#approach">Approach</a></li>
+        </ul>
+        <a class="btn btn--accent btn--sm" href="#contact">Get in touch</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ===== Hero ===================================================== -->
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="hero__media" data-slot="hero" data-slot-mode="background" data-tone="a"></div>
+      <div class="hero__scrim" aria-hidden="true"></div>
+
+      <div class="container hero__content">
+        <p class="eyebrow hero__eyebrow" data-placeholder>A different way of doing things</p>
+        <h1 class="hero__title" id="hero-title" data-placeholder>The usual way is <em>optional.</em></h1>
+        <p class="hero__lede" data-placeholder>Unconventional is for people who'd rather be remembered than be safe. This site is being built right now &mdash; the full story lands here soon.</p>
+        <div class="hero__actions">
+          <a class="btn btn--accent" href="#contact" data-placeholder>Get in touch</a>
+          <a class="btn btn--ghost" href="#showcase" data-placeholder>See what's coming</a>
+        </div>
+      </div>
+
+      <button class="motion-toggle" type="button" aria-pressed="false" data-motion-toggle>
+        <span class="motion-toggle__icon" aria-hidden="true"></span>
+        <span data-motion-label>Pause motion</span>
+      </button>
+    </section>
+
+    <!-- ===== Marquee ================================================== -->
+    <section class="marquee" aria-label="In a few words">
+      <div class="marquee__track" data-marquee>
+        <ul class="marquee__group" data-placeholder>
+          <li>Ideas</li>
+          <li>Craft</li>
+          <li>Motion</li>
+          <li>Story</li>
+          <li>Nerve</li>
+          <li>Detail</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== About ==================================================== -->
+    <section class="section about" id="about" aria-labelledby="about-title">
+      <div class="container about__grid">
+        <div class="about__text">
+          <p class="eyebrow reveal">About</p>
+          <h2 class="statement reveal" id="about-title" data-placeholder>Most things look the same because most things are made the same way. <span class="muted">We start somewhere else.</span></h2>
+          <p class="prose reveal" data-placeholder>This paragraph is a stand-in. It will say who Unconventional is, who it's for, and why it exists &mdash; in plain words, no filler.</p>
+
+          <ul class="principles">
+            <li class="reveal">
+              <h3 data-placeholder>Start from zero</h3>
+              <p data-placeholder>No templates, no recycled answers. The brief decides the shape.</p>
+            </li>
+            <li class="reveal">
+              <h3 data-placeholder>Make it felt</h3>
+              <p data-placeholder>If it doesn't move anyone, it doesn't matter how clever it is.</p>
+            </li>
+            <li class="reveal">
+              <h3 data-placeholder>Finish properly</h3>
+              <p data-placeholder>The last ten percent is where the difference shows.</p>
+            </li>
+          </ul>
+        </div>
+
+        <figure class="about__figure reveal">
+          <div class="frame frame--portrait" data-slot="about" data-tone="b"></div>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ===== What we do =============================================== -->
+    <section class="section offer" id="offer" aria-labelledby="offer-title">
+      <div class="container">
+        <header class="section-head">
+          <p class="eyebrow reveal">What we do</p>
+          <h2 class="section-title reveal" id="offer-title" data-placeholder>Three ways in.</h2>
+          <p class="section-lede reveal" data-placeholder>Stand-in copy. Each card becomes one clear offer: what it is, who it's for, and what you walk away with.</p>
+        </header>
+
+        <ol class="cards">
+          <li class="card reveal">
+            <div class="frame frame--43" data-slot="offer-1" data-tone="a"></div>
+            <div class="card__body">
+              <span class="card__num" aria-hidden="true">01</span>
+              <h3 class="card__title" data-placeholder>Offer one</h3>
+              <p data-placeholder>A sentence or two on the first thing Unconventional does, written for the person who needs it.</p>
+            </div>
+          </li>
+          <li class="card reveal">
+            <div class="frame frame--43" data-slot="offer-2" data-tone="b"></div>
+            <div class="card__body">
+              <span class="card__num" aria-hidden="true">02</span>
+              <h3 class="card__title" data-placeholder>Offer two</h3>
+              <p data-placeholder>A sentence or two on the second thing, with the outcome up front.</p>
+            </div>
+          </li>
+          <li class="card reveal">
+            <div class="frame frame--43" data-slot="offer-3" data-tone="c"></div>
+            <div class="card__body">
+              <span class="card__num" aria-hidden="true">03</span>
+              <h3 class="card__title" data-placeholder>Offer three</h3>
+              <p data-placeholder>A sentence or two on the third thing, and why it's different here.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ===== Showcase ================================================= -->
+    <section class="section showcase" id="showcase" aria-labelledby="showcase-title">
+      <div class="container">
+        <header class="section-head">
+          <p class="eyebrow reveal">Showcase</p>
+          <h2 class="section-title reveal" id="showcase-title" data-placeholder>Proof, not promises.</h2>
+          <p class="section-lede reveal" data-placeholder>Stand-in copy. The reel and the tiles below fill up as the work comes in.</p>
+        </header>
+
+        <div class="reel frame frame--169 reveal" data-slot="reel" data-slot-mode="player" data-tone="c"></div>
+
+        <div class="bento">
+          <figure class="tile tile--wide reveal">
+            <div class="tile__media" data-slot="work-1" data-slot-mode="background" data-tone="a"></div>
+            <figcaption class="tile__caption">
+              <span class="tile__title" data-placeholder>Project title</span>
+              <span class="tile__tag" data-placeholder>Category</span>
+            </figcaption>
+          </figure>
+          <figure class="tile tile--tall reveal">
+            <div class="tile__media" data-slot="work-2" data-slot-mode="background" data-tone="b"></div>
+            <figcaption class="tile__caption">
+              <span class="tile__title" data-placeholder>Project title</span>
+              <span class="tile__tag" data-placeholder>Category</span>
+            </figcaption>
+          </figure>
+          <figure class="tile tile--tall reveal">
+            <div class="tile__media" data-slot="work-3" data-slot-mode="background" data-tone="c"></div>
+            <figcaption class="tile__caption">
+              <span class="tile__title" data-placeholder>Project title</span>
+              <span class="tile__tag" data-placeholder>Category</span>
+            </figcaption>
+          </figure>
+          <figure class="tile tile--wide reveal">
+            <div class="tile__media" data-slot="work-4" data-slot-mode="background" data-tone="b"></div>
+            <figcaption class="tile__caption">
+              <span class="tile__title" data-placeholder>Project title</span>
+              <span class="tile__tag" data-placeholder>Category</span>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Approach ================================================= -->
+    <section class="section approach" id="approach" aria-labelledby="approach-title">
+      <div class="container">
+        <header class="section-head">
+          <p class="eyebrow reveal">Approach</p>
+          <h2 class="section-title reveal" id="approach-title" data-placeholder>How it works.</h2>
+        </header>
+
+        <ol class="steps">
+          <li class="step reveal">
+            <span class="step__num" aria-hidden="true">01</span>
+            <h3 data-placeholder>Listen</h3>
+            <p data-placeholder>Find the real problem underneath the stated one.</p>
+          </li>
+          <li class="step reveal">
+            <span class="step__num" aria-hidden="true">02</span>
+            <h3 data-placeholder>Provoke</h3>
+            <p data-placeholder>Put the obvious answer on the table, then push past it.</p>
+          </li>
+          <li class="step reveal">
+            <span class="step__num" aria-hidden="true">03</span>
+            <h3 data-placeholder>Make</h3>
+            <p data-placeholder>Build it for real, early, so everyone reacts to the thing and not the idea of it.</p>
+          </li>
+          <li class="step reveal">
+            <span class="step__num" aria-hidden="true">04</span>
+            <h3 data-placeholder>Ship</h3>
+            <p data-placeholder>Launch it, watch it, sharpen it.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ===== Contact ================================================== -->
+    <section class="section contact" id="contact" aria-labelledby="contact-title">
+      <div class="container">
+        <div class="cta-panel reveal">
+          <div class="cta-panel__media" data-slot="cta" data-slot-mode="background" data-tone="b"></div>
+          <div class="cta-panel__scrim" aria-hidden="true"></div>
+          <div class="cta-panel__content">
+            <p class="eyebrow">Contact</p>
+            <h2 class="cta-panel__title" id="contact-title" data-placeholder>Got something that doesn't fit the mould?</h2>
+            <p class="cta-panel__lede" data-placeholder>Good. Tell us about it.</p>
+            <!-- LAUNCH CHECKLIST: swap for a real, monitored address (or a form once hosting is chosen). -->
+            <a class="btn btn--accent btn--lg" href="mailto:hello@unconventional.pro" data-placeholder>hello@unconventional.pro</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== Footer ===================================================== -->
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <a class="wordmark wordmark--lg" href="#top" aria-label="Unconventional, back to top">unconventional<span class="wordmark__dot" aria-hidden="true">.</span></a>
+
+      <nav aria-label="Footer">
+        <ul class="site-footer__nav">
+          <li><a href="#about">About</a></li>
+          <li><a href="#offer">What we do</a></li>
+          <li><a href="#showcase">Showcase</a></li>
+          <li><a href="#approach">Approach</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+
+      <p class="site-footer__legal">&copy; <span data-year>2026</span> Unconventional. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "name": "Unconventional",
+  "short_name": "Unconventional",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#0b0b0c",
+  "theme_color": "#0b0b0c",
+  "icons": [
+    { "src": "/assets/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/assets/apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any" }
+  ]
+}
