@@ -4,7 +4,7 @@
    1. Media slots   – renders content/media.js into the [data-slot] elements
    2. Motion        – in-view autoplay, the "Pause motion" control
    3. Header + nav  – scrolled state, mobile menu
-   4. Marquee       – seamless loop at a constant speed
+   4. Brand wall    – renders content/brands.js into the scrolling strip
    5. Scroll reveal
    6. Dev overlay   – add ?dev to the URL
    ========================================================================== */
@@ -190,32 +190,57 @@
     });
   }
 
-  /* ---- 4. Marquee ------------------------------------------------------- */
-  var track = document.querySelector('[data-marquee]');
-  if (track && track.children.length) {
-    var group = track.children[0];
-    var buildMarquee = function () {
-      while (track.children.length > 1) track.removeChild(track.lastChild);
-      var groupWidth = group.getBoundingClientRect().width;
-      if (!groupWidth) return;
-      // Even number of identical groups, at least two screens wide, so sliding by -50% is seamless.
-      var copies = Math.max(2, Math.ceil((window.innerWidth * 2) / groupWidth));
-      if (copies % 2) copies += 1;
-      for (var i = 1; i < copies; i++) {
-        var clone = group.cloneNode(true);
-        clone.setAttribute('aria-hidden', 'true');
-        clone.removeAttribute('data-placeholder');
-        track.appendChild(clone);
-      }
-      track.style.animationDuration = Math.round((groupWidth * copies) / 2 / 70) + 's'; // ~70px per second
-    };
-    var marqueeTimer;
-    window.addEventListener('resize', function () {
-      clearTimeout(marqueeTimer);
-      marqueeTimer = setTimeout(buildMarquee, 200);
+  /* ---- 4. Brand wall ---------------------------------------------------- */
+  // Only confirmed brands with a logo file are rendered; the strip stays hidden otherwise.
+  var brandsSection = document.querySelector('[data-brands]');
+  var brandsList = document.querySelector('[data-brands-list]');
+  var brands = (window.BRANDS || []).filter(function (brand) {
+    return brand && brand.status === 'confirmed' && brand.logo && brand.name;
+  });
+
+  if (brandsSection && brandsList && brands.length) {
+    brands.forEach(function (brand) {
+      var item = document.createElement('li');
+      var img = document.createElement('img');
+      img.className = 'brand-logo';
+      img.src = brand.logo;
+      img.alt = brand.name;
+      img.decoding = 'async';
+      img.addEventListener('load', scheduleMarquee);
+      item.appendChild(img);
+      brandsList.appendChild(item);
     });
+    brandsSection.hidden = false;
+  }
+
+  var track = document.querySelector('[data-marquee]');
+  var marqueeTimer;
+  function scheduleMarquee() {
+    clearTimeout(marqueeTimer);
+    marqueeTimer = setTimeout(buildMarquee, 150);
+  }
+  function buildMarquee() {
+    if (!track || !track.children.length) return;
+    var group = track.children[0];
+    if (!group.children.length) return;
+    while (track.children.length > 1) track.removeChild(track.lastChild);
+    var groupWidth = group.getBoundingClientRect().width;
+    if (!groupWidth) return;
+    // Even number of identical groups, at least two screens wide, so sliding by -50% is seamless.
+    var copies = Math.max(2, Math.ceil((window.innerWidth * 2) / groupWidth));
+    if (copies % 2) copies += 1;
+    for (var i = 1; i < copies; i++) {
+      var clone = group.cloneNode(true);
+      clone.setAttribute('aria-hidden', 'true');
+      track.appendChild(clone);
+    }
+    track.style.animationDuration = Math.round((groupWidth * copies) / 2 / 70) + 's'; // ~70px per second
+  }
+  if (track) {
+    window.addEventListener('resize', scheduleMarquee);
+    window.addEventListener('load', scheduleMarquee);
     buildMarquee();
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(buildMarquee);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(scheduleMarquee);
   }
 
   /* ---- 5. Scroll reveal ------------------------------------------------- */
@@ -292,7 +317,7 @@
     var bar = node('button', 'dev-panel__bar');
     bar.type = 'button';
     bar.appendChild(node('span', '', 'Site readiness'));
-    bar.appendChild(node('span', '', ready + '/' + names.length + ' media · ' + standIns + ' copy'));
+    bar.appendChild(node('span', '', ready + '/' + names.length + ' media · ' + brands.length + ' brands'));
     bar.addEventListener('click', function () {
       panel.classList.toggle('is-collapsed');
       store('dev-panel', panel.classList.contains('is-collapsed') ? 'collapsed' : 'open');
@@ -302,6 +327,7 @@
     var body = node('div', 'dev-panel__body');
     var stats = node('div', 'dev-panel__stats');
     stats.appendChild(node('div', ready === names.length ? 'ok' : 'warn', 'Media slots filled: ' + ready + ' of ' + names.length));
+    stats.appendChild(node('div', brands.length ? 'ok' : 'warn', 'Brand wall: ' + brands.length + ' confirmed brand' + (brands.length === 1 ? '' : 's') + (brands.length ? '' : ' (strip hidden)')));
     stats.appendChild(node('div', standIns ? 'warn' : 'ok', 'Stand-in copy left: ' + standIns + (standIns ? ' (dashed outlines)' : '')));
     stats.appendChild(node('div', blocked ? 'warn' : 'ok', blocked ? 'Search engines: BLOCKED (noindex is on)' : 'Search engines: allowed'));
     body.appendChild(stats);
