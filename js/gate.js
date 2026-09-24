@@ -23,9 +23,12 @@
   var TOKEN = 'door-open-7f3a';       // must match js/guard.js
   var HOME = 'home.html';
 
-  function remember() {
-    try { localStorage.setItem(TOKEN_KEY, TOKEN); } catch (e) { /* storage blocked */ }
+  // Ticked "don't make me log in again": remembered on this device. Otherwise only for this browser session.
+  function remember(persist) {
     try { sessionStorage.setItem(TOKEN_KEY, TOKEN); } catch (e) { /* storage blocked */ }
+    try {
+      if (persist) localStorage.setItem(TOKEN_KEY, TOKEN); else localStorage.removeItem(TOKEN_KEY);
+    } catch (e) { /* storage blocked */ }
   }
   function remembered() {
     try { if (localStorage.getItem(TOKEN_KEY) === TOKEN) return true; } catch (e) { /* storage blocked */ }
@@ -77,7 +80,7 @@
     form.elements.password.focus();
   }
   function open() {
-    remember();
+    remember(!!(form.elements.remember && form.elements.remember.checked));
     document.documentElement.classList.add('gate-open');
     setTimeout(function () { location.assign(HOME); }, 350);
   }
