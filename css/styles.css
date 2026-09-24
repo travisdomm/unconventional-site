@@ -399,8 +399,10 @@ h1, h2, h3 {
   border-block: 1px solid var(--line);
   padding-block: clamp(18px, 2.6vw, 30px);
 }
+.marquee + .marquee { border-top: 0; }
 .marquee__track { display: flex; width: max-content; }
 .js .marquee__track { animation: marquee 36s linear infinite; }
+.marquee--reverse .marquee__track { animation-direction: reverse; }
 .marquee__group {
   display: flex;
   flex-shrink: 0;
