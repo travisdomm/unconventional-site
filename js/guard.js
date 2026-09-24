@@ -4,7 +4,7 @@
    Delete this file (and its script tag) when the gate comes down. */
 (function () {
   var TOKEN_KEY = 'uc-gate';
-  var TOKEN = 'atlas-2026';
+  var TOKEN = 'door-open-7f3a'; // must match js/gate.js
   try { if (localStorage.getItem(TOKEN_KEY) === TOKEN) return; } catch (e) { /* storage blocked */ }
   try { if (sessionStorage.getItem(TOKEN_KEY) === TOKEN) return; } catch (e) { /* storage blocked */ }
   document.documentElement.classList.add('gated');

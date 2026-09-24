@@ -3,20 +3,24 @@
 
    A curtain, not a lock: this check runs in the visitor's browser and the
    site's files are public, so it keeps casual visitors out and nothing more.
+   The login and password are not written here in plain text: only their
+   salted SHA-256 fingerprints are, so a look at the source does not hand
+   them over.
 
-   To take the gate down: rename home.html back to index.html, delete
-   js/gate.js, js/guard.js and css/gate.css, and remove the two gate lines
-   (the gate.css link and the guard.js script) plus the temporary
-   "noindex" tag from the head of the page.
+   To take the gate down: copy home.html over index.html, remove the gate
+   lines and the temporary "noindex" tag from its head, and delete
+   js/gate.js, js/guard.js and css/gate.css.
    ========================================================================== */
 (function () {
   'use strict';
 
-  var LOGIN = 'admin';       // compared case-insensitively
-  var PASSWORD = 'Atlas';    // compared case-insensitively too; shown as written here
-  var SHOW_HINT = true;      // false hides the "here's the way in" wink on the page
+  var SALT = 'unconventional-door-2026|';
+  var LOGIN_HASH = '46037f87acb985fa28c7709543848db32d27a1eaefb27ee91fe5f044249f9fa6';      // SHA-256 of SALT + the login, lower-cased
+  var PASSWORD_HASH = 'e13594b4d9c44d7033d5929aa68ca693cdd04a08a5f17b147d8b4ee05fc7fca3';    // SHA-256 of SALT + the password, lower-cased
+  var HINT_TEXT = '';                 // Set this to print the way in on the page (the original joke),
+                                      // e.g. 'Login X · Password Y. Type them in to enter. Yes, really.'
   var TOKEN_KEY = 'uc-gate';
-  var TOKEN = 'atlas-2026';
+  var TOKEN = 'door-open-7f3a';       // must match js/guard.js
   var HOME = 'home.html';
 
   function remember() {
@@ -27,6 +31,14 @@
     try { if (localStorage.getItem(TOKEN_KEY) === TOKEN) return true; } catch (e) { /* storage blocked */ }
     try { if (sessionStorage.getItem(TOKEN_KEY) === TOKEN) return true; } catch (e) { /* storage blocked */ }
     return false;
+  }
+  function digest(text) {
+    var bytes = new TextEncoder().encode(SALT + text);
+    return crypto.subtle.digest('SHA-256', bytes).then(function (buffer) {
+      var view = new Uint8Array(buffer), hex = '';
+      for (var i = 0; i < view.length; i++) hex += ('0' + view[i].toString(16)).slice(-2);
+      return hex;
+    });
   }
 
   // Owner switches: ?door shows this page even when already in, ?lock forgets the entry first.
@@ -42,41 +54,47 @@
   var form = document.querySelector('[data-gate-form]');
   var error = document.querySelector('[data-gate-error]');
   var hint = document.querySelector('[data-gate-hint]');
+  var closedLine = document.querySelector('[data-gate-hint-closed]');
+  var errorText = error ? error.textContent : '';
 
-  if (hint && SHOW_HINT) {
+  if (hint && HINT_TEXT) {
     var line = document.createElement('p');
-    var login = document.createElement('strong');
-    var pass = document.createElement('strong');
-    login.textContent = 'Admin';
-    pass.textContent = PASSWORD;
-    line.appendChild(document.createTextNode('You came all this way, so here is the key. Login '));
-    line.appendChild(login);
-    line.appendChild(document.createTextNode(' · Password '));
-    line.appendChild(pass);
-    line.appendChild(document.createTextNode('. Type them in to enter. Yes, really. 😛'));
+    line.textContent = HINT_TEXT + ' \uD83D\uDE1B';
+    if (closedLine) closedLine.hidden = true;
     hint.appendChild(line);
-    hint.hidden = false;
-    if (error) error.textContent = 'Not quite. The answer is sitting right above the box.';
+    errorText = 'Not quite. The answer is sitting right above the box.';
   }
 
   if (!form) return;
-  form.addEventListener('submit', function (event) {
-    event.preventDefault();
-    var login = (form.elements.login.value || '').trim().toLowerCase();
-    var password = (form.elements.password.value || '').trim().toLowerCase();
+  var busy = false;
 
-    if (login === LOGIN && password === PASSWORD.toLowerCase()) {
-      remember();
-      document.documentElement.classList.add('gate-open');
-      setTimeout(function () { location.assign(HOME); }, 350);
-      return;
-    }
-
-    if (error) error.hidden = false;
+  function fail(message) {
+    if (error) { error.textContent = message || errorText; error.hidden = false; }
     form.classList.remove('is-shaking');
     void form.offsetWidth; // restart the animation
     form.classList.add('is-shaking');
     form.elements.password.value = '';
     form.elements.password.focus();
+  }
+  function open() {
+    remember();
+    document.documentElement.classList.add('gate-open');
+    setTimeout(function () { location.assign(HOME); }, 350);
+  }
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    if (busy) return;
+    var login = (form.elements.login.value || '').trim().toLowerCase();
+    var password = (form.elements.password.value || '').trim().toLowerCase();
+    if (!window.crypto || !crypto.subtle || !window.TextEncoder) {
+      fail('This door only opens over a secure (https) connection.');
+      return;
+    }
+    busy = true;
+    Promise.all([digest(login), digest(password)]).then(function (hashes) {
+      busy = false;
+      if (hashes[0] === LOGIN_HASH && hashes[1] === PASSWORD_HASH) open(); else fail();
+    }, function () { busy = false; fail(); });
   });
 })();
