@@ -1,5 +1,8 @@
 /* ==========================================================================
-   Unconventional — the intro film, version 3 (PREVIEW: preview.html only).
+   Unconventional — the intro film, version 3: the home film (home.html) since
+   2026-09-26, and the two cuts on preview.html (Preview 1, the owner's edited cut,
+   content/media.js, the same as home) and preview2.html (Preview 2, the first cut,
+   content/media-p2.js).
    Four scenes in one hero, then the title card:
      01 People           photoreal footage (media slots film-s1-01 … s1-08);
                          until it is ready, the v2 prologue on this canvas
@@ -15,7 +18,7 @@
    plays (see "Film v3: the sequence player"). With every slot empty the whole
    film runs on this canvas, and ?film=SECONDS means the same as before.
 
-   Scene 2's build is a copy of js/film.js (v2, the home page) whose BUILD act
+   Scene 2's build is a copy of js/film.js (v2, the home film until 2026-09-26) whose BUILD act
    is the "three quarters techy" build, told in the real order of
    work on a summit plateau at night:
      01 survey and set-out (total station, GNSS rovers, stakes, paint lines,
@@ -4987,8 +4990,10 @@
     // a slot can replace its captions (captions: [] turns the caption box off for that shot)
     var cap = '', list = brief && g.clip ? (g.clip.slot && Array.isArray(g.clip.slot.captions) ? g.clip.slot.captions : CAPTIONS[g.name]) : null;
     if (list) list.forEach(function (e) { if (loc >= e[0]) cap = e[1]; });
-    if (captionEl && cap !== lastCap) { captionEl.textContent = cap; section.classList.toggle('has-caption', !!cap); lastCap = cap; }
-    if (progressEl) progressEl.style.transform = 'scaleX(' + clamp((g.m0 + Math.min(loc, g.len)) / M_END, 0, 1).toFixed(4) + ')';
+    // (a caption going off keeps its words while its box fades out: an emptied box would fade out as a bare lime tick)
+    if (captionEl && cap !== lastCap) { if (cap) captionEl.textContent = cap; section.classList.toggle('has-caption', !!cap); lastCap = cap; }
+    // (the last segment runs to the title card, which can come after its clip ends: then the bar still reaches the end)
+    if (progressEl) progressEl.style.transform = 'scaleX(' + clamp((g.m0 + Math.min(loc, isLast(g) ? g.titleAt : g.len)) / M_END, 0, 1).toFixed(4) + ')';
   }
 
   /* ---- Seeking: ?film=, Skip, Replay, the paused still ---- */
