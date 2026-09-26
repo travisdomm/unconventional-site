@@ -80,6 +80,197 @@ window.MEDIA_SLOTS = {
     spec: "Fourth photo of the same event · same spec as intro-photo-1."
   },
 
+  /* ---- Film v3 (preview.html, played by js/film3.js) ----------------------
+     The footage of the four-scene film, one slot per shot, in playing order.
+     A scene plays as footage only when its clips are "ready" and load; until
+     then that scene plays on the live canvas (scene 4 needs film-s4-03, so
+     the film always ends on the exact name). No slot here is ever shown on
+     its own, so alt stays empty: the film's text description is in the page.
+     Every clip: MP4 (H.264), 1920×1080, no audio, about 5.5 Mbit/s.
+       src         the full-size clip
+       srcMobile   the phone file: a 608×1080 9:16 strip cut from the master at
+                   the shot's focus x, about 2.2 Mbit/s (the full clip is used
+                   if it is missing)
+       poster      first used frame, 1280×720 JPG (first clip of each scene)
+       use         the planned length in seconds, used until the file loads
+       in / out    optional: the seconds to play inside the file, for an
+                   untrimmed 5 s take (leave them out once the file is trimmed)
+       focus       0–1: where a phone crops the full-size clip if it has no strip
+       hold        (s4-03) the final frame as a still, shown after the clip ends
+       phoneEnd    (s3-08) a 9:16 still that phones crossfade to at the end
+       phoneStills (s4-03) the unlit and lit 9:16 stills phones get instead of the clip
+       overlay     optional: a transparent PNG of lime lines laid over the clip in
+                   screen blend (S1-07's traced drawing, made from the chosen take) */
+  "film-s1-01": {
+    type: "video", status: "ready", usedBy: "the film v3 preview (scene 1, People)",
+    src: "media/film/s1-01.mp4", poster: "media/film/s1-01.jpg",
+    use: 3.0, in: 0, out: 3, focus: 0.5, alt: "",
+    spec: "S1-01 First meeting: the two leads shake hands in a glass meeting room at dusk (slow dolly). Uses 0.0–3.0 s of the take. Phone strip at focus x 0.50. Poster = the first frame, 1280×720."
+  },
+  "film-s1-02a": {
+    type: "video", status: "ready", usedBy: "the film v3 preview (scene 1, People)",
+    src: "media/film/s1-02a.mp4",
+    use: 1.5, in: 0, out: 1.5, focus: 0.55, alt: "",
+    spec: "S1-02a Talking: she listens and laughs. Uses 0.0–1.5 s. Phone strip at focus x 0.55."
+  },
+  "film-s1-02b": {
+    type: "video", status: "ready", usedBy: "the film v3 preview (scene 1, People)",
+    src: "media/film/s1-02b.mp4",
+    use: 1.5, in: 0, out: 1.5, focus: 0.45, alt: "",
+    spec: "S1-02b Talking: he nods, the lime notebook under his hand. Uses 0.0–1.5 s. Phone strip at focus x 0.45."
+  },
+  "film-s1-03": {
+    type: "video", status: "ready", usedBy: "the film v3 preview (scene 1, People)",
+    src: "media/film/s1-03.mp4",
+    use: 2.5, in: 0, out: 2.5, focus: 0.6, alt: "",
+    spec: "S1-03 The planning room: the team at the map wall; she explains the site. Uses 0.0–2.5 s; keep the lower left calm for the caption. Phone strip at focus x 0.60 (the map)."
+  },
+  "film-s1-04": {
+    type: "video", status: "ready", usedBy: "the film v3 preview (scene 1, People)",
+    src: "media/film/s1-04.mp4",
+    use: 1.5, in: 3.5, out: 5, focus: 0.5, alt: "",
+    spec: "S1-04 The map: the summit plateau is ringed in lime and pinned. Start + end frame shot: uses 3.5–5.0 s (set in: 3.5 if untrimmed). Phone strip at focus x 0.50."
+  },
+  "film-s1-05": {
+    type: "video", status: "ready", usedBy: "the film v3 preview (scene 1, People)",
+    src: "media/film/s1-05.mp4",
+    use: 2.0, in: 0, out: 2, focus: 0.45, alt: "",
+    spec: "S1-05 The brief and the KPIs (the site's caption carries the words). Uses 0.0–2.0 s. Phone strip at focus x 0.45."
+  },
+  "film-s1-06": {
+    type: "video", status: "ready", usedBy: "the film v3 preview (scene 1, People)",
+    src: "media/film/s1-06.mp4",
+    use: 2.5, in: 0, out: 2.5, focus: 0.5, alt: "",
+    spec: "S1-06 Marketing and sponsorship: tier cards with invented marks, a campaign layout. Uses 0.0–2.5 s. Phone strip at focus x 0.50."
+  },
+  "film-s1-07": {
+    type: "video", status: "ready", usedBy: "the film v3 preview (scene 1, People)",
+    src: "media/film/s1-07.mp4",
+    use: 2.0, in: 3, out: 5, focus: 0.5, alt: "",
+    spec: "S1-07 Inception: a fineliner completes the roof arc on tracing paper, locked camera. Start + end frame shot: uses 3.0–5.0 s (set in: 3.0 if untrimmed). Phone strip at focus x 0.50."
+  },
+  "film-s1-08": {
+    type: "video", status: "ready", usedBy: "the film v3 preview (scene 1, People)",
+    src: "media/film/s1-08.mp4",
+    use: 3.0, in: 2, out: 5, focus: 0.5, alt: "",
+    spec: "S1-08 Agreement, then into the drawing: ends top-down on the drawing (black lines on white paper), which the site darkens, turns lime and dissolves into the canvas drawing. Uses 2.0–5.0 s (set in: 2.0 if untrimmed). Phone strip at focus x 0.50."
+  },
+  "film-s2-01": {
+    type: "video", status: "ready", usedBy: "the film v3 preview (scene 2, Build)",
+    src: "media/film/s2-01.mp4", poster: "media/film/s2-01.jpg",
+    use: 2.0, in: 0, out: 2, focus: 0.5, alt: "",
+    spec: "S2-01 The roof reaches trim: the match cut. Starts on exactly the canvas frame at T.realCut (36.0 s); the canvas dissolves into it. Uses 0.0–2.0 s. Phone strip at focus x 0.50. Poster = the first frame, 1280×720."
+  },
+  "film-s2-02": {
+    type: "video", status: "ready", usedBy: "the film v3 preview (scene 2, Build)",
+    src: "media/film/s2-02.mp4",
+    use: 1.0, in: 0, out: 1, focus: 0.5, alt: "",
+    spec: "S2-02 Pins, clips and chain: rigging detail. Uses 0.0–1.0 s. Phone strip at focus x 0.50."
+  },
+  "film-s2-03": {
+    type: "video", status: "ready", usedBy: "the film v3 preview (scene 2, Build)",
+    src: "media/film/s2-03.mp4",
+    use: 1.5, in: 3.2, out: 4.8, focus: 0.5, alt: "",
+    spec: "S2-03 Video: the LED wall comes alive in one soft ramp (no strobe). About 1.5 s; in and out chosen at review. Phone strip at focus x 0.50."
+  },
+  "film-s2-03b": {
+    type: "video", status: "ready", usedBy: "the film v3 preview (scene 2, Build)",
+    src: "media/film/s2-03b.mp4",
+    use: 1.5, in: 0, out: 1.5, focus: 0.5, alt: "",
+    spec: "S2-03b Lighting: the focus call, a truss of moving heads tilts together. Uses 1.5 s. Phone strip at focus x 0.50."
+  },
+  "film-s2-04": {
+    type: "video", status: "ready", usedBy: "the film v3 preview (scene 2, Build)",
+    src: "media/film/s2-04.mp4",
+    use: 1.5, in: 0, out: 1.5, focus: 0.45, alt: "",
+    spec: "S2-04 Audio: the line array flies. Uses 0.0–1.5 s. Phone strip at focus x 0.45."
+  },
+  "film-s2-05": {
+    type: "video", status: "ready", usedBy: "the film v3 preview (scene 2, Build)",
+    src: "media/film/s2-05.mp4",
+    use: 2.0, in: 0, out: 2, focus: 0.5, alt: "",
+    spec: "S2-05 Blue hour: the finished site, the crew walk out toward it. Uses 0.0–2.0 s; hard cut to S3-01. Phone strip at focus x 0.50."
+  },
+  "film-s3-01": {
+    type: "video", status: "ready", usedBy: "the film v3 preview (scene 3, Arrival)",
+    src: "media/film/s3-01.mp4", poster: "media/film/s3-01.jpg",
+    use: 2.0, in: 0, out: 2, focus: 0.55, alt: "",
+    spec: "S3-01 The jet on approach at golden hour. Uses 0.0–2.0 s. Phone strip at focus x 0.55. Poster = the first frame, 1280×720."
+  },
+  "film-s3-02": {
+    type: "video", status: "ready", usedBy: "the film v3 preview (scene 3, Arrival)",
+    src: "media/film/s3-02.mp4",
+    use: 1.5, in: 0, out: 1.5, focus: 0.55, alt: "",
+    spec: "S3-02 Cabin: the first glimpse of the summit. Uses 0.0–1.5 s. Phone strip at focus x 0.55."
+  },
+  "film-s3-03": {
+    type: "video", status: "ready", usedBy: "the film v3 preview (scene 3, Arrival)",
+    src: "media/film/s3-03.mp4",
+    use: 2.0, in: 0, out: 2, focus: 0.5, alt: "",
+    spec: "S3-03 Hotel arrival: low stone-and-glass pavilions. Uses 0.0–2.0 s. Phone strip at focus x 0.50."
+  },
+  "film-s3-04": {
+    type: "video", status: "empty", usedBy: "the film v3 preview (scene 3, Arrival)",
+    src: "media/film/s3-04.mp4", srcMobile: "media/film/s3-04-m.mp4",
+    use: 1.5, focus: 0.5, alt: "",
+    spec: "S3-04 Lobby (optional, outside the budget, first to cut): a key card handed over. Uses 0.0–1.5 s. Phone strip at focus x 0.50."
+  },
+  "film-s3-05": {
+    type: "video", status: "ready", usedBy: "the film v3 preview (scene 3, Arrival)",
+    src: "media/film/s3-05.mp4",
+    use: 1.5, in: 0, out: 1.5, focus: 0.5, alt: "",
+    spec: "S3-05 The climb: shuttles on the road up the mesa. Uses 0.0–1.5 s. Phone strip at focus x 0.50."
+  },
+  "film-s3-06": {
+    type: "video", status: "ready", usedBy: "the film v3 preview (scene 3, Arrival)",
+    src: "media/film/s3-06.mp4",
+    use: 3.0, in: 2, out: 5, focus: 0.5, alt: "",
+    spec: "S3-06 The reveal: the venue on the summit plateau at dusk. Ends on the venue master: uses 2.0–5.0 s (set in: 2.0 if untrimmed). Phone strip at focus x 0.50."
+  },
+  "film-s3-07": {
+    type: "video", status: "ready", usedBy: "the film v3 preview (scene 3, Arrival)",
+    src: "media/film/s3-07.mp4",
+    use: 2.0, in: 0, out: 2, focus: 0.5, alt: "",
+    spec: "S3-07 Gates: wristbands (no logos), friends flowing into the field. Uses 0.0–2.0 s. Phone strip at focus x 0.50."
+  },
+  "film-s3-08": {
+    type: "video", status: "ready", usedBy: "the film v3 preview (scene 3, Arrival)",
+    src: "media/film/s3-08.mp4", phoneEnd: "media/film/s3-08-9x16.jpg",
+    use: 3.5, in: 1.5, out: 5, focus: 0.5, alt: "",
+    spec: "S3-08 The crowd: a drone pulls back over hands and phone lights to the whole packed plateau (no number on screen). Uses 1.5–5.0 s (set in: 1.5 if untrimmed). Phone strip at focus x 0.50; phones crossfade to phoneEnd (a 9:16 still of the end frame, 1080×1920 JPG) over the last 0.8 s."
+  },
+  "film-s3-09": {
+    type: "video", status: "ready", usedBy: "the film v3 preview (scene 3, Arrival)",
+    src: "media/film/s3-09.mp4",
+    use: 1.5, in: 0, out: 1.5, focus: 0.5, alt: "",
+    spec: "S3-09 Joy: close-ups in the crowd, a laser skimming overhead. Uses 0.0–1.5 s. Phone strip at focus x 0.50."
+  },
+  "film-s3-10": {
+    type: "video", status: "ready", usedBy: "the film v3 preview (scene 3, Arrival)",
+    src: "media/film/s3-10.mp4",
+    use: 2.5, in: 0, out: 2.5, focus: 0.5, alt: "",
+    spec: "S3-10 The team at FOH, watching what they built; ends on his nod, then a dip to black. Uses 0.0–2.5 s. Phone strip at focus x 0.50."
+  },
+  "film-s4-01": {
+    type: "video", status: "ready", usedBy: "the film v3 preview (scene 4, Unconventional)",
+    src: "media/film/s4-01.mp4", poster: "media/film/s4-01.jpg",
+    use: 1.5, in: 0, out: 1.5, focus: 0.5, alt: "",
+    spec: "S4-01 Built: gloved hands bolt the steel U together (macro in the channel). Uses 0.0–1.5 s. Phone strip at focus x 0.50. Poster = the first frame, 1280×720. Scene 4 plays as footage only when film-s4-03 is ready too."
+  },
+  "film-s4-02": {
+    type: "video", status: "ready", usedBy: "the film v3 preview (scene 4, Unconventional)",
+    src: "media/film/s4-02.mp4",
+    use: 2.5, in: 2.5, out: 5, focus: 0.5, alt: "",
+    spec: "S4-02 Brought into place: the giant U is lowered on two chain hoists and lands on the deck. Ends landed: uses 2.5–5.0 s (set in: 2.5 if untrimmed). Phone strip at focus x 0.50."
+  },
+  "film-s4-03": {
+    type: "video", status: "ready", usedBy: "the film v3 preview (scene 4, Unconventional)",
+    src: "media/film/s4-03.mp4", hold: "media/film/s4-hold.jpg",
+    phoneStills: ["media/film/s4-03-9x16-dark.jpg", "media/film/s4-03-9x16.jpg"],
+    use: 3.5, in: 1.5, out: 5, focus: 0.5, alt: "",
+    spec: "S4-03 Lit: the neon in the U strikes, then UNCONVENTIONAL lights left to right; locked camera, framed like the owner's logo with the full word and clear space below it. Uses 1.5–5.0 s (set in: 1.5 if untrimmed). Desktop only (no phone strip: the word is too wide). hold = the final frame as a 1920×1080 JPG, crossfaded in after the clip (the brand must be exact). phoneStills = two 9:16 JPGs (1080×1920), unlit then lit, wiped left to right on phones."
+  },
+
   /* ---- Who we are: 01 Why we exist --------------------------------------- */
   "about": {
     type: "image",
