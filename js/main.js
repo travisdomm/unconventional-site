@@ -31,7 +31,7 @@
     var img = document.createElement('img');
     img.alt = alt || '';
     img.decoding = 'async';
-    if (name === 'hero') img.fetchPriority = 'high';
+    if (name === 'intro') img.fetchPriority = 'high';
     else img.loading = 'lazy';
     img.addEventListener('load', function () { el.classList.add('is-loaded'); });
     img.addEventListener('error', function () {
@@ -215,6 +215,10 @@
       });
     });
     brandsSection.hidden = false;
+    // A link straight to the strip (#brands) could not scroll there while it was hidden: do it now.
+    if (window.location.hash === '#' + brandsSection.id) {
+      window.requestAnimationFrame(function () { brandsSection.scrollIntoView(); });
+    }
   }
 
   var tracks = [].slice.call(document.querySelectorAll('[data-marquee]'));
@@ -332,7 +336,7 @@
     var body = node('div', 'dev-panel__body');
     var stats = node('div', 'dev-panel__stats');
     stats.appendChild(node('div', ready === names.length ? 'ok' : 'warn', 'Media slots filled: ' + ready + ' of ' + names.length));
-    stats.appendChild(node('div', brands.length ? 'ok' : 'warn', 'Brand wall: ' + brands.length + ' confirmed brand' + (brands.length === 1 ? '' : 's') + (brands.length ? '' : ' (strip hidden)')));
+    if (brandsSection) stats.appendChild(node('div', brands.length ? 'ok' : 'warn', 'Brand wall: ' + brands.length + ' confirmed brand' + (brands.length === 1 ? '' : 's') + (brands.length ? '' : ' (strip hidden)')));
     stats.appendChild(node('div', standIns ? 'warn' : 'ok', 'Stand-in copy left: ' + standIns + (standIns ? ' (dashed outlines)' : '')));
     stats.appendChild(node('div', blocked ? 'warn' : 'ok', blocked ? 'Search engines: BLOCKED (noindex is on)' : 'Search engines: allowed'));
     body.appendChild(stats);
@@ -343,7 +347,8 @@
       var item = node('button', 'dev-panel__item' + (slot.status === 'ready' ? ' is-ready' : ''));
       item.type = 'button';
       item.appendChild(node('i'));
-      var where = placed[name] ? '' : (slot.offPage ? ' (not shown on the page)' : ' (NOT PLACED in the HTML)');
+      var here = window.location.pathname.split('/').pop() || 'index.html';
+      var where = placed[name] ? '' : slot.usedBy ? ' (used by ' + slot.usedBy + ')' : slot.page && slot.page !== here ? ' (on ' + slot.page + ')' : slot.offPage ? ' (not shown on the page)' : ' (NOT PLACED in the HTML)';
       item.appendChild(node('b', '', name + ' · ' + slot.status + where));
       item.appendChild(node('span', '', slot.spec || ''));
       if (placed[name]) {

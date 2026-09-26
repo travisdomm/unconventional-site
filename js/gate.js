@@ -7,6 +7,11 @@
    salted SHA-256 fingerprints are, so a look at the source does not hand
    them over.
 
+   Loaded in the <head> of index.html WITHOUT defer, so a visitor who is
+   already in is sent on before the door paints. The rest waits for the page.
+   ?next=about.html (set by js/guard.js) sends people back to the page they
+   were trying to open.
+
    To take the gate down: copy home.html over index.html, remove the gate
    lines and the temporary "noindex" tag from its head, and delete
    js/gate.js, js/guard.js and css/gate.css.
@@ -44,60 +49,70 @@
     });
   }
 
-  // Owner switches: ?door shows this page even when already in, ?lock forgets the entry first.
+  // Where to go once in: only ever one of this site's own pages ("about.html", "home.html#brands").
   var params = new URLSearchParams(location.search);
+  var hash = /^#[a-z0-9-]+$/.test(location.hash) ? location.hash : '';
+  var asked = params.get('next') || '';
+  var next = /^[a-z0-9-]+\.html(#[a-z0-9-]+)?$/.test(asked) ? asked : HOME + hash;
+
+  // Owner switches: ?door shows this page even when already in, ?lock forgets the entry first.
   if (params.has('lock')) {
     try { localStorage.removeItem(TOKEN_KEY); } catch (e) { /* storage blocked */ }
     try { sessionStorage.removeItem(TOKEN_KEY); } catch (e) { /* storage blocked */ }
   }
 
-  // Already in: straight through.
-  if (remembered() && !params.has('door') && !params.has('lock')) { location.replace(HOME); return; }
+  // Already in: straight through, before the door paints.
+  if (remembered() && !params.has('door') && !params.has('lock')) { location.replace(next); return; }
 
-  var form = document.querySelector('[data-gate-form]');
-  var error = document.querySelector('[data-gate-error]');
-  var hint = document.querySelector('[data-gate-hint]');
-  var closedLine = document.querySelector('[data-gate-hint-closed]');
-  var errorText = error ? error.textContent : '';
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', setUp);
+  else setUp();
 
-  if (hint && HINT_TEXT) {
-    var line = document.createElement('p');
-    line.textContent = HINT_TEXT + ' \uD83D\uDE1B';
-    if (closedLine) closedLine.hidden = true;
-    hint.appendChild(line);
-    errorText = 'Not quite. The answer is sitting right above the box.';
-  }
+  function setUp() {
+    var form = document.querySelector('[data-gate-form]');
+    var error = document.querySelector('[data-gate-error]');
+    var hint = document.querySelector('[data-gate-hint]');
+    var closedLine = document.querySelector('[data-gate-hint-closed]');
+    var errorText = error ? error.textContent : '';
 
-  if (!form) return;
-  var busy = false;
-
-  function fail(message) {
-    if (error) { error.textContent = message || errorText; error.hidden = false; }
-    form.classList.remove('is-shaking');
-    void form.offsetWidth; // restart the animation
-    form.classList.add('is-shaking');
-    form.elements.password.value = '';
-    form.elements.password.focus();
-  }
-  function open() {
-    remember(!!(form.elements.remember && form.elements.remember.checked));
-    document.documentElement.classList.add('gate-open');
-    setTimeout(function () { location.assign(HOME); }, 350);
-  }
-
-  form.addEventListener('submit', function (event) {
-    event.preventDefault();
-    if (busy) return;
-    var login = (form.elements.login.value || '').trim().toLowerCase();
-    var password = (form.elements.password.value || '').trim().toLowerCase();
-    if (!window.crypto || !crypto.subtle || !window.TextEncoder) {
-      fail('This door only opens over a secure (https) connection.');
-      return;
+    if (hint && HINT_TEXT) {
+      var line = document.createElement('p');
+      line.textContent = HINT_TEXT + ' 😛';
+      if (closedLine) closedLine.hidden = true;
+      hint.appendChild(line);
+      errorText = 'Not quite. The answer is sitting right above the box.';
     }
-    busy = true;
-    Promise.all([digest(login), digest(password)]).then(function (hashes) {
-      busy = false;
-      if (hashes[0] === LOGIN_HASH && hashes[1] === PASSWORD_HASH) open(); else fail();
-    }, function () { busy = false; fail(); });
-  });
+
+    if (!form) return;
+    var busy = false;
+
+    function fail(message) {
+      if (error) { error.textContent = message || errorText; error.hidden = false; }
+      form.classList.remove('is-shaking');
+      void form.offsetWidth; // restart the animation
+      form.classList.add('is-shaking');
+      form.elements.password.value = '';
+      form.elements.password.focus();
+    }
+    function open() {
+      remember(!!(form.elements.remember && form.elements.remember.checked));
+      document.documentElement.classList.add('gate-open');
+      setTimeout(function () { location.assign(next); }, 350);
+    }
+
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      if (busy) return;
+      var login = (form.elements.login.value || '').trim().toLowerCase();
+      var password = (form.elements.password.value || '').trim().toLowerCase();
+      if (!window.crypto || !crypto.subtle || !window.TextEncoder) {
+        fail('This door only opens over a secure (https) connection.');
+        return;
+      }
+      busy = true;
+      Promise.all([digest(login), digest(password)]).then(function (hashes) {
+        busy = false;
+        if (hashes[0] === LOGIN_HASH && hashes[1] === PASSWORD_HASH) open(); else fail();
+      }, function () { busy = false; fail(); });
+    });
+  }
 })();
