@@ -106,13 +106,19 @@ window.MEDIA_SLOTS = {
        hold        (s4-03) the final frame as a still, shown after the clip ends
        phoneEnd    (s3-08) a 9:16 still that phones crossfade to at the end
        phoneStills (s4-03) the unlit and lit 9:16 stills phones get instead of the clip
-       exact       (s4-03) the owner's own logo, pixel for pixel: the film ends on it
-                   (the hold, or the phones' lit still, dissolves into it under the title;
-                   without footage the canvas logo does). "Never larger than its own pixels"
-                   holds in CSS px; on 2x/3x screens the 557 px logo is upscaled.
-       exact2x     optional (s4-03): the same PNG at exactly twice the size (1306×886), from a
-                   larger or vector master of the logo; high-density screens get it and the
-                   rule then holds in device pixels too
+       exact       (s4-03) the owner's own logo: the film ends on it (the hold, or the
+                   phones' lit still, dissolves into it under the title; without footage the
+                   canvas logo does). A 653×443 PNG with the logo's 557×347 at (48, 48); a new
+                   file must keep that layout (film3.js's EXACT is measured on it). Never drawn
+                   larger than its own pixels: with this file alone that holds in CSS px, so
+                   2x/3x screens upscale it and big 1x screens settle the frame smaller.
+       exact2x     optional (s4-03): the same PNG at exactly twice the size (1306×886).
+                   film3.js picks it (not srcset) wherever the settled logo would be drawn
+                   larger than the 1x file's pixels in device px: every 2x/3x screen, and big
+                   1x screens, which then settle to their usual size (up to 2 CSS px per 1x
+                   pixel). The rule then holds in device px on 1x and 2x screens; 3x screens
+                   keep the 1x file's CSS-px size (there is no 3x file). If it does not load,
+                   the 1x file is used
        overlay     optional: a transparent PNG of lime lines laid over the clip in
                    screen blend (S1-07's traced drawing, made from the chosen take) */
   "film-s1-01": {
@@ -184,8 +190,8 @@ window.MEDIA_SLOTS = {
     type: "video", status: "ready", usedBy: "the home film and Preview 1 (scene 2, Build)",
     src: "media/film/s2-01.mp4", srcMobile: "media/film/s2-01-m.mp4", poster: "media/film/s2-01.jpg",
     use: 2.0, focus: 0.5,
-    alt: "Night on the mesa: six lattice towers carry an arched stage roof as it reaches trim on chain hoists, with crew and road cases on the deck below.",
-    spec: "S2-01 The roof reaches trim: the match cut from the canvas at T.realCut (36.0 s); the canvas dissolves into it. Trimmed to 0.25–2.25 s. Seen from house left, empty hang bars (no LED or PA yet). Phone strip at focus x 0.50. Poster = the keyframe, 1280 px wide."
+    alt: "Night on the mesa: lattice towers carry an arched stage roof, its moving lights already hung on the bars, as it reaches trim on chain hoists, with crew and road cases on the deck below.",
+    spec: "S2-01 The roof reaches trim: the match cut from the canvas at T.realCut (26.6 s, the end of the canvas roof lift; its camera is fitted to this clip's first frames, and while this clip follows, the canvas rig is re-fitted to its structure: film3.js MATCH); the canvas dissolves into it. Trimmed to 0.25–2.25 s. Seen from house left: three arches on nine towers (two of them upstage on the deck, a PA tower downstage house left, two more stage right), lighting pre-rigged on the three upper bars, a fourth bar bare, no LED or PA arrays yet; two light masts behind. Phone strip at focus x 0.50. Poster = the keyframe, 1280 px wide."
   },
   "film-s2-02": {
     type: "video", status: "empty", usedBy: "the home film and Preview 1 (scene 2, Build)",
@@ -310,10 +316,10 @@ window.MEDIA_SLOTS = {
     type: "video", status: "ready", usedBy: "the home film and Preview 1 (scene 4, Unconventional)",
     src: "media/film/s4-03.mp4", hold: "media/film/s4-hold.jpg",
     phoneStills: ["media/film/s4-03-9x16-dark.jpg", "media/film/s4-03-9x16.jpg"],
-    exact: "media/film/logo-exact.png",
+    exact: "media/film/logo-exact.png", exact2x: "media/film/logo-exact-v2@2x.png",
     use: 4.75, focus: 0.5,
     alt: "At night the neon inside the steel U strikes, then the word UNCONVENTIONAL lights up below it on the stage deck.",
-    spec: "S4-03 Lit: the neon in the U strikes, then UNCONVENTIONAL lights (all letters together in this take, not left to right); locked camera. Trimmed to 0.25–5.0 s (the strike starts at 0.25 s). Desktop only (no phone strip: the word is too wide). hold = the final frame as a 1920×1080 JPG, crossfaded in after the clip. phoneStills = two 9:16 JPGs (1080×1920), unlit then lit, wiped left to right on phones. exact = the owner's logo (brand/unconventional-logo.jpg, 557×347) copied pixel for pixel into a 653×443 PNG whose 48 px margin continues its dark backdrop and fades it out (the backdrop also fades a little into the photo at the left, top and right, where there is no mark); the film ends on it: under the title card the hold (phones: the lit still) dissolves into it, the U laid over the U, never shown larger than its own pixels."
+    spec: "S4-03 Lit: the neon in the U strikes, then UNCONVENTIONAL lights (all letters together in this take, not left to right); locked camera. Trimmed to 0.25–5.0 s (the strike starts at 0.25 s). Desktop only (no phone strip: the word is too wide). hold = the final frame as a 1920×1080 JPG, crossfaded in after the clip. phoneStills = two 9:16 JPGs (1080×1920), unlit then lit, wiped left to right on phones. exact = the owner's logo (brand/unconventional-logo.jpg, 557×347) at (48, 48) in a 653×443 PNG whose 48 px margin continues its dark backdrop and fades it out (the backdrop also fades a little into the photo at the left, top and right, where there is no mark). The 1x file is logo-exact.png itself: its 557×347 window is the owner's JPG pixel for pixel (no re-sampling at 1x). exact2x (logo-exact-v2@2x.png, 1306×886) keeps that layout and alpha exactly at twice the size; its window is the owner's logo enlarged locally, no new detail: Catmull-Rom 4x plus a gentle two-scale sharpen, each pixel then held within ±6 levels of the source pixels around it (no halos), shrunk to 2x with Lanczos3. Measured against the owner's JPG (shrunk back to 1x by area): 44.7 dB PSNR, max difference 15 levels, sharpness ×1.05, no shift; no pixel steps more than 6 levels outside the source pixels around it (brand/raw/mc2-fix-0926/logo/rebuild2x.ps1). (logo-exact-v2.png, a re-sampled 1x, is no longer used: 39.5 dB, max 31, brighter neon clipping.) The film ends on it: under the title card the hold (phones: the lit still) dissolves into it, the U laid over the U, never shown larger than the chosen file's pixels (see the field notes above)."
   },
 
   /* ---- Who we are: 01 Why we exist --------------------------------------- */
