@@ -111,6 +111,19 @@ html.gate-open .gate__content {
 /* Without JavaScript the form cannot check anything, so it stays out of the way. */
 html:not(.js) .gate__form { display: none; }
 
+/* Already remembered: a quiet way straight through (the form stays). */
+.gate__skip { color: var(--ink-muted); font-size: .95rem; }
+.gate__skip[hidden] { display: none; }
+.gate__skip a {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: .2em;
+  white-space: nowrap;
+}
+.gate__skip a::after { content: " \2192"; }
+.gate__skip a:hover { text-decoration-thickness: 2px; }
+
 /* "Don't make me log in again" */
 .gate__remember {
   display: flex;
