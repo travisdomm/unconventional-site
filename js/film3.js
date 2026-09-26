@@ -1,7 +1,22 @@
 /* ==========================================================================
    Unconventional — the intro film, version 3 (PREVIEW: preview.html only).
-   A copy of js/film.js (v2, live on the home page) whose BUILD act is scene 2
-   of film v3: the "three quarters techy" build, told in the real order of
+   Four scenes in one hero, then the title card:
+     01 People           photoreal footage (media slots film-s1-01 … s1-08);
+                         until it is ready, the v2 prologue on this canvas
+     02 Build            this canvas, from the drawing, to T.realCut (the "three
+                         quarters techy" build below), then photoreal footage
+                         (film-s2-01 … s2-05) from the match-cut frame
+     03 Arrival          photoreal footage (film-s3-01 … s3-10); until it is
+                         ready, the v2 power-up, crowd and team at FOH
+     04 Unconventional   the logo built and brought into place: footage
+                         (film-s4-01 … s4-03 + the hold still), or the canvas
+                         logo build near the end of this file
+   The sequence player at the end of the file decides, scene by scene, what
+   plays (see "Film v3: the sequence player"). With every slot empty the whole
+   film runs on this canvas, and ?film=SECONDS means the same as before.
+
+   Scene 2's build is a copy of js/film.js (v2, the home page) whose BUILD act
+   is the "three quarters techy" build, told in the real order of
    work on a summit plateau at night:
      01 survey and set-out (total station, GNSS rovers, stakes, paint lines,
         a mapping drone scanning the ground)   02 ground prep and logistics
@@ -42,16 +57,17 @@
                  stage lifts apart into labelled layers and slams home.
      4. Reality  It powers up: LED, beams, lasers, flames, fireworks, a crowd,
                  the sparks back as drones, and the team at the mixing desk
-                 watching what they started. Then the owner's event photos
-                 (when added) and the title card.
+                 watching what they started. (In v3 this is scene 3's
+                 fallback; v2's owner photos are not used here.)
    Stage ideas are borrowed from festival main stages and keynote rooms in
    general (scale, ground-support roofs, IMAG, wings, delay masts, a ribbon
    screen); nothing is copied from any one show, and nothing is named.
 
-   Inputs (content/media.js): intro-drawing (shown on the CAD screen) and
-   intro-photo-1…4 (the last act). Motion stops for "Pause motion" and
-   prefers-reduced-motion (a finished frame is held). ?film=21.5 on the URL
-   starts the film at that second. The Skip button jumps to the finished stage.
+   Inputs (content/media.js): intro-drawing (shown on the CAD screen) and the
+   film-s… footage slots. Motion stops for "Pause motion" and
+   prefers-reduced-motion (then one still is held: the logo under the title).
+   ?film=21.5 on the URL starts the film at that second. Skip jumps to the
+   logo and the title card.
    Every structure here is original: no names, logos or set pieces of any
    real festival, brand or show.
    ========================================================================== */
@@ -107,10 +123,9 @@
     explode: [32.3, 32.9, 33.2, 33.6],   // the finished stage lifts apart into layers, holds, slams home
     checks: [33.7, 36.0],  // 10 pixel map, focus, line check, crew clear, work lights
     realCut: 36.0,         // the match cut: the photoreal quarter of scene 2 takes over on this frame
-    power: [36.4, 38.6],   // (fallback, without footage) everything comes alive
-    end: 39.4,             // the title card
-    photos: 41.8,          // the real photos, when provided
-    still: 40.6            // the frame held when motion is paused, and where Skip lands
+    power: [36.4, 38.6],   // (scene 3 fallback, without footage) everything comes alive
+    end: 39.4,             // (v2's title card) the lasers ease down after it
+    s3End: 41.6            // the end of the scene 3 fallback: fireworks, drones, the team at FOH; then scene 4
   };
   function P0(dt) { return T.power[0] + dt; }   // a moment in the power-up
   var SWITCH = 11.0;       // before: the people's world; after: the stage's (same picture at the switch)
@@ -1653,15 +1668,15 @@
     { t: 31.6,  target: [6, 12, 14],  fit: 190, yaw: 28, pitch: 14, fov: 38 },        // round to the field: PA, delays, FOH
     { t: 32.9,  target: [0, 33, -4],  fit: 205, yaw: 30, pitch: 9,  fov: 38 },        // exploded into layers
     { t: 33.7,  target: [0, 15, 0],   fit: 150, yaw: 24, pitch: 8,  fov: 38 },
-    { t: 36.0,  target: [-2, 18, -3], dist: 60, yaw: 36, pitch: -13, fov: 46 },      // T.realCut: low three-quarter, the roof at trim under work lights
-    { t: 36.6,  target: [-2, 18, -3], dist: 59.4, yaw: 35.6, pitch: -13, fov: 46 },
+    { t: 36.0,  target: [-2, 18, -3], dist: 60, yaw: 36, pitch: -13, fov: 46, fixedFov: true },      // T.realCut: low three-quarter, the roof at trim under work lights
+    { t: 36.6,  target: [-2, 18, -3], dist: 59.4, yaw: 35.6, pitch: -13, fov: 46, fixedFov: true },
     { t: 39.1,  target: [0, 12, 0],   dist: 64.4, yaw: -1.3, pitch: -6.6, fov: 46, frame: "end" },   // (fallback) down behind the team at the desk
     { t: 46,    target: [0, 12, 0],   dist: 63.5, yaw: -0.8, pitch: -6.6, fov: 46, frame: "end" }
   ];
 
   function resolve(k) {
     var aspect = W / H, fov = (k.fov || 38) * DEG, dist = k.dist, f, px = W / 2, py = H / 2;
-    if (aspect < 1) fov = Math.min(fov * 1.35, 64 * DEG);
+    if (aspect < 1 && !k.fixedFov) fov = Math.min(fov * 1.35, 64 * DEG);   // fixedFov: phones see the same centre crop as the footage
     if (k.fit) {
       var fovX = 2 * Math.atan(Math.tan(fov / 2) * aspect);
       dist = (k.fit * (aspect < 1 ? 0.6 : aspect < 1.3 ? 0.85 : 1) / 2) / Math.tan(fovX / 2);
@@ -3451,24 +3466,6 @@
     ctx.restore();
   }
 
-  /* ---- The last act: the real event, when photos are provided ----------- */
-  var photos = [];
-  function cover(img, alpha, zoom, drift) {
-    var s = Math.max(W / img.naturalWidth, H / img.naturalHeight) * zoom;
-    var w = img.naturalWidth * s, h = img.naturalHeight * s;
-    ctx.globalAlpha = alpha;
-    ctx.drawImage(img, (W - w) / 2 + drift * W * 0.02, (H - h) / 2, w, h);
-    ctx.globalAlpha = 1;
-  }
-  function drawPhotos(t) {
-    var list = photos.filter(Boolean);
-    if (!list.length || t < T.photos) return 0;
-    var per = 5.5, pt = t - T.photos, k = Math.floor(pt / per), local = pt - k * per, n = list.length;
-    if (k > 0) cover(list[(k - 1) % n], 1, 1.03 + 0.05 * (per + local) / (per * 2), -0.5 + (per + local) / (per * 2));
-    var a = inOut(clamp(local / 1.6, 0, 1));
-    cover(list[k % n], a, 1.03 + 0.05 * local / (per * 2), -0.5 + local / (per * 2));
-    return k > 0 ? 1 : a;
-  }
 
   // The owner's own drawing, on the CAD screen (when provided).
   var drawingImg = null, drawingInvert = false;
@@ -3605,12 +3602,11 @@
   /* ==========================================================================
      A frame of the film
      ========================================================================== */
-  var lastAct = '', lastEnd = null;
   // Review aid (only with ?dev): time spent per layer, read by window.__film.
   var DEV = /[?&]dev/.test(window.location.search), prof = {};
   function now() { return DEV ? performance.now() : 0; }
   function lap(name, t0) { if (!DEV) return 0; var t1 = performance.now(); prof[name] = t1 - t0; return t1; }
-  function actAt(t) { return t < 9.6 ? 'people' : t < 15.0 ? 'concept' : t < T.power[0] ? 'build' : 'reality'; }
+  // The stage world (scenes 1-3 on canvas) at canvas time t. The sequence player below decides when it is on screen.
   function render(t) {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.globalAlpha = 1;
@@ -3622,12 +3618,12 @@
     var o = t < T.lift[0] ? 1 - inOut(span(t, T.close)) : inOut(span(t, T.open));
     var r = { x: lerp(screen.x, 0, o), y: lerp(screen.y, 0, o), w: lerp(screen.w, W, o), h: lerp(screen.h, H, o) };
     var chromeK = (1 - o) * (t < T.lift[0] ? span(t, [10.3, 11.0]) : 1);
-    var pen = null, landed = 0, coveredByPhotos = photos.length && t > T.photos + 1.7;
+    var pen = null, landed = 0;
 
     ctx.save();
     roundRect(r, 14 * dpr * (1 - o)); ctx.clip();
     if (o < 1) { ctx.fillStyle = rgba([15, 15, 17], (1 - o)); ctx.fillRect(r.x, r.y, r.w, r.h); }
-    if (!coveredByPhotos) {
+    {
       if (t < SWITCH) {
         var cA = cameraA(t), cB = toStage(cA);
         var people = 1 - span(t, [9.9, 10.8]);
@@ -3702,93 +3698,1215 @@
         drawInsets(t, c);
       }
     }
-    drawPhotos(t);
     ctx.restore();
     drawChrome(t, r, chromeK, pen);
-    if (t >= SWITCH && !coveredByPhotos) drawReadout(t, landed);
-
-    var act = actAt(t);
-    if (act !== lastAct) { section.setAttribute('data-act', act); lastAct = act; }
-    var ended = t >= T.end;
-    if (ended !== lastEnd) { section.classList.toggle('is-end', ended); lastEnd = ended; }
-    if (progressEl) progressEl.style.transform = 'scaleX(' + clamp(t / T.end, 0, 1).toFixed(4) + ')';
+    if (t >= SWITCH) drawReadout(t, landed);
   }
+
+  /* ==========================================================================
+     Scene 4, drawn live: the logo is built and brought into place.
+     The canvas version of scene 4 (it plays until the logo footage is ready),
+     recreated from the owner's logo (brand/unconventional-logo.jpg): a giant
+     steel "U" monogram, a deep stainless frame with a white neon tube running
+     along it and truss lacing inside, over the word UNCONVENTIONAL in heavy
+     steel capitals with a bright bevelled edge.
+       build   eight truss sections of the U fly in, spine first, and are
+               pinned together in the air, in the build's CAD colours
+       steel   the wireframe turns to brushed steel; a sheen runs across it
+       lower   two chain hoists lower it onto its riser; it lands and settles,
+               the chains go slack and run back up
+       tiles   the word rises out of the deck as LED tiles, left to right, and
+               resolves into steel letters standing in front of the U
+       strike  the neon in the U strikes with one soft stutter, then glows
+       letters UNCONVENTIONAL lights up letter by letter, left to right
+       hold    a clean hold; under the title card the logo settles aside.
+     No lime in the logo itself: the lime lives in the set (a work light).
+     Every number on screen is a dimension of this model.
+     ========================================================================== */
+  var LG = {
+    build: [0.35, 2.35],
+    steel: [2.15, 3.05],
+    lower: [2.95, 4.55],
+    tiles: [3.95, 5.35],
+    strike: 5.45,
+    letters: [5.95, 7.15],
+    title: 7.5,            // the title card comes up
+    settle: [7.5, 8.7]     // the logo moves aside to make room for it
+  };
+  var U_BASE = 2.4, U_TOP = 10.4, U_ARM = 2.5, U_HALF = 0.8, U_RAIL = 0.5, U_DEP = 0.6, U_LIFT = 5.2;
+  var U_ARC = U_BASE + U_HALF + U_ARM;          // the centre of the bottom bend
+  var WORD = 'UNCONVENTIONAL', W_Z = 4.2, W_CAP = 1.5, W_RATIO = 11.0;   // cap height (m); width : cap height, as in the owner's logo
+  var RISER = { x: 3.9, y: U_BASE, z: 1.4 };
+
+  // The U's centre line, sampled from the top of the left arm, round the bend, to the top of the right arm.
+  var UPATH = (function () {
+    var pts = [], i, y, a, s = 0;
+    for (i = 0; i <= 6; i++) { y = lerp(U_TOP, U_ARC, i / 6); pts.push({ x: -U_ARM, y: y, nx: -1, ny: 0 }); }
+    for (i = 1; i < 24; i++) { a = Math.PI + Math.PI * i / 24; pts.push({ x: Math.cos(a) * U_ARM, y: U_ARC + Math.sin(a) * U_ARM, nx: Math.cos(a), ny: Math.sin(a) }); }
+    for (i = 0; i <= 6; i++) { y = lerp(U_ARC, U_TOP, i / 6); pts.push({ x: U_ARM, y: y, nx: 1, ny: 0 }); }
+    pts.forEach(function (p, k) { if (k) s += Math.hypot(p.x - pts[k - 1].x, p.y - pts[k - 1].y); p.s = s; });
+    pts.L = s;
+    return pts;
+  })();
+  function uAt(s) {
+    var P = UPATH, i = 1;
+    s = clamp(s, 0, P.L);
+    while (i < P.length - 1 && P[i].s < s) i++;
+    var a = P[i - 1], b = P[i], u = clamp((s - a.s) / ((b.s - a.s) || 1), 0, 1);
+    var nx = lerp(a.nx, b.nx, u), ny = lerp(a.ny, b.ny, u), nl = Math.hypot(nx, ny) || 1;
+    return { x: lerp(a.x, b.x, u), y: lerp(a.y, b.y, u), nx: nx / nl, ny: ny / nl };
+  }
+  // Eight truss sections, pinned together spine first (the bottom of the bend, then outward to the arm tops).
+  var USEC = (function () {
+    var n = 8, idx = [], k, i, secs = [], order = [3, 4, 2, 5, 1, 6, 0, 7];
+    for (k = 0; k <= n; k++) {
+      var goal = UPATH.L * k / n, best = 0;
+      for (i = 0; i < UPATH.length; i++) if (Math.abs(UPATH[i].s - goal) < Math.abs(UPATH[best].s - goal)) best = i;
+      idx.push(best);
+    }
+    for (k = 0; k < n; k++) {
+      var mid = UPATH[Math.round((idx[k] + idx[k + 1]) / 2)], rank = order.indexOf(k), t0 = LG.build[0] + rank * 0.19, sd = rank % 2 ? -1 : 1;
+      secs.push({ i0: idx[k], i1: idx[k + 1], s0: UPATH[idx[k]].s, s1: UPATH[idx[k + 1]].s, t0: t0, t1: t0 + 0.55, cx: mid.x, cy: mid.y,
+        off: [mid.nx * 3.4, mid.ny * 3.4 + 1.4, 2.2 * sd], rot: 0.6 * sd, P: {}, L: [] });
+    }
+    secs.idx = idx;
+    return secs;
+  })();
+  // Lacing: X bracing inside the channel all the way round, and the X truss across the gap between the arms.
+  (function () {
+    var bay = 0.95, s, z = -0.28, o = 0.62;
+    for (s = 0.35; s + bay <= UPATH.L - 0.3; s += bay) {
+      var a = uAt(s), b = uAt(s + bay), mid = s + bay / 2, k = 0;
+      while (k < USEC.length - 1 && mid > USEC[k].s1) k++;
+      USEC[k].L.push([a.x + a.nx * o, a.y + a.ny * o, z, b.x - b.nx * o, b.y - b.ny * o, z], [a.x - a.nx * o, a.y - a.ny * o, z, b.x + b.nx * o, b.y + b.ny * o, z]);
+    }
+  })();
+  var GAP_X = U_ARM - U_HALF, UGAP = { t0: LG.build[0] + 8 * 0.19, t1: LG.build[0] + 8 * 0.19 + 0.55, cx: 0, cy: 8.2, off: [0, 0.6, -3.5], rot: 0, L: [] };
+  [[10.05, 8.2], [8.2, 10.05], [8.2, 6.35], [6.35, 8.2]].forEach(function (q) { UGAP.L.push([-GAP_X, q[0], -0.3, GAP_X, q[1], -0.3]); });
+  UGAP.L.push([-GAP_X, 10.05, -0.3, GAP_X, 10.05, -0.3], [-GAP_X, 8.2, -0.3, GAP_X, 8.2, -0.3], [-GAP_X, 6.35, -0.3, GAP_X, 6.35, -0.3]);
+
+  // A section's arrival (it flies in, turning, and pins home with a small overshoot), plus the lift.
+  var SX = { c: 1, s: 0, ox: 0, oy: 0, oz: 0, cx: 0, cy: 0, ly: 0 };
+  function secXf(S, t, ly) {
+    var k = clamp((t - S.t0) / (S.t1 - S.t0), 0, 1), r = k >= 1 ? 0 : 1 - outBack(k);
+    SX.c = Math.cos(S.rot * r); SX.s = Math.sin(S.rot * r);
+    SX.ox = S.off[0] * r; SX.oy = S.off[1] * r; SX.oz = S.off[2] * r; SX.cx = S.cx; SX.cy = S.cy; SX.ly = ly;
+    return k;
+  }
+  function upj(c, x, y, z) {
+    var dx = x - SX.cx, dy = y - SX.cy;
+    return pj(c, SX.cx + dx * SX.c - dy * SX.s + SX.ox, SX.cy + dx * SX.s + dy * SX.c + SX.oy + SX.ly, z + SX.oz);
+  }
+  var RAILS = [['OF', U_HALF, U_DEP], ['IF', -U_HALF, U_DEP], ['ORF', U_RAIL, U_DEP], ['IRF', -U_RAIL, U_DEP], ['OB', U_HALF, -U_DEP], ['IB', -U_HALF, -U_DEP], ['N', 0, 0.28]];
+  function projSection(S, t, ly, c) {
+    S.k = secXf(S, t, ly);
+    S.a = smooth(clamp((t - S.t0) / 0.2, 0, 1));
+    for (var r = 0; r < RAILS.length; r++) {
+      var key = RAILS[r][0], o = RAILS[r][1], z = RAILS[r][2], arr = S.P[key] || (S.P[key] = []), n = 0;
+      for (var i = S.i0; i <= S.i1; i++) {
+        var q = UPATH[i];
+        if (upj(c, q.x + q.nx * o, q.y + q.ny * o, z)) { arr[n++] = PX; arr[n++] = PY; } else { arr[n++] = NaN; arr[n++] = NaN; }
+      }
+      arr.length = n;
+    }
+    projLacing(S, c);
+  }
+  function projLacing(S, c) {
+    var out = S.LP || (S.LP = []), n = 0;
+    for (var i = 0; i < S.L.length; i++) {
+      var m = S.L[i];
+      if (!upj(c, m[0], m[1], m[2])) continue;
+      var x0 = PX, y0 = PY;
+      if (!upj(c, m[3], m[4], m[5])) continue;
+      out[n++] = x0; out[n++] = y0; out[n++] = PX; out[n++] = PY;
+    }
+    out.length = n;
+  }
+  function liftAt(t) {
+    var y = U_LIFT * (1 - inOut(span(t, LG.lower))), d = t - LG.lower[1];
+    if (d > 0) y -= 0.07 * Math.sin(d * 17) * Math.exp(-d * 7);   // it lands with a small settle
+    return y;
+  }
+  function neonAt(t) {   // the strike: on, one soft stutter, then up to full (a single flash, well under three a second)
+    var d = t - LG.strike;
+    if (d < 0) return 0;
+    if (d < 0.07) return 0.75;
+    if (d < 0.19) return 0.08;
+    return 0.3 + 0.7 * smooth(clamp((d - 0.19) / 0.3, 0, 1));
+  }
+  var LSTEP = (LG.letters[1] - LG.letters[0] - 0.3) / (WORD.length - 1);
+  function letterLit(i, t) { return smooth(span(t, [LG.letters[0] + i * LSTEP, LG.letters[0] + i * LSTEP + 0.3])); }
+
+  /* ---- The word: rendered once into images (steel, lit, reflections) and a grid of LED tiles ---- */
+  var WD = null;
+  function wordFont(px) { return '900 ' + px + 'px "Arial Black", "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif'; }
+  function buildWord() {
+    var S = 180, probe = document.createElement('canvas').getContext('2d');
+    probe.font = wordFont(S);
+    var mU = probe.measureText('U'), capH = Math.round(mU.actualBoundingBoxAscent > 0 ? mU.actualBoundingBoxAscent : S * 0.72);
+    var natural = probe.measureText(WORD).width, sx = clamp(W_RATIO * capH / natural, 0.7, 1.3), textW = natural * sx;
+    var pad = Math.round(S * 0.3), ext = S * 0.075, w = Math.ceil(textW + pad * 2), h = Math.ceil(capH + pad * 2), bounds = [], i;
+    for (i = 0; i <= WORD.length; i++) bounds.push(pad + probe.measureText(WORD.slice(0, i)).width * sx + (i ? ext * 0.4 : 0));
+    function layer() { var cv = document.createElement('canvas'); cv.width = w; cv.height = h; return cv; }
+    function text(g, lw, style) {
+      g.save(); g.translate(pad, pad + capH); g.scale(sx, 1); g.font = wordFont(S); g.lineJoin = 'round';
+      if (lw) { g.lineWidth = lw; g.strokeStyle = style; g.strokeText(WORD, 0, 0); } else { g.fillStyle = style; g.fillText(WORD, 0, 0); }
+      g.restore();
+    }
+    function grad(g, stops) { var gr = g.createLinearGradient(0, -capH, 0, 0); stops.forEach(function (s) { gr.addColorStop(s[0], s[1]); }); return gr; }
+    function tinted(src, col) { var cv = layer(), g = cv.getContext('2d'); g.drawImage(src, 0, 0); g.globalCompositeOperation = 'source-in'; g.fillStyle = col; g.fillRect(0, 0, w, h); return cv; }
+    var mask = layer(), mg = mask.getContext('2d');
+    text(mg, 0, '#fff');
+    // the face: a dark letter, a dark inner line, and a bright bevelled edge (steel when unlit, white neon when lit)
+    function face(lit) {
+      var cv = layer(), g = cv.getContext('2d');
+      text(g, 0, grad(g, lit ? [[0, '#2a2f35'], [1, '#14171a']] : [[0, '#1d2025'], [1, '#0d0f11']]));
+      g.globalCompositeOperation = 'source-atop';
+      text(g, S * 0.15, '#07080a');
+      text(g, S * 0.095, lit ? '#ffffff' : grad(g, [[0, '#b4bbc2'], [0.55, '#6b737b'], [1, '#41474d']]));
+      return cv;
+    }
+    function band() { var cv = layer(), g = cv.getContext('2d'); text(g, S * 0.095, '#fff'); g.globalCompositeOperation = 'destination-in'; g.drawImage(mask, 0, 0); return cv; }
+    function compose(lit) {
+      var cv = layer(), g = cv.getContext('2d'), back = tinted(mask, lit ? '#1c2127' : '#121519'), rim = tinted(mask, lit ? '#8e98a2' : '#4f575f'), N = 12;
+      for (var k = N; k >= 1; k--) g.drawImage(k <= 2 ? rim : back, ext * 0.45 * k / N, ext * k / N);
+      g.drawImage(face(lit), 0, 0);
+      if (lit) {   // the neon glow around each letter's edge
+        var b = band();
+        g.save(); g.globalCompositeOperation = 'lighter'; g.shadowColor = 'rgba(214,232,255,0.9)'; g.shadowBlur = S * 0.14;
+        g.globalAlpha = 0.55; g.drawImage(b, 0, 0); g.drawImage(b, 0, 0);
+        g.restore();
+      }
+      return cv;
+    }
+    function reflect(src) {   // the same letters mirrored on the glossy deck, fading away from the baseline
+      var base = pad + capH, cv = document.createElement('canvas'), g;
+      cv.width = w; cv.height = Math.ceil(base + capH * 0.85); g = cv.getContext('2d');
+      g.save(); g.translate(0, base * 2); g.scale(1, -1); g.drawImage(src, 0, 0); g.restore();
+      g.globalCompositeOperation = 'destination-in';
+      var gr = g.createLinearGradient(0, base, 0, base + capH * 0.8);
+      gr.addColorStop(0, 'rgba(0,0,0,0.42)'); gr.addColorStop(1, 'rgba(0,0,0,0)');
+      g.fillStyle = gr; g.fillRect(0, 0, w, cv.height);
+      g.globalCompositeOperation = 'destination-out'; g.fillStyle = '#000'; g.fillRect(0, 0, w, base);   // nothing above the deck line
+      return cv;
+    }
+    var dark = compose(false), lit = compose(true);
+    // LED tiles: a grid over the letters, one tile where a cell is mostly inside a letter
+    var data = mg.getImageData(0, 0, w, h).data, gs = capH / 8, tiles = [], land = [], ww = W_CAP * textW / capH, tx, ty, a2, b2;
+    for (i = 0; i < WORD.length; i++) land.push(0);
+    for (ty = pad; ty < pad + capH - 1; ty += gs) {
+      for (tx = pad; tx < pad + textW - 1; tx += gs) {
+        var cov = 0;
+        for (a2 = 0; a2 < 4; a2++) for (b2 = 0; b2 < 4; b2++) {
+          var px2 = Math.min(w - 1, Math.floor(tx + (a2 + 0.5) * gs / 4)), py2 = Math.min(h - 1, Math.floor(ty + (b2 + 0.5) * gs / 4));
+          if (data[(py2 * w + px2) * 4 + 3] > 127) cov++;
+        }
+        if (cov < 7) continue;
+        var u = tx + gs / 2, v = ty + gs / 2, li = 0;
+        while (li < WORD.length - 1 && u > bounds[li + 1]) li++;
+        var jit = (Math.sin(u * 12.9898 + v * 78.233) * 43758.5453) % 1;
+        var t0 = LG.tiles[0] + ((u - pad) / textW) * 0.85 + Math.abs(jit) * 0.12;
+        tiles.push({ x: -ww / 2 + (u - pad) / textW * ww, y: (pad + capH - v) / capH * W_CAP, t0: t0, li: li });
+        land[li] = Math.max(land[li], t0 + 0.42);
+      }
+    }
+    return { dark: dark, lit: lit, reflD: reflect(dark), reflL: reflect(lit), w: w, h: h, pad: pad, capH: capH, textW: textW, WW: ww,
+      bounds: bounds, tiles: tiles, land: land, tile: gs / capH * W_CAP * 0.84 };
+  }
+  function wordData() { if (!WD) { try { WD = buildWord(); } catch (e) { WD = null; } } return WD; }
+  function wordWidth() { return WD ? WD.WW : W_CAP * W_RATIO; }
+
+  /* ---- The logo camera: close on the U in the air, down with it, then front-on; aside under the title ---- */
+  var LCAM = [
+    { t: 0,   target: [0, 10.2, 0],   d: 0.68,  yaw: -30, pitch: 9 },
+    { t: 2.4, target: [0, 11.7, 0],   d: 0.74,  yaw: -16, pitch: 7 },
+    { t: 3.0, target: [0, 11.2, 0.4], d: 0.8,   yaw: -12, pitch: 6 },
+    { t: 4.6, target: [0, 5.6, 1.6],  d: 0.97,  yaw: -3,  pitch: 3.5 },
+    { t: 5.6, target: [0, 5.2, 2.0],  d: 1.0,   yaw: 0,   pitch: 3 },
+    { t: 8.7, target: [0, 5.2, 2.0],  d: 0.985, yaw: 0,   pitch: 3 }
+  ];
+  var LFOV = 38 * DEG, LHOLD = { W: 0, H: 0, WW: 0 };
+  function fitLogo() {
+    var WW = wordWidth();
+    if (LHOLD.W === W && LHOLD.H === H && LHOLD.WW === WW) return LHOLD;
+    // the hold keeps clear of the header and act labels above and the readout below: 70 % of the height, centred a little low
+    var aspect = W / H, ty = Math.tan(LFOV / 2), tx = ty * aspect, fx = aspect < 1 ? 0.92 : 0.86, fy = 0.68, half = WW / 2 + 0.6, py0 = H * 0.535;
+    var D = Math.max(half / (tx * fx) + (W_Z - 2), 5.4 / (ty * fy) + (W_Z - 2), (U_TOP + 0.4 - 5.2) / (ty * fy) - 2);
+    var c = camFrom({ target: [0, 5.2, 2], dist: D * 0.985, yaw: 0, pitch: 3 * DEG, f: (H / 2) / ty, px: W / 2, py: py0 }, 0.3);
+    pj(c, 0, U_TOP, 0); var top = PY;
+    pj(c, 0, 0, W_Z); var bot = PY;
+    pj(c, -WW / 2, 0, W_Z); var left = PX;
+    pj(c, WW / 2, 0, W_Z); var right = PX;
+    // where the logo settles under the title card: the upper right on wide screens, the top on tall ones
+    var goal = aspect >= 1.25 ? { x: 0.72, y: 0.37, h: 0.28 } : aspect >= 1 ? { x: 0.5, y: 0.34, h: 0.24 } : { x: 0.5, y: 0.34, w: 0.8 };
+    LHOLD = { W: W, H: H, WW: WW, D: D, py0: py0, from: [W / 2, (top + bot) / 2], to: [goal.x * W, goal.y * H],
+      s: goal.h ? Math.min(1, goal.h * H / (bot - top)) : Math.min(1, goal.w * W / (right - left)) };
+    return LHOLD;
+  }
+  function logoCam(t) {
+    var F = fitLogo(), i = 0;
+    while (i < LCAM.length - 1 && t >= LCAM[i + 1].t) i++;
+    var a = LCAM[i], b = LCAM[Math.min(i + 1, LCAM.length - 1)], u = a === b ? 0 : inOut(clamp((t - a.t) / (b.t - a.t), 0, 1));
+    var k = inOut(span(t, LG.settle)), sc = lerp(1, F.s, k), cx = lerp(F.from[0], F.to[0], k), cy = lerp(F.from[1], F.to[1], k);
+    return camFrom({
+      target: lerp3(a.target, b.target, u), dist: F.D * Math.exp(lerp(Math.log(a.d), Math.log(b.d), u)),
+      yaw: lerp(a.yaw, b.yaw, u) * DEG, pitch: lerp(a.pitch, b.pitch, u) * DEG,
+      f: (H / 2) / Math.tan(LFOV / 2) * sc, px: cx + (W / 2 - F.from[0]) * sc, py: cy + (F.py0 - F.from[1]) * sc
+    }, 0.3);
+  }
+
+  /* ---- The set: stars, the dark stage behind, a glossy deck, one lime work light ---- */
+  var LSTARS = (function () { seed = 7171; var s = []; for (var i = 0; i < 110; i++) s.push([rnd(), Math.pow(rnd(), 1.4) * 0.55, 0.25 + rnd() * 0.75]); return s; })();
+  function seg3(c, a, b) {
+    if (!pj(c, a[0], a[1], a[2])) return;
+    var x0 = PX, y0 = PY;
+    if (!pj(c, b[0], b[1], b[2])) return;
+    ctx.moveTo(x0, y0); ctx.lineTo(PX, PY);
+  }
+  function quad3(c, pts) {   // a filled quad; false when it is behind the camera
+    ctx.beginPath();
+    for (var i = 0; i < 4; i++) { if (!pj(c, pts[i][0], pts[i][1], pts[i][2])) return false; if (i) ctx.lineTo(PX, PY); else ctx.moveTo(PX, PY); }
+    ctx.closePath();
+    return true;
+  }
+  function drawLogoSet(t, c, neon, lit) {
+    var d = dpr, i;
+    // stars
+    ctx.fillStyle = rgba(INK, 0.5);
+    for (i = 0; i < LSTARS.length; i++) {
+      var st = LSTARS[i], s = (st[2] > 0.8 ? 1.6 : 1) * d;
+      ctx.globalAlpha = st[2] * 0.55 * (1 - st[1] * 1.3);
+      ctx.fillRect(st[0] * W, st[1] * H, s, s);
+    }
+    ctx.globalAlpha = 1;
+    // the deck: a glossy black floor from the back of the stage to the front edge, with panel seams
+    if (pj(c, -60, 0, -11)) {
+      var yb = PY;
+      pj(c, 60, 0, -11);
+      var yb2 = PY, top = Math.min(yb, yb2);
+      if (top < H) {
+        var gr = ctx.createLinearGradient(0, top, 0, H);
+        gr.addColorStop(0, '#121418'); gr.addColorStop(0.35, '#0b0c0e'); gr.addColorStop(1, '#060607');
+        ctx.fillStyle = gr;
+        ctx.beginPath(); ctx.moveTo(0, yb); ctx.lineTo(W, yb2); ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath(); ctx.fill();
+      }
+      ctx.strokeStyle = rgba(INK, 0.045); ctx.lineWidth = d;
+      ctx.beginPath();
+      for (var x = -22; x <= 22; x += 2) seg3(c, [x, 0, -11], [x, 0, 11]);
+      for (var z = -11; z <= 11; z += 1.25) seg3(c, [-22, 0, z], [22, 0, z]);
+      ctx.stroke();
+    }
+    // the stage behind, dark: two towers, the roof beam, an LED wall resting black
+    var wall = [[-13.5, 2.6, -9.6], [13.5, 2.6, -9.6], [13.5, 17.4, -9.6], [-13.5, 17.4, -9.6]];
+    if (quad3(c, wall)) {
+      ctx.fillStyle = '#0e0f12'; ctx.fill();
+      ctx.strokeStyle = rgba(INK, 0.035); ctx.lineWidth = d;
+      ctx.beginPath();
+      for (i = 1; i < 18; i++) seg3(c, [-13.5 + i * 1.5, 2.6, -9.6], [-13.5 + i * 1.5, 17.4, -9.6]);
+      for (i = 1; i < 10; i++) seg3(c, [-13.5, 2.6 + i * 1.48, -9.6], [13.5, 2.6 + i * 1.48, -9.6]);
+      ctx.stroke();
+      if (neon > 0 && pj(c, 0, 8, -9.6)) glowDot(PX, PY, 9.5 * c.f / PZ, [150, 185, 230], 0.16 * neon);
+    }
+    ctx.strokeStyle = rgba(INK, 0.12); ctx.lineWidth = d;
+    ctx.beginPath();
+    [-17, 17].forEach(function (tx) {
+      for (var e = 0; e < 4; e++) { var ex = tx + (e & 1 ? 0.4 : -0.4), ez = -9 + (e & 2 ? 0.4 : -0.4); seg3(c, [ex, 0, ez], [ex, 22.8, ez]); }
+      for (var y = 0; y < 22.8; y += 1.2) { seg3(c, [tx - 0.4, y, -9.4], [tx + 0.4, y + 1.2, -9.4]); seg3(c, [tx - 0.4, y, -8.6], [tx + 0.4, y + 1.2, -8.6]); }
+    });
+    for (i = 0; i < 4; i++) { var by = 22.8 + (i & 1 ? 0.9 : 0), bz = -9 + (i & 2 ? 0.45 : -0.45); seg3(c, [-17, by, bz], [17, by, bz]); }
+    for (var bx = -17; bx < 17; bx += 1.2) seg3(c, [bx, 22.8, -9.45], [bx + 1.2, 23.7, -9.45]);
+    ctx.stroke();
+    // the lime work light, far back on the deck: the only lime in the frame
+    if (pj(c, -12.5, 0, -4.5)) {
+      var fx0 = PX, fy0 = PY, r0 = 3.2 * c.f / PZ;
+      ctx.save(); ctx.translate(fx0, fy0); ctx.scale(1, 0.22); glowDot(0, 0, r0, LIME, 0.2); ctx.restore();
+      ctx.strokeStyle = rgba(INK, 0.3); ctx.lineWidth = 1.2 * d;
+      ctx.beginPath(); seg3(c, [-12.5, 0, -4.5], [-12.5, 1.9, -4.5]); seg3(c, [-12.9, 0, -4.1], [-12.5, 0.5, -4.5]); seg3(c, [-12.1, 0, -4.1], [-12.5, 0.5, -4.5]); ctx.stroke();
+      if (pj(c, -12.5, 2.0, -4.5)) { glowDot(PX, PY, 0.9 * c.f / PZ, LIME, 0.9); ctx.fillStyle = rgba(LIME, 1); ctx.fillRect(PX - 1.5 * d, PY - 1.5 * d, 3 * d, 3 * d); }
+    }
+    // the neon's light on the deck and the riser, and the letters' light on the deck
+    if (neon > 0 && pj(c, 0, 0, 1.8)) {
+      ctx.save(); ctx.translate(PX, PY); ctx.scale(1, 0.2); glowDot(0, 0, 7 * c.f / PZ, [190, 215, 255], 0.2 * neon); ctx.restore();
+    }
+    if (lit > 0 && pj(c, 0, 0, W_Z + 0.6)) {
+      ctx.save(); ctx.translate(PX, PY); ctx.scale(1, 0.12); glowDot(0, 0, wordWidth() * 0.62 * c.f / PZ, [205, 225, 255], 0.22 * lit); ctx.restore();
+    }
+  }
+  function drawRiser(c, neon) {
+    var X = RISER.x, Y = RISER.y, Z = RISER.z;
+    var faces = [
+      { p: [[-X, 0, Z], [X, 0, Z], [X, Y, Z], [-X, Y, Z]], n: [0, 0, 1], col: '#101215' },
+      { p: [[-X, Y, Z], [X, Y, Z], [X, Y, -Z], [-X, Y, -Z]], n: [0, 1, 0], col: '#1a1d21' },
+      { p: [[-X, 0, -Z], [-X, 0, Z], [-X, Y, Z], [-X, Y, -Z]], n: [-1, 0, 0], col: '#0b0c0e' },
+      { p: [[X, 0, Z], [X, 0, -Z], [X, Y, -Z], [X, Y, Z]], n: [1, 0, 0], col: '#0b0c0e' }
+    ];
+    faces.forEach(function (f) {
+      var q = f.p[0];
+      if (dot(f.n, sub(c.pos, q)) <= 0) return;
+      if (quad3(c, f.p)) { ctx.fillStyle = f.col; ctx.fill(); }
+    });
+    ctx.strokeStyle = rgba([205, 212, 220], 0.4 + 0.3 * neon); ctx.lineWidth = 1.2 * dpr;
+    ctx.beginPath(); seg3(c, [-X, Y, Z], [X, Y, Z]); ctx.stroke();
+    ctx.strokeStyle = rgba(INK, 0.12); ctx.lineWidth = dpr;
+    ctx.beginPath(); seg3(c, [-X, 0, Z], [X, 0, Z]); ctx.stroke();
+  }
+  function drawHoists(t, c, ly) {
+    var land = LG.lower[1], a = 1 - span(t, [land + 1.0, land + 1.6]);
+    if (a <= 0) return;
+    var rise = inOut(span(t, [land + 0.45, land + 1.6])) * 10, d = dpr;
+    [-1, 1].forEach(function (sd) {
+      var x = sd * U_ARM, yb = U_TOP + ly + 0.35 + rise, sag = t > land ? 0.45 * smooth(span(t, [land, land + 0.4])) * (1 - rise / 10) : 0;
+      ctx.beginPath();
+      var first = true;
+      for (var i = 0; i <= 10; i++) {
+        var u = i / 10, y = lerp(30, yb, u), xx = x + sd * sag * Math.sin(u * Math.PI) * 0.8;
+        if (!pj(c, xx, y, 0)) { first = true; continue; }
+        if (first) { ctx.moveTo(PX, PY); first = false; } else ctx.lineTo(PX, PY);
+      }
+      ctx.strokeStyle = rgba([8, 9, 11], a); ctx.lineWidth = Math.max(1.5 * d, 0.09 * c.f / Math.max(1, PZ)); ctx.stroke();
+      ctx.setLineDash([3 * d, 2.5 * d]);
+      ctx.strokeStyle = rgba([150, 158, 166], 0.8 * a); ctx.lineWidth = Math.max(1 * d, 0.05 * c.f / Math.max(1, PZ)); ctx.stroke();
+      ctx.setLineDash([]);
+      if (pj(c, x, yb, 0)) {   // the hook and shackle
+        ctx.strokeStyle = rgba([175, 182, 190], 0.9 * a); ctx.lineWidth = 1.4 * d;
+        ctx.beginPath(); ctx.arc(PX, PY + 0.2 * c.f / PZ, Math.max(2 * d, 0.2 * c.f / PZ), 0, Math.PI * 2); ctx.stroke();
+      }
+    });
+  }
+
+  /* ---- The steel U ---- */
+  var U_LIGHT = norm([-0.5, 0.7, 0.6]);
+  function strokeRail(key, closed) {   // append every section's polyline for this rail to the current path
+    for (var k = 0; k < USEC.length; k++) {
+      var arr = USEC[k].P[key], first = true;
+      if (!arr) continue;
+      for (var i = 0; i < arr.length; i += 2) {
+        var x = arr[i], y = arr[i + 1];
+        if (x !== x) { first = true; continue; }
+        if (first) { ctx.moveTo(x, y); first = false; } else ctx.lineTo(x, y);
+      }
+    }
+  }
+  function strokeLacing(list) {
+    for (var k = 0; k < list.length; k++) {
+      var L = list[k].LP;
+      if (!L) continue;
+      for (var i = 0; i < L.length; i += 4) { ctx.moveTo(L[i], L[i + 1]); ctx.lineTo(L[i + 2], L[i + 3]); }
+    }
+  }
+  function capLines(S, at) {   // the closed top end of an arm (the first or last sample of a section)
+    var j = at * 2, P = S.P;
+    [['OF', 'IF'], ['OB', 'IB'], ['OF', 'OB'], ['IF', 'IB']].forEach(function (e) {
+      var a = P[e[0]], b = P[e[1]];
+      if (a[j] !== a[j] || b[j] !== b[j]) return;
+      ctx.moveTo(a[j], a[j + 1]); ctx.lineTo(b[j], b[j + 1]);
+    });
+  }
+  function drawU(t, c, ly, steel, neon) {
+    var d = dpr, k, i, S, all = USEC.concat([UGAP]);
+    for (k = 0; k < USEC.length; k++) projSection(USEC[k], t, ly, c);
+    UGAP.k = secXf(UGAP, t, ly); UGAP.a = smooth(clamp((t - UGAP.t0) / 0.2, 0, 1)); projLacing(UGAP, c);
+    if (!pj(c, 0, 7 + ly, 0)) return;
+    var sc = c.f / PZ, cy0 = PY;
+    pj(c, 0, U_TOP + ly, 0); var yTop = PY;
+    pj(c, 0, U_BASE + ly, 0); var yBot = PY;
+    pj(c, -U_ARM - U_HALF, 7 + ly, 0); var xL = PX;
+    pj(c, U_ARM + U_HALF, 7 + ly, 0); var xR = PX;
+    var wire = 1 - steel;
+    ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+
+    // 1. The CAD wireframe (while it is built), in the build's trade colours
+    if (wire > 0) {
+      for (k = 0; k < all.length; k++) {
+        S = all[k];
+        if (S.a <= 0) continue;
+        var fly = S.k < 1, a = S.a * wire;
+        ctx.globalAlpha = a;
+        if (S !== UGAP) {
+          ctx.strokeStyle = rgba(TEAL, fly ? 0.7 : 0.95); ctx.lineWidth = 1.3 * d;
+          ctx.beginPath(); strokeOne(S, 'OF'); strokeOne(S, 'IF'); if (S === USEC[0]) capLines(S, 0); if (S === USEC[7]) capLines(S, (S.P.OF.length / 2) - 1); ctx.stroke();
+          ctx.strokeStyle = rgba(TEAL, 0.55); ctx.lineWidth = d;
+          ctx.beginPath(); strokeOne(S, 'ORF'); strokeOne(S, 'IRF'); strokeOne(S, 'OB'); strokeOne(S, 'IB'); ctx.stroke();
+          ctx.strokeStyle = rgba(LIME, 0.9); ctx.lineWidth = 1.2 * d;
+          ctx.beginPath(); strokeOne(S, 'N'); ctx.stroke();
+          // the section's box edges, front to back, at both ends
+          ctx.strokeStyle = rgba(TEAL, 0.4); ctx.lineWidth = d;
+          ctx.beginPath(); rungs(S); ctx.stroke();
+        }
+        ctx.strokeStyle = rgba(VIOLET_LINE, 0.75); ctx.lineWidth = d;
+        ctx.beginPath(); strokeLacing([S]); ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+      // pins: a lime flash at each joint as the second of its two sections lands
+      ctx.globalCompositeOperation = 'lighter';
+      for (k = 1; k < USEC.length; k++) {
+        var tl = Math.max(USEC[k - 1].t1, USEC[k].t1), fa = t >= tl ? (1 - span(t, [tl, tl + 0.45])) * wire : 0;
+        if (fa <= 0) continue;
+        var P = USEC[k].P;
+        [P.OF, P.IF].forEach(function (arr) { if (arr[0] === arr[0]) glowDot(arr[0], arr[1], 12 * d, LIME, fa); });
+      }
+      ctx.globalCompositeOperation = 'source-over';
+    }
+
+    // 2. Brushed steel
+    if (steel > 0) {
+      ctx.globalAlpha = steel;
+      var lit = neon, camPos = c.pos;
+      // the back of the channel, and the inside faces of its walls that face the camera
+      for (k = 0; k < USEC.length; k++) wallFaces(USEC[k], c, camPos, ly, 'back', lit);
+      for (k = 0; k < USEC.length; k++) wallFaces(USEC[k], c, camPos, ly, 'inside', lit);
+      railSteel('OB', 0.16, sc, yTop, yBot, 0.55);
+      railSteel('IB', 0.16, sc, yTop, yBot, 0.55);
+      // the lacing inside the channel and the X truss across the gap
+      ctx.strokeStyle = '#07080a'; ctx.lineWidth = Math.max(1.2 * d, 0.1 * sc);
+      ctx.beginPath(); strokeLacing(all); ctx.stroke();
+      ctx.strokeStyle = steelGrad(yTop, yBot, 0.75 + 0.25 * lit); ctx.lineWidth = Math.max(0.8 * d, 0.065 * sc);
+      ctx.beginPath(); strokeLacing(all); ctx.stroke();
+      // the neon tube: clear glass until it strikes
+      ctx.strokeStyle = 'rgba(190,200,212,0.3)'; ctx.lineWidth = Math.max(1 * d, 0.1 * sc);
+      ctx.beginPath(); strokeRail('N'); ctx.stroke();
+      if (lit > 0) {
+        ctx.save(); ctx.globalCompositeOperation = 'lighter';
+        [[0.95, [150, 190, 255], 0.07], [0.4, [195, 222, 255], 0.2], [0.15, [235, 244, 255], 0.75], [0.065, [255, 255, 255], 1]].forEach(function (L) {
+          ctx.strokeStyle = rgba(L[1], L[2] * lit * steel); ctx.lineWidth = Math.max(1 * d, L[0] * sc);
+          ctx.beginPath(); strokeRail('N'); ctx.stroke();
+        });
+        ctx.restore();
+      }
+      // the outside faces of the walls and the top ends, then the front frame
+      for (k = 0; k < USEC.length; k++) wallFaces(USEC[k], c, camPos, ly, 'outside', lit);
+      railSteel('ORF', 0.12, sc, yTop, yBot, 0.85);
+      railSteel('IRF', 0.12, sc, yTop, yBot, 0.85);
+      railSteel('OF', 0.2, sc, yTop, yBot, 1);
+      railSteel('IF', 0.2, sc, yTop, yBot, 1);
+      if (lit > 0) {   // the inner rails catch the neon
+        ctx.save(); ctx.globalCompositeOperation = 'lighter';
+        ctx.strokeStyle = rgba([205, 225, 255], 0.3 * lit * steel); ctx.lineWidth = Math.max(1 * d, 0.07 * sc);
+        ctx.beginPath(); strokeRail('ORF'); strokeRail('IRF'); ctx.stroke();
+        ctx.restore();
+      }
+      joints(sc, steel);
+      sheen(t, xL, xR, sc, steel);
+      ctx.globalAlpha = 1;
+    }
+    ctx.restore();
+  }
+  function strokeOne(S, key) {
+    var arr = S.P[key], first = true;
+    for (var i = 0; i < arr.length; i += 2) {
+      var x = arr[i], y = arr[i + 1];
+      if (x !== x) { first = true; continue; }
+      if (first) { ctx.moveTo(x, y); first = false; } else ctx.lineTo(x, y);
+    }
+  }
+  function rungs(S) {
+    var P = S.P, n = P.OF.length;
+    [0, n - 2].forEach(function (j) {
+      [['OF', 'OB'], ['IF', 'IB'], ['OF', 'IF'], ['OB', 'IB']].forEach(function (e) {
+        var a = P[e[0]], b = P[e[1]];
+        if (a[j] !== a[j] || b[j] !== b[j]) return;
+        ctx.moveTo(a[j], a[j + 1]); ctx.lineTo(b[j], b[j + 1]);
+      });
+    });
+  }
+  function steelGrad(y0, y1, k) {
+    var g = ctx.createLinearGradient(0, y0, 0, y1 + (y1 - y0) * 0.1);
+    g.addColorStop(0, rgba(mix([96, 104, 112], [228, 233, 237], k), 1));
+    g.addColorStop(0.45, rgba(mix([60, 66, 72], [150, 158, 166], k), 1));
+    g.addColorStop(0.6, rgba(mix([45, 50, 55], [110, 118, 126], k), 1));
+    g.addColorStop(1, rgba(mix([28, 31, 35], [74, 80, 87], k), 1));
+    return g;
+  }
+  function railSteel(key, wm, sc, y0, y1, k) {
+    var w = Math.max(1.2 * dpr, wm * sc);
+    ctx.strokeStyle = '#050607'; ctx.lineWidth = w * 1.4;
+    ctx.beginPath(); strokeRail(key); ctx.stroke();
+    ctx.strokeStyle = steelGrad(y0, y1, k); ctx.lineWidth = w;
+    ctx.beginPath(); strokeRail(key); ctx.stroke();
+    ctx.save(); ctx.translate(-w * 0.18, -w * 0.22);
+    ctx.strokeStyle = rgba([246, 248, 250], 0.42 * k); ctx.lineWidth = Math.max(0.6 * dpr, w * 0.22);
+    ctx.beginPath(); strokeRail(key); ctx.stroke();
+    ctx.restore();
+  }
+  function wallFaces(S, c, camPos, ly, which, lit) {
+    var P = S.P, n = P.OF.length / 2, i;
+    for (i = 0; i < n - 1; i++) {
+      var q = UPATH[S.i0 + i], q2 = UPATH[S.i0 + i + 1], nx = (q.nx + q2.nx) / 2, ny = (q.ny + q2.ny) / 2;
+      var px = (q.x + q2.x) / 2, py = (q.y + q2.y) / 2 + ly, vx = camPos[0] - px, vy = camPos[1] - py;
+      if (which === 'back') {
+        polyFill(P.OB, P.IB, i, lit > 0 ? rgba(mix([13, 15, 18], [34, 42, 52], lit), 1) : '#0d0f12');
+        continue;
+      }
+      // the outer wall (at +half) faces out along n; the inner wall (at -half) faces out along -n
+      var outerOut = nx * vx + ny * vy > 0;
+      if (which === 'outside') {
+        if (outerOut) polyFill(P.OF, P.OB, i, shadeSteel(nx, ny, 0.9));
+        else polyFill(P.IF, P.IB, i, shadeSteel(-nx, -ny, 0.9));
+      } else {
+        var inCol = lit > 0 ? rgba(mix([22, 25, 29], [52, 62, 74], lit), 1) : '#16191d';
+        if (outerOut) polyFill(P.IF, P.IB, i, inCol); else polyFill(P.OF, P.OB, i, inCol);
+      }
+    }
+    if (which === 'outside') {   // the flat tops of the two arms
+      if (S === USEC[0]) capFill(S, 0);
+      if (S === USEC[USEC.length - 1]) capFill(S, n - 1);
+    }
+  }
+  function shadeSteel(nx, ny, k) {
+    var l = clamp(0.35 + 0.65 * (nx * U_LIGHT[0] + ny * U_LIGHT[1]), 0, 1) * k;
+    return rgba(mix([30, 34, 38], [150, 158, 166], l), 1);
+  }
+  function polyFill(A, B, i, col) {
+    var j = i * 2;
+    if (A[j] !== A[j] || A[j + 2] !== A[j + 2] || B[j] !== B[j] || B[j + 2] !== B[j + 2]) return;
+    ctx.beginPath(); ctx.moveTo(A[j], A[j + 1]); ctx.lineTo(A[j + 2], A[j + 3]); ctx.lineTo(B[j + 2], B[j + 3]); ctx.lineTo(B[j], B[j + 1]); ctx.closePath();
+    ctx.fillStyle = col; ctx.fill();
+  }
+  function capFill(S, i) {
+    var P = S.P, j = i * 2;
+    if (P.OF[j] !== P.OF[j] || P.OB[j] !== P.OB[j]) return;
+    ctx.beginPath(); ctx.moveTo(P.OF[j], P.OF[j + 1]); ctx.lineTo(P.IF[j], P.IF[j + 1]); ctx.lineTo(P.IB[j], P.IB[j + 1]); ctx.lineTo(P.OB[j], P.OB[j + 1]); ctx.closePath();
+    ctx.fillStyle = '#6d757d'; ctx.fill();
+  }
+  function joints(sc, k) {   // bolted plates across the front frame where the sections meet
+    var d = dpr, w = Math.max(1.5 * d, 0.24 * sc);
+    ctx.lineCap = 'butt';
+    for (var s = 1; s < USEC.length; s++) {
+      var P = USEC[s].P;
+      [['OF', 'ORF'], ['IF', 'IRF']].forEach(function (e) {
+        var a = P[e[0]], b = P[e[1]];
+        if (a[0] !== a[0] || b[0] !== b[0]) return;
+        ctx.strokeStyle = '#050607'; ctx.lineWidth = w * 1.5;
+        ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
+        ctx.strokeStyle = rgba([176, 184, 192], k); ctx.lineWidth = w;
+        ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
+        ctx.fillStyle = rgba([20, 22, 25], k);
+        [0.3, 0.7].forEach(function (u) { var bx = lerp(a[0], b[0], u), by = lerp(a[1], b[1], u), r = Math.max(0.8 * d, 0.045 * sc); ctx.beginPath(); ctx.arc(bx, by, r, 0, Math.PI * 2); ctx.fill(); });
+      });
+    }
+    ctx.lineCap = 'round';
+  }
+  function sheen(t, xL, xR, sc, k) {   // a band of light running across the steel: once as it turns to steel, once after the letters light
+    var p = span(t, LG.steel), q = span(t, [LG.letters[1], LG.letters[1] + 1.1]), pos = p > 0 && p < 1 ? p : q > 0 && q < 1 ? q : -1;
+    if (pos < 0) return;
+    var x = lerp(xL - (xR - xL) * 0.3, xR + (xR - xL) * 0.3, pos), wB = (xR - xL) * 0.18;
+    var g = ctx.createLinearGradient(x - wB, 0, x + wB, 0);
+    g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(0.5, rgba([255, 255, 255], 0.5 * k)); g.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.save(); ctx.globalCompositeOperation = 'lighter';
+    ctx.strokeStyle = g; ctx.lineWidth = Math.max(1 * dpr, 0.14 * sc);
+    ctx.beginPath(); strokeRail('OF'); strokeRail('IF'); strokeRail('ORF'); strokeRail('IRF'); ctx.stroke();
+    ctx.restore();
+  }
+
+  /* ---- The word ---- */
+  function drawWord(t, c) {
+    if (t < LG.tiles[0]) return 0;
+    var D = wordData();
+    if (!D) return 0;
+    var WW = D.WW, i;
+    if (!pj(c, -WW / 2, W_CAP, W_Z)) return 0;
+    var xl = PX, yt = PY;
+    if (!pj(c, WW / 2, 0, W_Z)) return 0;
+    var xr = PX, yb = PY, sx = (xr - xl) / D.textW, sy = (yb - yt) / D.capH, ox = xl - D.pad * sx, oy = yt - D.pad * sy;
+    var res = [], lit = [], landed = 0, litN = 0;
+    for (i = 0; i < WORD.length; i++) {
+      res.push(smooth(span(t, [D.land[i], D.land[i] + 0.35])));
+      lit.push(letterLit(i, t));
+      if (lit[i] > 0.5) litN++;
+    }
+    // reflections on the deck, then the letters
+    slices(D.reflD, ox, oy, sx, sy, function (k) { return res[k] * (1 - lit[k]); }, D);
+    slices(D.reflL, ox, oy, sx, sy, function (k) { return res[k] * lit[k]; }, D);
+    // the LED tiles, rising out of the deck
+    if (t < LG.tiles[1] + 0.6) {
+      var d = dpr;
+      for (i = 0; i < D.tiles.length; i++) {
+        var T0 = D.tiles[i], u = clamp((t - T0.t0) / 0.42, 0, 1);
+        if (u <= 0) continue;
+        if (u >= 1) landed++;
+        var a = smooth(clamp(u * 3, 0, 1)) * (1 - res[T0.li]);
+        if (a <= 0.01) continue;
+        if (!pj(c, T0.x, T0.y - (1 - outCubic(u)) * 1.6, W_Z)) continue;
+        var s = D.tile * c.f / PZ;
+        ctx.fillStyle = rgba([16, 19, 23], a); ctx.fillRect(PX - s / 2, PY - s / 2, s, s);
+        ctx.strokeStyle = rgba(TEAL, 0.75 * a); ctx.lineWidth = d; ctx.strokeRect(PX - s / 2 + 0.5, PY - s / 2 + 0.5, s - 1, s - 1);
+        ctx.fillStyle = rgba(LIME, 0.55 * a * (u < 1 ? 1 : 0.5)); ctx.fillRect(PX - d, PY - d, 2 * d, 2 * d);
+      }
+    } else landed = D.tiles.length;
+    slices(D.dark, ox, oy, sx, sy, function (k) { return res[k]; }, D);
+    slices(D.lit, ox, oy, sx, sy, function (k) { return res[k] * lit[k]; }, D);
+    WSTAT.tiles = landed; WSTAT.total = D.tiles.length; WSTAT.lit = litN;
+    return lit.reduce(function (s2, v) { return s2 + v; }, 0) / WORD.length;
+  }
+  var WSTAT = { tiles: 0, total: 0, lit: 0 };
+  function slices(img, ox, oy, sx, sy, alphaOf, D) {
+    var n = WORD.length, prevA = ctx.globalAlpha;
+    for (var i = 0; i < n; i++) {
+      var a = alphaOf(i);
+      if (a <= 0.003) continue;
+      var u0 = i ? D.bounds[i] : 0, u1 = i < n - 1 ? D.bounds[i + 1] : D.w;
+      ctx.globalAlpha = prevA * Math.min(1, a);
+      ctx.drawImage(img, u0, 0, u1 - u0, img.height, ox + u0 * sx, oy, (u1 - u0) * sx + 0.6, img.height * sy);
+    }
+    ctx.globalAlpha = prevA;
+  }
+
+  // The logo's readout, in the build's language: what is happening, in numbers of this model.
+  function drawLogoReadout(t, ly) {
+    var a = span(t, [0.45, 0.85]) * (1 - span(t, [LG.title - 0.5, LG.title - 0.1]));
+    if (a <= 0) return;
+    var d = dpr, x = Math.max(20 * d, (W - 1280 * d) / 2 + 32 * d), y = H - (W / d < 600 ? 84 : 30) * d, one, two, pins = 0, k;
+    for (k = 1; k < USEC.length; k++) if (t >= Math.max(USEC[k - 1].t1, USEC[k].t1)) pins += 4;
+    if (t < LG.lower[0]) { one = '04  STEEL U  ·  8 SECTIONS  ·  PINS ' + ('0' + pins).slice(-2) + ' / 28'; two = 'H 8.000   W 6.600   D 1.200   STAINLESS'; }
+    else if (t < LG.tiles[0] + 0.2) { one = '04  CHAIN HOISTS  ·  2 / 2  ·  +' + Math.max(0, ly).toFixed(3); two = 'LANDING ON RISER  ·  +' + U_BASE.toFixed(3); }
+    else if (t < LG.strike) { one = '04  LED TILES  ·  ' + ('00' + WSTAT.tiles).slice(-3) + ' / ' + ('00' + WSTAT.total).slice(-3); two = 'LETTERS  ·  CAP ' + W_CAP.toFixed(3); }
+    else { one = '04  NEON  ·  ON  ·  LETTERS ' + ('0' + WSTAT.lit).slice(-2) + ' / ' + WORD.length; two = 'UNCONVENTIONAL'; }
+    ctx.save();
+    ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    ctx.font = '500 ' + (10.5 * d).toFixed(1) + 'px ' + MONO;
+    ctx.fillStyle = rgba(MUTED, 0.85 * a); ctx.fillText(two, x, y - 16 * d);
+    ctx.fillStyle = rgba(LIME, 0.95 * a); ctx.fillText(one, x, y);
+    ctx.restore();
+  }
+
+  function renderLogo(t) {
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.globalAlpha = 1;
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = BG;
+    ctx.fillRect(0, 0, W, H);
+    var c = logoCam(t), ly = liftAt(t), steel = smooth(span(t, LG.steel)), neon = neonAt(t);
+    var litShare = 0;
+    for (var i = 0; i < WORD.length; i++) litShare += letterLit(i, t);
+    litShare /= WORD.length;
+    drawLogoSet(t, c, neon, litShare);
+    drawRiser(c, neon);
+    drawHoists(t, c, ly);
+    drawU(t, c, ly, steel, neon);
+    drawWord(t, c);
+    drawLogoReadout(t, ly);
+  }
+
+  /* ==========================================================================
+     Film v3: the sequence player
+     The film is a run of segments in one hero: footage clips (content/media.js
+     slots film-s1-01 … film-s4-03) and canvas stretches. A scene plays as
+     footage only when its clips are marked "ready" and load; otherwise it
+     falls back to this canvas, so the film always plays:
+       01 People          clips s1-01 … s1-08    fallback: the v2 prologue (canvas 0 → T.drawIn)
+       02 Build           canvas T.drawIn → T.realCut (always), then clips s2-01 … s2-05
+                          (no fallback needed: without them the canvas carries straight on)
+       03 Arrival         clips s3-01 … s3-10    fallback: the power-up, crowd, fireworks, drones
+                          and the team at FOH (canvas T.realCut → T.s3End)
+       04 Unconventional  clips s4-01 … s4-03    fallback: the canvas logo above; the footage
+                          version needs s4-03 (the lit hold), so the film always ends on the name
+     Joins: soft cuts inside a scene; the canvas dissolves into s2-01 on the
+     match-cut frame (its lines linger in screen blend for 0.4 s); s1-08's
+     paper turns dark with lime lines and dissolves into the canvas drawing;
+     a hard cut from s2-05 to s3-01; a dip to black into scene 4.
+     Clips are created as <video> elements when they are next (muted,
+     playsinline, preload "metadata", then "auto" for the next clip while the
+     current one plays) and let go of when done. A clip that errors, or does
+     not load within WAIT_MAX seconds, is dropped; if autoplay is refused,
+     the whole film falls back to the canvas.
+     Timing: `?film=SECONDS` is a time on this sequence (with no footage it is
+     the same as the canvas time: 0 people, 11 build, 36 arrival, 41.6 logo).
+     ========================================================================== */
+  var XF = 0.22, WAIT_MAX = 8, STILLS = { wipe: [0.9, 2.5], title: 3.1, len: 3.5 };
+  var FEATHER = 'linear-gradient(to bottom, transparent, #000 9%, #000 91%, transparent)';   // must match .intro__still.is-fitw
+  // Captions under "An imagined brief" while scene 1 plays (site text: no shot depends on text in the footage).
+  var CAPTIONS = {
+    'film-s1-03': [[0, 'Brief · Site · Summit plateau']],
+    'film-s1-04': [[0, 'Brief · Site · Summit plateau']],
+    'film-s1-05': [[0, 'Brief · 100,000 guests · 3 nights · December'], [1.0, 'KPIs · Attendance · Sell-through · Reach · Dwell']],
+    'film-s1-06': [[0, 'Sponsors · Title · Presenting · Partner'], [1.3, 'Campaign · Launch']]
+  };
+  var SCENES = [
+    { act: 'people', brief: true, clips: ['film-s1-01', 'film-s1-02a', 'film-s1-02b', 'film-s1-03', 'film-s1-04', 'film-s1-05', 'film-s1-06', 'film-s1-07', 'film-s1-08'],
+      fb: { world: 'stage', t0: 0, t1: T.drawIn } },
+    { act: 'build', fb: { world: 'stage', t0: T.drawIn, t1: T.realCut } },
+    { act: 'build', clips: ['film-s2-01', 'film-s2-02', 'film-s2-03', 'film-s2-03b', 'film-s2-04', 'film-s2-05'] },
+    { act: 'arrival', clips: ['film-s3-01', 'film-s3-02', 'film-s3-03', 'film-s3-04', 'film-s3-05', 'film-s3-06', 'film-s3-07', 'film-s3-08', 'film-s3-09', 'film-s3-10'],
+      fb: { world: 'stage', t0: T.realCut, t1: T.s3End } },
+    { act: 'logo', clips: ['film-s4-01', 'film-s4-02', 'film-s4-03'], need: 'film-s4-03', fb: { world: 'logo', t0: 0, t1: Infinity } }
+  ];
+
+  var PHONE = false, FOOTAGE = true, CLIPS = {}, SEG = [], M_END = 1;
+  var curSeg = null, prevSeg = null, loc = 0, ploc = 0, waitN = 0, zTop = 2;
+  var mediaBox = null, vignette = null, tint = null;
+  var captionEl = section.querySelector('[data-intro-caption]');
+
+  function clipFor(name) {
+    if (!FOOTAGE) return null;
+    var c = CLIPS[name];
+    if (c === undefined) {
+      var s = slots[name];
+      c = CLIPS[name] = s && s.type === 'video' && s.status === 'ready' && s.src ? {
+        name: name, slot: s, src: PHONE && s.srcMobile ? s.srcMobile : s.src,
+        in: Math.max(0, +s.in || 0), out: Math.max(0, +s.out || 0), dur: 0,
+        el: null, meta: false, ready: false, done: false, failed: false, seekTo: -1, wait: 0,
+        hold: null, end: null, over: null, dark: null, lit: null, stillsOk: 0, stillsFailed: false, contain: false
+      } : null;
+      if (c) c.dur = c.out > c.in ? c.out - c.in : Math.max(0.5, +s.use || 3);
+    }
+    return c && !c.failed ? c : null;
+  }
+  function needMet(name) {
+    var c = clipFor(name);
+    return !!c;
+  }
+  function planSeq() {
+    var out = [];
+    SCENES.forEach(function (sc, si) {
+      var list = [];
+      if (sc.clips && (!sc.need || needMet(sc.need))) {
+        sc.clips.forEach(function (name, ci) {
+          var c = clipFor(name);
+          if (!c) return;
+          var stills = PHONE && c.slot.phoneStills && c.slot.phoneStills.length === 2 && !c.stillsFailed;
+          if (PHONE && name === 'film-s4-03' && !stills) c.contain = true;   // no phone stills: show the whole frame, so the word is never cut
+          list.push({ kind: stills ? 'stills' : 'clip', clip: c, name: name, scene: si, key: si * 100 + ci + 1 });
+        });
+      }
+      if (!list.length && sc.fb) list.push({ kind: 'canvas', world: sc.fb.world, t0: sc.fb.t0, t1: sc.fb.t1, scene: si, key: si * 100 });
+      list.forEach(function (g) { g.act = sc.act; g.brief = !!sc.brief && g.kind !== 'canvas'; out.push(g); });
+    });
+    for (var i = 0; i < out.length; i++) out[i].join = i ? joinOf(out[i - 1], out[i]) : joinT('none', 0);
+    SEG = out;
+    layout();
+  }
+  // A join: how one segment hands over to the next, and how long the two overlap.
+  function joinT(type, d) { return { type: type, d: d, over: type === 'fade' || type === 'paper' || type === 'match' ? d : 0 }; }
+  function joinOf(a, b) {
+    if (a.kind === 'canvas' && b.kind === 'canvas' && a.world === b.world && a.t1 === b.t0) return joinT('none', 0);
+    if (b.scene === 4 && a.scene !== 4) return joinT('dip', 0.5);   // a dip to black into the logo
+    if (a.kind !== 'canvas' && b.kind !== 'canvas') return a.scene === b.scene ? joinT('fade', XF) : a.scene === 2 && b.scene === 3 ? joinT('cut', 0) : joinT('fade', 0.4);
+    if (a.kind !== 'canvas') return a.name === 'film-s1-08' ? joinT('paper', 0.5) : joinT('fade', 0.6);
+    return b.name === 'film-s2-01' ? joinT('match', 0.6) : joinT('fade', 0.6);
+  }
+  function segLen(g) { return g.kind === 'canvas' ? g.t1 - g.t0 : g.kind === 'stills' ? STILLS.len : g.clip.dur; }
+  function layout() {
+    var m = 0;
+    SEG.forEach(function (g, i) { g.len = segLen(g); if (i) m -= g.join.over; g.m0 = m; m += g.len; });
+    var L = SEG[SEG.length - 1];
+    L.titleAt = L.kind === 'canvas' ? LG.title : L.kind === 'stills' ? STILLS.title : L.clip.dur + (L.clip.slot.hold ? 0.4 : 0);
+    L.restAt = L.kind === 'canvas' ? LG.settle[1] + 0.05 : L.titleAt + 1.25;
+    M_END = L.m0 + L.titleAt;
+  }
+  function nextOf(g) { var i = SEG.indexOf(g); return i >= 0 ? SEG[i + 1] || null : null; }
+  function isLast(g) { return g === SEG[SEG.length - 1]; }
+
+  /* ---- Layers: the canvas and, when there is footage, <video> and <img> elements in one box ---- */
+  function box() {
+    if (mediaBox) return mediaBox;
+    mediaBox = document.createElement('div');
+    mediaBox.className = 'intro__media';
+    mediaBox.setAttribute('aria-hidden', 'true');
+    section.insertBefore(mediaBox, canvas);
+    mediaBox.appendChild(canvas);
+    vignette = document.createElement('div');
+    vignette.className = 'intro__vignette';
+    mediaBox.appendChild(vignette);
+    vignette.style.zIndex = '100000';
+    return mediaBox;
+  }
+  function raise(el) { if (el) el.style.zIndex = String(++zTop); }
+  function setOp(el, a) {
+    if (!el) return;
+    var v = a <= 0.001 ? 0 : a >= 0.999 ? 1 : Math.round(a * 1000) / 1000;
+    if (el._op !== v) { el.style.opacity = String(v); el._op = v; }
+  }
+  function img(src, cls, onload, onerror) {
+    var im = document.createElement('img');
+    im.className = cls; im.alt = ''; im.decoding = 'async';
+    im.addEventListener('load', function () { im._ok = true; if (onload) onload(); if (!raf && curSeg) draw(); });   // (a held frame needs redrawing)
+    im.addEventListener('error', function () { im._bad = true; if (onerror) onerror(); });
+    im.src = src;
+    box().appendChild(im);
+    setOp(im, 0);
+    return im;
+  }
+  function ensure(g, preload) {
+    if (!g || g.kind === 'canvas') return;
+    var c = g.clip, s = c.slot;
+    if (g.kind === 'stills') {
+      if (!c.dark) {
+        var ok = function () { c.stillsOk++; }, bad = function () { if (c.stillsFailed) return; c.stillsFailed = true; console.warn('[film] "' + c.name + '" phone stills did not load; playing the clip instead.'); replan(); };
+        // the logo stills are shown across the full width (never cropped at the sides), feathered top and bottom
+        c.dark = img(s.phoneStills[0], 'intro__still is-fitw', ok, bad);
+        c.lit = img(s.phoneStills[1], 'intro__still is-fitw', ok, bad);
+      }
+      return;
+    }
+    if (!c.el) makeVideo(c, preload);
+    else if (preload === 'auto' && c.el.preload !== 'auto') c.el.preload = 'auto';
+    if (s.hold && !PHONE && !c.hold) c.hold = img(s.hold, 'intro__still');
+    if (s.phoneEnd && PHONE && !c.end) c.end = img(s.phoneEnd, 'intro__still');
+    if (s.overlay && !c.over) c.over = img(s.overlay, 'intro__still is-screen');
+  }
+  function makeVideo(c, preload) {
+    var v = document.createElement('video'), s = c.slot;
+    v.className = 'intro__clip' + (c.contain ? ' is-contain' : '');
+    v.muted = true; v.defaultMuted = true; v.setAttribute('muted', '');
+    v.playsInline = true; v.setAttribute('playsinline', '');
+    v.disablePictureInPicture = true; v.tabIndex = -1; v.setAttribute('aria-hidden', 'true');
+    v.preload = preload || 'metadata';
+    if (s.poster) v.poster = s.poster;
+    if (typeof s.focus === 'number' && c.src === s.src) v.style.objectPosition = (clamp(s.focus, 0, 1) * 100).toFixed(1) + '% 50%';
+    function check() { if (c.meta && v.readyState >= 2 && !v.seeking) c.ready = true; }
+    v.addEventListener('loadedmetadata', function () {
+      var full = v.duration;
+      if (isFinite(full) && full > 0) {
+        var end = c.out > c.in && c.out <= full ? c.out : full;
+        c.dur = Math.max(0.3, end - Math.min(c.in, full - 0.3));
+        layout();
+      }
+      c.meta = true;
+      var to = c.in + Math.max(0, c.seekTo);
+      c.seekTo = -1;
+      if (to > 0.001) { c.ready = false; v.currentTime = Math.min(to, c.in + c.dur - 0.04); }
+      check();
+    });
+    v.addEventListener('loadeddata', check);
+    v.addEventListener('seeked', check);
+    v.addEventListener('canplay', check);
+    v.addEventListener('error', function () {
+      if (c.src !== s.src) {   // the phone file is missing: try the full-size one
+        c.src = s.src; c.meta = false; c.ready = false;
+        if (typeof s.focus === 'number') v.style.objectPosition = (clamp(s.focus, 0, 1) * 100).toFixed(1) + '% 50%';
+        v.src = c.src;
+        return;
+      }
+      fail(c, 'did not load');
+    });
+    v.src = c.src;
+    box().appendChild(v);
+    setOp(v, 0);
+    c.el = v;
+  }
+  function drop(c) {   // let go of a clip's elements (they are made again if the clip is needed again)
+    if (c.el) { try { c.el.pause(); c.el.removeAttribute('src'); c.el.load(); } catch (e) { /* ignore */ } c.el.remove(); c.el = null; }
+    [c.hold, c.end, c.over, c.dark, c.lit].forEach(function (im) { if (im) im.remove(); });
+    c.hold = c.end = c.over = c.dark = c.lit = null;
+    c.meta = c.ready = c.done = false; c.seekTo = -1; c.stillsOk = 0;
+  }
+  function seekClip(c, l) {
+    c.done = l >= c.dur - 0.04;
+    if (!c.el) return;
+    if (c.meta) { c.ready = false; c.el.currentTime = c.in + Math.min(Math.max(0, l), c.dur - 0.04); }
+    else c.seekTo = l;
+  }
+  function playV(c) {
+    if (!c.el || c.done || !c.ready || !c.el.paused) return;
+    var p = c.el.play();
+    if (p && p.catch) p.catch(function (e) { if (e && e.name === 'NotAllowedError') noFootage('autoplay was refused'); });
+  }
+  function pauseV(c) { if (c && c.el && !c.el.paused) c.el.pause(); }
+  function layersOf(g) {
+    if (!g) return [];
+    if (g.kind === 'canvas') return [canvas];
+    var c = g.clip;
+    return g.kind === 'stills' ? [c.dark, c.lit] : [c.el, c.hold, c.end, c.over];
+  }
+  function hide(g) {
+    layersOf(g).forEach(function (el) { setOp(el, 0); });
+    if (g && g.clip) { pauseV(g.clip); if (g.clip.name === 'film-s1-08') setOp(tint, 0); }
+  }
+
+  // Enter a segment: bring its layers to the top (the canvas stays above the footage in the match cut).
+  function enter(g, l, jump) {
+    ensure(g, 'auto');
+    if (g.kind === 'canvas') { raise(canvas); return; }
+    var c = g.clip;
+    if (g.kind === 'clip') {
+      if (jump || l > 0.05) seekClip(c, l); else { c.done = false; if (c.meta && Math.abs(c.el.currentTime - c.in) > 0.05) seekClip(c, 0); }
+      raise(c.el); raise(c.over); raise(c.hold); raise(c.end);
+      if (c.name === 'film-s1-08') { tintEl(); raise(tint); }
+      if (g.join.type === 'match' && !jump) raise(canvas);
+    } else { raise(c.dark); raise(c.lit); }
+  }
+  function tintEl() {
+    if (!tint) { tint = document.createElement('div'); tint.className = 'intro__tint'; box().appendChild(tint); setOp(tint, 0); }
+    return tint;
+  }
+  function go(g, l, jump) {
+    if (prevSeg && prevSeg !== g) hide(prevSeg);
+    prevSeg = null;
+    if (curSeg && curSeg !== g) { if (!jump && g.join.over > 0) { prevSeg = curSeg; ploc = loc; } else hide(curSeg); }
+    curSeg = g; loc = l || 0; waitN = 0;
+    enter(g, loc, jump);
+    ahead();
+    if (running()) { playV(g.clip || {}); }
+  }
+  // Keep the next footage segment loading while this one plays; let go of everything else.
+  function ahead() {
+    var i = SEG.indexOf(curSeg), keep = [curSeg, prevSeg];
+    for (var k = i + 1; k < SEG.length && k <= i + 2; k++) if (SEG[k].kind !== 'canvas') { keep.push(SEG[k]); ensure(SEG[k], k === i + 1 ? 'auto' : 'metadata'); }
+    Object.keys(CLIPS).forEach(function (name) {
+      var c = CLIPS[name];
+      if (!c || (!c.el && !c.dark && !c.hold && !c.end && !c.over)) return;
+      for (var j = 0; j < keep.length; j++) if (keep[j] && keep[j].clip === c) return;
+      drop(c);
+    });
+  }
+  function fail(c, why) {
+    if (c.failed) return;
+    c.failed = true;
+    console.warn('[film] "' + c.name + '" is marked ready but ' + c.src + ' ' + why + '; ' + 'the film plays on without it.');
+    drop(c);
+    replan();
+  }
+  function noFootage(why) {
+    if (!FOOTAGE) return;
+    FOOTAGE = false;
+    console.info('[film] ' + why + ': playing the canvas version of the film.');
+    Object.keys(CLIPS).forEach(function (name) { if (CLIPS[name]) drop(CLIPS[name]); });
+    replan();
+  }
+  // After a clip drops out (or a whole scene falls back), carry on from the same place in the story.
+  function replan() {
+    var old = curSeg, oldPrev = prevSeg;
+    planSeq();
+    if (!old) return;
+    var same = null, i;
+    for (i = 0; i < SEG.length; i++) if (SEG[i].key === old.key && SEG[i].kind === old.kind) same = SEG[i];
+    if (same && (!same.clip || !same.clip.failed)) {
+      curSeg = same;
+      prevSeg = null;
+      if (oldPrev) { var p2 = null; for (i = 0; i < SEG.length; i++) if (SEG[i].key === oldPrev.key && SEG[i].kind === oldPrev.kind) p2 = SEG[i]; if (p2 && nextOf(p2) === same) prevSeg = p2; else hide(oldPrev); }
+      ahead();
+      return;
+    }
+    hide(old); if (oldPrev) hide(oldPrev);
+    curSeg = null; prevSeg = null;
+    for (i = 0; i < SEG.length; i++) {
+      var s2 = SEG[i];
+      if (s2.scene > old.scene || (s2.scene === old.scene && (s2.kind === 'canvas' || s2.key > old.key))) { go(s2, 0, true); return; }
+    }
+    go(SEG[SEG.length - 1], 0, true);
+  }
+
+  /* ---- The clock ---- */
+  function advance(dt) {
+    var g = curSeg, nx = nextOf(g);
+    if (prevSeg && loc >= g.join.d + (g.join.type === 'match' ? 0.4 : 0)) { hide(prevSeg); prevSeg = null; ahead(); }
+    if (prevSeg) ploc += dt;
+    if (prevSeg && prevSeg.kind === 'clip') tailClip(prevSeg.clip);
+    if (g.kind === 'clip') {
+      var c = g.clip;
+      if (!c.ready && !c.done) { c.wait += dt; if (c.wait > WAIT_MAX) fail(c, 'did not load in time'); return; }
+      c.wait = 0;
+      if (!c.done) {
+        playV(c);
+        loc = clamp(c.el.currentTime - c.in, 0, c.dur);
+        if (c.el.ended || loc >= c.dur - 0.04) { c.done = true; loc = c.dur; pauseV(c); }
+      } else if (!nx) loc += dt;   // the last clip: its end frame holds, then the hold still and the title
+      else loc = Math.max(loc, c.dur);
+    } else if (g.kind === 'stills') {
+      var s = g.clip;
+      if (s.stillsOk < 2) { s.wait += dt; if (s.wait > WAIT_MAX) { s.stillsFailed = true; replan(); } return; }
+      loc += dt;
+    } else loc += dt;
+    if (!nx) return;
+    var at = g.len - nx.join.over;
+    if (loc < at) return;
+    if (nx.kind === 'clip' && !nx.clip.ready) {   // the next clip is late: hold this frame for it
+      if (g.kind === 'canvas') loc = Math.min(loc, g.len);
+      nx.clip.wait += dt; waitN += dt;
+      if (nx.clip.wait > WAIT_MAX) fail(nx.clip, 'did not load in time');
+      return;
+    }
+    go(nx, waitN > 0 ? 0 : loc - at, false);
+  }
+  function tailClip(c) {   // a clip finishing under a transition stops at its out point
+    if (!c.el || c.done) return;
+    if (c.el.ended || c.el.currentTime >= c.in + c.dur - 0.04) { c.done = true; pauseV(c); }
+  }
+
+  /* ---- A frame: the canvas (when it is on screen), the layers' opacity, the HUD ---- */
+  var lastAct = '', lastEnd = null, lastBrief = null, lastCap = null;
+  function draw() {
+    var g = curSeg, p = prevSeg, j = g.join, nx = nextOf(g);
+    var inK = j.type === 'none' || j.type === 'cut' ? 1 : j.type === 'dip' ? smooth(clamp(loc / (j.d / 2), 0, 1)) : smooth(clamp(loc / j.d, 0, 1));
+    var outK = nx && nx.join.type === 'dip' ? 1 - smooth(clamp((loc - (g.len - nx.join.d / 2)) / (nx.join.d / 2), 0, 1)) : 1;
+    var cv = g.kind === 'canvas' ? g : p && p.kind === 'canvas' ? p : null;
+    if (cv) {
+      var lt = cv === g ? loc : Math.min(ploc, cv.len);
+      if (cv.world === 'logo') renderLogo(lt); else render(cv.t0 + Math.min(lt, cv.len));
+    }
+    // the canvas
+    var cA = 0, blend = '';
+    if (g.kind === 'canvas') cA = inK * outK;
+    else if (p && p.kind === 'canvas') {
+      cA = 1;
+      if (j.type === 'match') { blend = 'screen'; cA = 1 - smooth(clamp((loc - 0.6) / 0.4, 0, 1)); }
+    }
+    setOp(canvas, cA);
+    if (canvas._blend !== blend) { canvas.style.mixBlendMode = blend; canvas._blend = blend; }
+    // footage
+    if (p && p.kind !== 'canvas') footage(p, ploc, 1);
+    if (g.kind !== 'canvas') footage(g, loc, (j.type === 'match' ? smooth(clamp(loc / 0.6, 0, 1)) : inK) * outK);
+    settle(g);
+    hud(g);
+  }
+  function footage(g, l, a) {
+    var c = g.clip;
+    if (g.kind === 'stills') {
+      setOp(c.dark, c.dark && c.dark._ok ? a : 0);
+      var w = smooth(span(l, STILLS.wipe));
+      setOp(c.lit, c.lit && c.lit._ok && w > 0 ? a : 0);
+      if (c.lit) {   // the lit still is wiped on from left to right (a soft edge), inside the same top and bottom feather
+        var edge = (w * 130 - 15).toFixed(1), m = w >= 1 ? '' : 'linear-gradient(90deg, #000 ' + edge + '%, transparent ' + (+edge + 15).toFixed(1) + '%), ' + FEATHER;
+        if (c.lit._mask !== m) {
+          c.lit.style.webkitMaskImage = m; c.lit.style.maskImage = m;
+          c.lit.style.webkitMaskComposite = m ? 'source-in' : ''; c.lit.style.maskComposite = m ? 'intersect' : '';
+          c.lit._mask = m;
+        }
+      }
+      return;
+    }
+    setOp(c.el, a);
+    if (c.hold) setOp(c.hold, c.hold._ok ? a * smooth(clamp((l - c.dur) / 0.4, 0, 1)) : 0);
+    if (c.end) setOp(c.end, c.end._ok ? a * smooth(clamp((l - (c.dur - 0.8)) / 0.8, 0, 1)) : 0);
+    if (c.over) setOp(c.over, c.over._ok ? a * 0.9 * smooth(clamp((l - 0.1) / 0.6, 0, 1)) : 0);   // lime lines traced over a locked shot (S1-07)
+    if (c.name === 'film-s1-08' && c.el) {
+      // The paper darkens, then comes back inverted (dark paper, light lines) under a lime multiply, so the
+      // lines turn lime, ready to dissolve into the canvas drawing. (Animating invert() itself would pass
+      // through flat grey half way.)
+      var k = clamp((l - (c.dur - 0.8)) / 0.8, 0, 1), f = '', tk = 0;
+      if (k > 0 && k < 0.45) f = 'brightness(' + (1 - 0.85 * smooth(k / 0.45)).toFixed(3) + ')';
+      else if (k >= 0.45) { f = 'invert(1) grayscale(1) contrast(1.3) brightness(' + (0.15 + 0.85 * smooth((k - 0.45) / 0.55)).toFixed(3) + ')'; tk = 1; }
+      if (c.el._f !== f) { c.el.style.filter = f; c.el._f = f; }
+      setOp(tint, tk * a);
+    }
+  }
+  var lastSettle = -1;
+  function settle(g) {   // footage hold: under the title the frame shrinks aside (the canvas logo does this with its camera)
+    if (!mediaBox) return;
+    var k = isLast(g) && g.kind !== 'canvas' ? inOut(span(loc, [g.titleAt, g.titleAt + 1.2])) : 0;
+    if (Math.abs(k - lastSettle) < 0.0005) return;
+    lastSettle = k;
+    var aspect = W / H, to = aspect >= 1.25 ? [22, -13, 0.42] : aspect >= 1 ? [0, -16, 0.48] : [0, -16, 0.82];
+    mediaBox.style.transform = k > 0 ? 'translate(' + (to[0] * k).toFixed(2) + '%, ' + (to[1] * k).toFixed(2) + '%) scale(' + lerp(1, to[2], k).toFixed(4) + ')' : '';
+    setOp(vignette, k);
+  }
+  function hud(g) {
+    if (g.act !== lastAct) { section.setAttribute('data-act', g.act); lastAct = g.act; }
+    var ended = isLast(g) && loc >= g.titleAt;
+    if (ended !== lastEnd) { section.classList.toggle('is-end', ended); lastEnd = ended; }
+    var brief = !!g.brief;
+    if (brief !== lastBrief) { section.classList.toggle('is-brief', brief); lastBrief = brief; }
+    var cap = '', list = brief && g.clip ? CAPTIONS[g.name] : null;
+    if (list) list.forEach(function (e) { if (loc >= e[0]) cap = e[1]; });
+    if (captionEl && cap !== lastCap) { captionEl.textContent = cap; section.classList.toggle('has-caption', !!cap); lastCap = cap; }
+    if (progressEl) progressEl.style.transform = 'scaleX(' + clamp((g.m0 + Math.min(loc, g.len)) / M_END, 0, 1).toFixed(4) + ')';
+  }
+
+  /* ---- Seeking: ?film=, Skip, Replay, the paused still ---- */
+  function seekMaster(m) {
+    m = Math.max(0, m);
+    var k = 0;
+    while (k < SEG.length - 1 && SEG[k + 1].m0 <= m) k++;
+    var g = SEG[k], l = m - g.m0, p = k > 0 ? SEG[k - 1] : null;
+    if (prevSeg) hide(prevSeg);
+    if (curSeg && curSeg !== g) hide(curSeg);
+    prevSeg = null; curSeg = null;
+    if (p && g.join.over > 0 && l < g.join.d + (g.join.type === 'match' ? 0.4 : 0)) {   // mid-transition: both layers
+      curSeg = p; loc = m - p.m0; enter(p, loc, true);
+      prevSeg = p; ploc = loc;
+    }
+    curSeg = g; loc = l; waitN = 0;
+    enter(g, l, true);
+    if (prevSeg && g.join.type === 'match') raise(canvas);
+    ahead();
+  }
+  function holdTime() { var L = SEG[SEG.length - 1]; return L.m0 + L.restAt + 0.01; }
 
   /* ==========================================================================
      Clock, size, visibility, Skip and the motion control
      ========================================================================== */
-  var filmT = 0, raf = 0, last = 0, inView = true;
+  var raf = 0, last = 0, inView = true;
   var start = parseFloat(new URLSearchParams(window.location.search).get('film'));
-  if (!isNaN(start) && start >= 0) filmT = start;
 
   function paused() { return root.classList.contains('motion-paused'); }
   function running() { return inView && !document.hidden && !paused(); }
-  function stillTime() { return photos.filter(Boolean).length ? T.photos + 2 : T.still; }
-  var rest = false;
+  function resting() { return curSeg && isLast(curSeg) && !prevSeg && loc >= curSeg.restAt; }
   function frame(now) {
     raf = 0;
     var dt = last ? Math.min(0.05, (now - last) / 1000) : 0;
     last = now;
-    filmT += dt;
-    // on phones, once the title card is up, the living stage only needs half the frames (kinder to batteries)
-    rest = LITE && filmT > T.end + 3 ? !rest : false;
-    if (!rest) render(filmT);
-    if (running()) raf = window.requestAnimationFrame(frame); else last = 0;
+    advance(dt);
+    draw();
+    if (running() && !resting()) raf = window.requestAnimationFrame(frame); else last = 0;
   }
-  function kick() { if (!raf && running()) { last = 0; raf = window.requestAnimationFrame(frame); } }
-  function halt() { if (raf) window.cancelAnimationFrame(raf); raf = 0; last = 0; render(filmT); }
+  function eachClip(fn) { [curSeg, prevSeg].forEach(function (g) { if (g && g.kind === 'clip') fn(g.clip); }); }
+  function kick() {
+    if (!running()) return;
+    eachClip(playV);
+    if (!raf && !resting()) { last = 0; raf = window.requestAnimationFrame(frame); }
+  }
+  function halt() { if (raf) window.cancelAnimationFrame(raf); raf = 0; last = 0; eachClip(pauseV); draw(); }
 
   function resize() {
-    var box = section.getBoundingClientRect();
-    var cssW = Math.max(1, Math.round(box.width)), cssH = Math.max(1, Math.round(box.height));
+    var bx = section.getBoundingClientRect();
+    var cssW = Math.max(1, Math.round(bx.width)), cssH = Math.max(1, Math.round(bx.height));
     dpr = Math.min(window.devicePixelRatio || 1, cssW < 700 ? 1.5 : 2);
     LITE = cssW < 700 || (navigator.hardwareConcurrency || 8) <= 4;   // phones and small machines draw a lighter crowd, fewer beams
     W = Math.round(cssW * dpr); H = Math.round(cssH * dpr);
     if (canvas.width !== W) canvas.width = W;
     if (canvas.height !== H) canvas.height = H;
     screen = screenRect();
-    render(filmT);
+    lastSettle = -1;
+    if (curSeg) draw();
   }
   function loadImage(name, done) {
     var slot = slots[name];
     if (!slot || slot.status !== 'ready' || !slot.src) return;
-    var img = new Image();
-    img.decoding = 'async';
-    img.onload = function () { done(img, slot); if (!raf) render(filmT); };
-    img.onerror = function () { console.warn('[film] "' + name + '" is marked ready but ' + slot.src + ' did not load.'); };
-    img.src = slot.src;
+    var im = new Image();
+    im.decoding = 'async';
+    im.onload = function () { done(im, slot); if (!raf && curSeg) draw(); };
+    im.onerror = function () { console.warn('[film] "' + name + '" is marked ready but ' + slot.src + ' did not load.'); };
+    im.src = slot.src;
   }
+  loadImage('intro-drawing', function (im, slot) { drawingImg = im; drawingInvert = !!slot.invert; });
 
-  loadImage('intro-drawing', function (img, slot) { drawingImg = img; drawingInvert = !!slot.invert; });
-  ['intro-photo-1', 'intro-photo-2', 'intro-photo-3', 'intro-photo-4'].forEach(function (name, i) {
-    loadImage(name, function (img) { photos[i] = img; if (paused() && filmT < stillTime()) filmT = stillTime(); });
-  });
-  if (paused() && isNaN(start)) filmT = stillTime();
-
+  // Phones get the lighter phone files (pre-cropped 9:16 strips) and the 9:16 stills.
+  (function () { var bx = section.getBoundingClientRect(); PHONE = bx.width < 700 || bx.width / Math.max(1, bx.height) < 0.9; })();
+  box();
   resize();
+  planSeq();
+  if (!isNaN(start) && start >= 0) seekMaster(start);
+  else if (paused()) seekMaster(holdTime());   // Pause motion / reduced motion: one still, the logo hold under the title
+  else go(SEG[0], 0, true);
+  draw();
+  // the word is drawn in the site's display face when "Arial Black" is not installed: rebuild it once fonts arrive
+  // (built here, once, so the logo scene never pays for it mid-film)
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { WD = null; LHOLD.W = 0; wordData(); if (!raf && curSeg) draw(); });
+
   window.addEventListener('resize', resize);
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(function (entries) {
       inView = entries[0].isIntersecting;
-      if (inView) kick(); else if (raf) { window.cancelAnimationFrame(raf); raf = 0; last = 0; }
+      if (inView) kick(); else { if (raf) { window.cancelAnimationFrame(raf); raf = 0; last = 0; } eachClip(pauseV); }
     }).observe(section);
   }
   document.addEventListener('visibilitychange', function () { if (document.hidden) halt(); else kick(); });
   new MutationObserver(function () {
-    if (paused()) { if (raf) halt(); } else kick();
+    if (paused()) halt(); else kick();
   }).observe(root, { attributes: true, attributeFilter: ['class'] });
   if (replayBtn) replayBtn.addEventListener('click', function () {
-    filmT = 0;
     lastEnd = null;
+    seekMaster(0);
     if (paused() && motionToggle) motionToggle.click();
-    render(0);
+    draw();
     kick();
     // the title card (and this button) hides again, so keyboard focus moves to Skip, which is back
     if (skipBtn) { try { skipBtn.focus({ preventScroll: true }); } catch (e) { skipBtn.focus(); } }
   });
   if (skipBtn) skipBtn.addEventListener('click', function () {
-    filmT = Math.max(filmT, T.end + 0.2);
-    render(filmT);
+    var L = SEG[SEG.length - 1];
+    if (curSeg !== L || loc < L.titleAt) seekMaster(L.m0 + L.titleAt + 0.01);
+    draw();
     kick();
     // the button hides itself once the title card is up, so keyboard focus moves to the title,
     // once it has become visible (its reveal is staggered by a fraction of a second)
@@ -3802,7 +4920,13 @@
   });
   // Review hook, only with ?dev on the URL: time a single frame at any second of the film.
   if (/[?&]dev\b/.test(window.location.search)) {
-    window.__film = { T: T, parts: parts.length, crew: CREW.length, prof: prof, frame: function (t) { var a = performance.now(); render(t); return performance.now() - a; },
+    window.__film = { T: T, LG: LG, parts: parts.length, crew: CREW.length, prof: prof,
+      frame: function (t) { var a = performance.now(); render(t); return performance.now() - a; },
+      logo: function (t) { var a = performance.now(); renderLogo(t); return performance.now() - a; },
+      seek: function (m) { seekMaster(m); draw(); kick(); return { seg: curSeg.name || curSeg.world, local: loc }; },
+      // run the clock by hand (the app's browser pane does not animate a hidden tab): n steps of dt seconds
+      step: function (dt, n) { for (var i = 0; i < (n || 1); i++) { advance(dt); draw(); } return { seg: curSeg.name || curSeg.world, local: +loc.toFixed(3), m: +(curSeg.m0 + Math.min(loc, curSeg.len)).toFixed(3), prev: prevSeg ? prevSeg.name || prevSeg.world : null, act: section.getAttribute('data-act'), end: section.classList.contains('is-end'), canvas: canvas.style.opacity }; },
+      plan: function () { return SEG.map(function (g) { return { what: g.name || g.world + ' ' + g.t0 + '-' + g.t1, act: g.act, m0: +g.m0.toFixed(2), len: g.len, join: g.join.type }; }); },
       at: function (t, p) { var c = cameraB(t); return pj(c, p[0], p[1], p[2]) ? [PX / dpr, PY / dpr, PZ] : null; } };
   }
   kick();
