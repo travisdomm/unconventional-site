@@ -291,8 +291,9 @@ window.MEDIA_SLOTS = {
     alt: "On the front-of-house riser, the woman turns to the man with a small smile while the technical director sits at the console, the crowd glowing beyond.",
     spec: "S3-10 The team at FOH, watching what they built; she turns to him, he answers; then a dip to black. Trimmed to 0.25–2.75 s. Phone strip at focus x 0.65 (both faces)."
   },
+  /* s4-01 was taken out at the owner's request (2026-09-26, "the truss bolt with wrench clip"); Preview 2 keeps it. */
   "film-s4-01": {
-    type: "video", status: "ready", usedBy: "the home film and Preview 1 (scene 4, Unconventional)",
+    type: "video", status: "empty", usedBy: "the home film and Preview 1 (scene 4, Unconventional)",
     src: "media/film/s4-01.mp4", srcMobile: "media/film/s4-01-m.mp4", poster: "media/film/s4-01.jpg",
     use: 1.5, focus: 0.5,
     alt: "Macro inside a giant steel letter U: a gloved hand tightens a bolt beside X-shaped truss lacing and an unlit neon tube.",
