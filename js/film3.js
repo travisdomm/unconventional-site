@@ -7,8 +7,9 @@
      01 People           photoreal footage (media slots film-s1-01 … s1-08);
                          until it is ready, the v2 prologue on this canvas
      02 Build            this canvas, from the drawing, to T.realCut (the "three
-                         quarters techy" build below), then photoreal footage
-                         (film-s2-01 … s2-05) from the match-cut frame
+                         quarters techy" build below, up to the roof lift), then
+                         photoreal footage (film-s2-01 … s2-05) from the
+                         match-cut frame
      03 Arrival          photoreal footage (film-s3-01 … s3-10); until it is
                          ready, the v2 power-up, crowd and team at FOH
      04 Unconventional   the logo built and brought into place: footage
@@ -35,10 +36,18 @@
         crew clear, work lights.
    Digital crew in hi-vis and hard hats walk, carry, climb, kneel, drive and
    point where the work is, and three CAD detail views cut in (base jack,
-   coupler clamp, spigot + pin + R-clip). The act ends at T.realCut on a low
-   three-quarter of the roof at trim under work lights: the frame the
-   photoreal quarter of scene 2 picks up from. After it, the v2 power-up
-   still plays (the fallback when no footage is present).
+   coupler clamp, spigot + pin + R-clip). With the footage, the canvas hands
+   over at T.realCut, the end of the roof lift (06): a low three-quarter from
+   house left, the roof just short of trim, the lighting pre-rigged on the bars
+   but no LED or PA arrays yet, fitted to S2-01's first frames (the match cut);
+   the footage then carries on with the rest of the build. For that cut the
+   rig itself is re-fitted to S2-01's (MATCH, see "The match cut's rig"): two
+   upstage towers stand where the footage's do, three more towers, the
+   footage's bars, heads and light masts; the roof never gets its lip, and
+   what else the footage does not have (the roof's skin, the site's kit)
+   clears before the dissolve. Without the
+   footage the canvas keeps its own rig and carries on through 07-10 to
+   T.built, then the v2 power-up plays (scene 3's fallback).
    Every number on screen is a dimension of this model; nothing is named.
 
    The v2 notes follow (acts 1, 2 and 4 are unchanged).
@@ -117,15 +126,21 @@
     ground: [15.6, 19.8],  // 02 graders, water truck, trackway, the convoy, cabins, generators, light towers
     deck: [18.6, 22.2],    // 03-04 plant on site; base jacks, system scaffold, ledgers, braces, deck panels
     towers: [20.8, 24.4],  // 05 ground-support towers (one stacked, five hinged up), the roof grid at deck level
-    prerig: [23.4, 24.6],  // 06 hoists hung, lighting and hang bars pre-rigged under the grid
-    roof: [24.6, 26.6],    // 06 the synchronised lift to trim
+    prerig: [23.4, 24.4],  // 06 hoists hung, lighting and hang bars pre-rigged under the grid
+    roof: [24.4, 27.4],    // 06 the synchronised lift to trim (its last creep runs through the match cut: see roofY)
+    // the match cut, at the end of the roof lift: from T.realCut - 0.6 the photoreal S2-01 (the roof reaching trim,
+    // lighting pre-rigged on the bars, no LED or PA arrays yet, seen from house left) dissolves in under this canvas,
+    // which reaches this frame (the canvas camera is fitted to the footage's first frames: CAM_B's MC-1 keys; the
+    // rig to its structure: MATCH) and lingers 0.4 s; the footage then carries on with the build. Without the footage
+    // the canvas carries straight on through the rest of the build.
+    realCut: 26.6,
     video: [26.65, 29.4],  // 07 halo module; LED columns grow down from rising bars; IMAG; wings
     audio: [29.2, 31.2],   // 08 line arrays fan open as they fly; subs; delay towers
     light: [29.8, 31.6],   // 09 the arch and band, fixtures, lasers, flame, followspots
     site: [30.8, 32.2],    // FOH, barricade, camera and followspot towers
     explode: [32.3, 32.9, 33.2, 33.6],   // the finished stage lifts apart into layers, holds, slams home
     checks: [33.7, 36.0],  // 10 pixel map, focus, line check, crew clear, work lights
-    realCut: 36.0,         // the match cut: the photoreal quarter of scene 2 takes over on this frame
+    built: 36.0,           // the canvas build is complete: scene 2's canvas fallback ends and scene 3's begins here
     power: [36.4, 38.6],   // (scene 3 fallback, without footage) everything comes alive
     end: 39.4,             // (v2's title card) the lasers ease down after it
     s3End: 41.6            // the end of the scene 3 fallback: fireworks, drones, the team at FOH; then scene 4
@@ -184,6 +199,38 @@
   var TOWER_Z = [5, -4.5, -14];
   var TOWERS = [];
   [-1, 1].forEach(function (s) { TOWER_Z.forEach(function (z) { TOWERS.push([s * TOWER_X, z]); }); });
+
+  /* ---- The match cut's rig ------------------------------------------------
+     MATCH is set by the sequence player (planSeq) when footage takes over at T.realCut (the match cut into S2-01).
+     Then the canvas rig is S2-01's, fitted in its first frames from the MC-1 camera (brand/raw/mc2-fix-0926): T5 and
+     T6 (the upstage towers stage right) stand on the deck where the footage's do (MOVED), three more towers go up
+     (house left downstage, two stage right) with their beams and hung boxes, two light masts stand where the
+     footage's lamps are, the pre-rig is the footage's four bars with its heads where the footage's hang, the roof never
+     has its lip (nor the lip's cantilevers, skin and lights), and what else the footage does not have (the roof's
+     skin and inner purlins, the site's kit and marks, the other light towers, the right crane) fades out over MW,
+     before the dissolve. A part's mm says which rig it belongs to: 'only' (the match rig), 'no' (the canvas's own
+     rig only) or 'out' (both; in the match rig it fades out over MW). During the dissolve's 0.4 s linger the canvas
+     holds its T.realCut frame but its camera carries on with S2-01's push (CAM_X, see cameraB). Without footage
+     nothing here changes the film. */
+  var MATCH = false;
+  var MOVED = { 4: [19.4, -4.5], 5: [16.35, -14] };
+  // S2-01's arches, front to back (at trim; its box trusses are deeper, the front arch flatter than the canvas's own)
+  var ARCH_M = [{ z: 5, rise: 6, off: 0.15, dp: 1.5 }, { z: -4.5, rise: 7, off: -1.125, dp: 1.35 }, { z: -14, rise: 7, off: -1.275, dp: 1.35 }];
+  function towerAt(n) { return MATCH && MOVED[n] ? MOVED[n] : TOWERS[n]; }
+  // every tower of both rigs, fn(tw, n, mm): a moved tower twice (its own place, 'no'; the match rig's, 'only'). The
+  // match rig's copy keeps the random stream where it was; with `later` (a list) it is only queued there, to be made
+  // after everything else (the crew: a worker's list place sets its gestures), so the canvas film is unchanged.
+  function eachTower(fn, later) {
+    TOWERS.forEach(function (tw, n) {
+      if (!MOVED[n]) { fn(tw, n, null); return; }
+      fn(tw, n, 'no');
+      if (later) { later.push(function () { fn(MOVED[n], n, 'only'); }); return; }
+      var sd = seed; fn(MOVED[n], n, 'only'); seed = sd;
+    });
+  }
+  function mmShow(mm) { return !mm || mm === 'out' || (mm === 'only') === MATCH; }
+  var MW = [T.realCut - 1.6, T.realCut - 0.8];
+  function mFade(t) { return MATCH ? 1 - smooth(span(t, MW)) : 1; }
   function archY(x) { var u = x / TOWER_X; return TRIM + RISE * (1 - u * u); }
   function lipY(x) { var u = x / TOWER_X; return TRIM - 1.5 + (RISE + 2.5) * (1 - u * u); }
   var LIP_Z = 9.5;
@@ -214,6 +261,21 @@
     }
     [a, b].forEach(function (e) { for (var j = 0; j < 4; j++) segs.push([add(e, cr[j]), add(e, cr[(j + 1) % 4])]); });
     return { segs: segs, truss: { a: a, b: b, size: size } };
+  }
+  // The same with a rectangular section, dp deep (square to it, in its upright plane) by wd wide (S2-01's deeper arches).
+  function boxTrussGeo(a, b, dp, wd, bay) {
+    var d = sub(b, a), L = len(d);
+    d = mul(d, 1 / L);
+    var e1 = norm(cross(d, [0, 1, 0])), e2 = cross(d, e1), h = dp / 2, w = wd / 2;
+    var cr = [add(mul(e1, w), mul(e2, h)), add(mul(e1, -w), mul(e2, h)), add(mul(e1, -w), mul(e2, -h)), add(mul(e1, w), mul(e2, -h))];
+    var segs = [], n = Math.max(1, Math.round(L / bay)), i, k;
+    for (i = 0; i < 4; i++) segs.push([add(a, cr[i]), add(b, cr[i])]);
+    for (i = 0; i < 4; i++) for (k = 0; k < n; k++) {
+      var p = add(a, mul(d, L * k / n)), q = add(a, mul(d, L * (k + 1) / n));
+      segs.push(k % 2 ? [add(p, cr[(i + 1) % 4]), add(q, cr[i])] : [add(p, cr[i]), add(q, cr[(i + 1) % 4])]);
+    }
+    [a, b].forEach(function (e) { for (var j = 0; j < 4; j++) segs.push([add(e, cr[j]), add(e, cr[(j + 1) % 4])]); });
+    return { segs: segs, truss: { a: a, b: b, size: Math.max(dp, wd) } };
   }
   // Oriented box: centre plus three half-axis vectors. Faces carry outward normals.
   function oboxGeo(c, u, v, w) {
@@ -324,10 +386,11 @@
   };
   var KIND_NAMES = Object.keys(KIND);
   var parts = [], lights = [], lasers = [], flames = [], callouts = [], nodes = [], imags = [], archLine = [], masts = [];
+  var MM_DEF = null;   // the rig a new part belongs to, unless it says (see MATCH): set around whole sections of the build
 
   function part(kind, t0, geo, o) {
     var p = { kind: kind, st: KIND[kind], t0: t0, dur: 0.55, segs: geo.segs || [], faces: geo.faces || [], truss: geo.truss || null,
-      anim: 'drop', arrive: [0, 4, 0], layer: 1, lift: false, veh: null, out: null, dyf: null, nMain: geo.nMain || 0, det: 0, quiet: false, noX: false };
+      anim: 'drop', arrive: [0, 4, 0], layer: 1, lift: false, veh: null, out: null, dyf: null, nMain: geo.nMain || 0, det: 0, quiet: false, noX: false, mm: MM_DEF };
     if (o) for (var key in o) p[key] = o[key];
     var c = [0, 0, 0], n = 0;
     p.segs.forEach(function (s) { c = add(c, add(s[0], s[1])); n += 2; });
@@ -346,7 +409,14 @@
     parts.push(p);
     return p;
   }
-  function roofY(t) { return lerp(-21.8, 0, inOut(span(t, T.roof))); }
+  // The lift: up from deck level to 0.7 m short of trim as the match cut's dissolve starts (T.realCut - 0.6), easing into
+  // the slow creep S2-01 opens on (about 0.25 m/s: the footage finishes the move); without the footage the roof
+  // settles at trim by T.roof[1].
+  function roofY(t) {
+    var b = T.realCut - 0.6, h = 0.7, v = 0.25;
+    if (t < b) return -21.8 + (21.8 - h) * hermite(span(t, [T.roof[0], b]), v * (b - T.roof[0]) / (21.8 - h));
+    return (-h + v * (Math.min(t, T.realCut) - b)) * (1 - smooth(span(t, [T.realCut, T.roof[1]])));
+  }
 
   /* ---- Moving and articulated kit (film v3) ------------------------------
      Plant, trucks and the hinged towers are ordinary parts drawn in their own
@@ -575,11 +645,11 @@
       s.yaw = yaw; s.el = el;
       s.tip = [piv[0] + fwd[0] * cr.L * Math.cos(el), piv[1] + cr.L * Math.sin(el), piv[2] + fwd[1] * cr.L * Math.cos(el)];
       s.hook = up < 1 ? [s.tip[0], Math.max(0.5, s.tip[1] - 6), s.tip[2]] : [s.tip[0], Math.min(H[1], s.tip[1] - 2.5), s.tip[2]];
-      s.load = load; s.a = fadeWin(t, cr.t0, cr.t1);
+      s.load = load; s.a = fadeWin(t, cr.t0, cr.t1) * mFade(t);   // (the match cut's footage has no cranes: they clear before it)
       return s;
     }
     cr.state = state;
-    var tracks = new Rig(function (t, X) { placeX(X, yaw0, base[0], 0, base[2]); X.a = fadeWin(t, cr.t0, cr.t1); });
+    var tracks = new Rig(function (t, X) { placeX(X, yaw0, base[0], 0, base[2]); X.a = fadeWin(t, cr.t0, cr.t1) * mFade(t); });
     var house = new Rig(function (t, X) { var s = state(t); placeX(X, s.yaw, base[0], 0, base[2]); X.a = s.a; });
     var boom = new Rig(function (t, X) { var s = state(t); hingeX(X, 0, 3.2, 2.0, -1, 0, s.el); placeX(X, s.yaw, base[0], 0, base[2]); X.a = s.a; });
     kit('crane', tracks, t0);
@@ -593,8 +663,8 @@
   // together lying on the ground, then hinged up by the cranes.
   var HINGE = [null, [21.95, 22.7], [22.8, 23.55], [22.1, 22.85], [22.95, 23.7], [23.6, 24.35]];
   function hingeK(n, t) { return HINGE[n] ? inOut(span(t, HINGE[n])) : 1; }
-  function towerTop(n, t) {   // where the top of tower n is, as it swings up
-    var tw = TOWERS[n], s = tw[0] < 0 ? -1 : 1, a = -s * (Math.PI / 2) * (1 - hingeK(n, t)), h = 25.6;
+  function towerTop(n, t) {   // where the top of tower n is, as it swings up (in the rig on screen: see MOVED)
+    var tw = towerAt(n), s = tw[0] < 0 ? -1 : 1, a = -s * (Math.PI / 2) * (1 - hingeK(n, t)), h = 25.6;
     return [tw[0] - h * Math.sin(a), 0.25 + h * Math.cos(a), tw[1]];
   }
 
@@ -618,7 +688,7 @@
           p = q;
         }
         man(way, { t0: t0, t1: t1 + 0.25, mode: o.mode || 'walk', stop: o.stops ? o.stops[g % o.stops.length] : 'work',
-          vest: o.vest !== undefined ? o.vest : (g % 4 === 3 ? 1 : 0), hat: o.hat !== undefined ? o.hat : (g % 5 === 0 ? 0 : 1), face: o.face || null });
+          vest: o.vest !== undefined ? o.vest : (g % 4 === 3 ? 1 : 0), hat: o.hat !== undefined ? o.hat : (g % 5 === 0 ? 0 : 1), face: o.face || null, mm: o.mm || null });
       }
     }
 
@@ -657,15 +727,16 @@
       { stop: 'point', aim: [0, 1, -8], t1: W0 + 2.8, vest: 0, hat: 0 });
 
     // 05 a climber rides T1 up as it is stacked; crews at every tower base; a climber up each tower once it stands
-    TOWERS.forEach(function (tw, n) {
-      var s = tw[0] < 0 ? -1 : 1, up = n ? HINGE[n][1] + 0.1 : W0 + 0.5, top = n ? Math.max(up + 0.7, R0 + 0.25) : W0 + 0.35 + 7 * 0.22 + 0.3;
-      gang(2, W0 - 0.1, n ? HINGE[n][1] : W0 + 1.8, function () { return [tw[0] + s * R(1.8, 3.2), tw[1] + R(-2.5, 2.5)]; }, { stops: ['kneel', 'work'], hop: 0.7, face: [tw[0], tw[1]] });
-      man([[up, tw[0] - s * 0.72, tw[1] + 0.2, 0], [top, tw[0] - s * 0.72, tw[1] + 0.2, 23.4], [T.roof[1] + 0.3, tw[0] - s * 0.72, tw[1] + 0.2, 23.4]],
-        { mode: 'climb', stop: 'climb', face: [tw[0], tw[1] + 0.2], t1: T.roof[1] + 0.5, vest: 0, hat: 0 });
-    });
+    var later = [];   // (the match rig's crews at T5 and T6: made last, see eachTower)
+    eachTower(function (tw, n, mm) {
+      var s = n > 2 ? 1 : -1, up = n ? HINGE[n][1] + 0.1 : W0 + 0.5, top = n ? Math.max(up + 0.7, R0 + 0.25) : W0 + 0.35 + 7 * 0.22 + 0.3;
+      gang(2, W0 - 0.1, n ? HINGE[n][1] : W0 + 1.8, function () { return [tw[0] + s * R(1.8, 3.2), tw[1] + R(-2.5, 2.5)]; }, { stops: ['kneel', 'work'], hop: 0.7, face: [tw[0], tw[1]], mm: mm });
+      man([[up, tw[0] - s * 0.72, tw[1] + 0.2, 0], [top, tw[0] - s * 0.72, tw[1] + 0.2, 23.4], [T.realCut + 0.3, tw[0] - s * 0.72, tw[1] + 0.2, 23.4]],
+        { mode: 'climb', stop: 'climb', face: [tw[0], tw[1] + 0.2], t1: T.realCut + 0.5, vest: 0, hat: 0, mm: mm });
+    }, later);
     gang(10, W0 + 1.4, T.roof[0] - 0.3, function (t, g) { return [R(-20, 20), [3, -4.5, -12.5][g % 3] + R(-1.2, 1.2), H]; }, { stops: ['kneel', 'work'], hop: 0.6 });
     // 06 the head rigger at the motor controller, calling the lift
-    man([[R0 - 0.2, -17, -8, H], [R0 + 0.3, -20.2, -11.6, H]], { stop: 'point', aim: [0, 18, -4], t1: T.roof[1] + 0.8, vest: 0, hat: 0 });
+    man([[R0 - 0.2, -17, -8, H], [R0 + 0.3, -20.2, -11.6, H]], { stop: 'point', aim: [0, 18, -4], t1: T.realCut + 0.8, vest: 0, hat: 0 });
 
     // 07 LED crew latching tiles at the foot of the rising columns; the halo crew at the spine
     gang(8, V0 + 0.2, V0 + 2.6, function (t) { var col = clamp((t - V0 - 0.3) / 0.075, 0, 23); return [LED.x0 + (col + 0.5) * 1.5 + R(-2.5, 2.5), LED.z + R(1.0, 2.4), H]; },
@@ -693,7 +764,7 @@
     gang(8, V0 + 0.1, A0 + 1.2, function (t, g) { var u = ((t - V0) * 0.45 + g * 0.13) % 1; return [lerp(-18, 18, (g + 0.5) / 8) + R(-1, 1), lerp(1.5, -10.5, u), H]; },
       { mode: 'carry', stops: ['work', 'stand'], hop: 0.55, vest: 1, face: [0, -40] });
     [[5, -1], [-4.5, 1], [-14, -1], [5, 1]].forEach(function (rp, n) {
-      var z = rp[0], dir = rp[1], xa = -16 * dir, xb = 14 * dir, t0 = T.roof[1] + 0.2 + n * 0.15, way = [];
+      var z = rp[0], dir = rp[1], xa = -16 * dir, xb = 14 * dir, t0 = T.realCut + 0.2 + n * 0.15, way = [];
       // along the top chord of an arch, clipped on: short hops, pausing to work at the fixings
       for (var q = 0; q <= 6; q++) {
         var x = lerp(xa, xb, q / 6), y = archY(x) + 0.46;
@@ -716,6 +787,7 @@
       man([[C0 + 0.3 + n * 0.1, rp[0] - 1.6, rp[1], archY(rp[0] - 1.6) + 0.46], [C0 + 1.1 + n * 0.1, rp[0], rp[1], y]],
         { stop: n === 1 ? 'point' : 'work', aim: [0, 2, 20], face: [rp[0] + 3, rp[1] + 6], t1: T.power[0] + 0.4, vest: 0, hat: 0 });
     });
+    var sd = seed; later.forEach(function (f) { f(); }); seed = sd;
   }
 
   (function build() {
@@ -723,6 +795,7 @@
     seed = 31337;
 
     /* ======== 01  Survey and set-out ======== */
+    MM_DEF = 'out';   // (01-02: the site's marks and kit; S2-01 does not have them, so they clear before the match cut)
     part('stake', S0 + 0.15, tripodGeo(CP[0], CP[1], 1.55, true), { anim: 'pop', dur: 0.35, quiet: true, noX: true });
     part('stake', S0 + 0.3, tripodGeo(GB[0], GB[1], 1.45, false), { anim: 'pop', dur: 0.35, quiet: true, noX: true });
     GCPS.forEach(function (g, n) { part('stake', S0 + 0.1 + n * 0.08, targetGeo(g[0], g[1]), { anim: 'fade', dur: 0.3, quiet: true, noX: true }); });
@@ -798,7 +871,18 @@
       part('wlt', t0 + 0.25, S([[[x, 1.15, z], [x, 9.0, z]]]), { anim: 'grow', anchor: [x, 1.15, z], dur: 0.6, quiet: true, noX: true });
       var hx = x - fwd[0] * 0.3, hz = z - fwd[1] * 0.3;
       part('wlt', t0 + 0.25, boxGeo(hx - 0.9, 8.6, hz - 0.25, hx + 0.9, 9.4, hz + 0.25), { anim: 'rise', arrive: [0, -7.6, 0], dur: 0.6, quiet: true, noX: true });
-      WLT.push({ x: hx, z: hz, y: 9.0, aim: [x - fwd[0] * 16, z - fwd[1] * 16], t0: t0 + 0.8 });
+      WLT.push({ x: hx, z: hz, y: 9.0, aim: [x - fwd[0] * 16, z - fwd[1] * 16], t0: t0 + 0.8, mm: 'out' });
+    });
+    // (the match cut's rig: two tall light masts where S2-01's lamps are, far upstage left and right; lamps 2 × 2)
+    [[-31.91, -68.83, 16.27, 0.1], [69.12, -80, 16.13, -0.75]].forEach(function (L, n) {
+      var x = L[0], z = L[1], h = L[2], yaw = L[3] + Math.PI, t0 = G0 + 0.7 + n * 0.12, fwd = [Math.sin(yaw), Math.cos(yaw)];
+      MM_DEF = 'only';
+      part('wlt', t0, oboxGeo([x, 0.8, z], [1.0 * Math.cos(yaw), 0, -1.0 * Math.sin(yaw)], [0, 0.55, 0], [2.4 * fwd[0], 0, 2.4 * fwd[1]]), { arrive: [0, 1.5, 0], dur: 0.3, quiet: true, noX: true });
+      part('wlt', t0 + 0.25, S([[[x, 1.35, z], [x, h - 1.0, z]]]), { anim: 'grow', anchor: [x, 1.35, z], dur: 0.6, quiet: true, noX: true });
+      var hx = x - fwd[0] * 0.3, hz = z - fwd[1] * 0.3, ux = Math.cos(yaw), uz = -Math.sin(yaw);
+      part('wlt', t0 + 0.25, oboxGeo([hx, h, hz], [1.7 * ux, 0, 1.7 * uz], [0, 1.0, 0], [0.25 * fwd[0], 0, 0.25 * fwd[1]]), { anim: 'rise', arrive: [0, 1.35 - h, 0], dur: 0.6, quiet: true, noX: true });
+      MM_DEF = 'out';
+      WLT.push({ x: hx, z: hz, y: h, aim: [x - fwd[0] * 30, z - fwd[1] * 30], t0: t0 + 0.8, mm: 'only', big: true });
     });
 
     // the convoy: trucks climb the ridge road with their lights on and pull into the dock and the compound
@@ -870,6 +954,8 @@
       part('jack', G0 + 3.9 + n * 0.1, S(s3), { anim: 'fade', dur: 0.3, quiet: true, noX: true });
     });
 
+    MM_DEF = null;
+
     /* ======== 03  Heavy plant ======== */
     // two crawler cranes on their pads; their jobs: hinge the towers up, then lift the arch's steel
     function topOf(n) { return function (t) { return add(towerTop(n, t), [0, 0.9, 0]); }; }
@@ -899,7 +985,8 @@
       { t: HINGE[5][0] - 0.3, p: [49.6, 3.4, -14] },
       { t: HINGE[5][0], fn: topOf(5) },
       { t: HINGE[5][1] + 0.1 },
-      { t: HINGE[5][1] + 0.6, p: [50, 14, -24] },
+      { t: HINGE[5][1] + 1.0, p: [95, 5, -77] },   // then lays its boom down, away upstage, clear of the lift (and of the match-cut frame)
+      { t: T.video[0] + 1.0 },
       { t: L0 - 0.4, p: [66, 2.5, -44], load: 'arch' },
       { t: L0 + 0.25, p: [68, 16, -18], load: 'arch' },
       { t: L0 + 0.6 },
@@ -1001,6 +1088,8 @@
       part('deckp', D0 + 1.45 + j * 0.18 + Math.abs(i - 9) * 0.012, { segs: es, faces: fp }, { arrive: [0, 1.4, 0], dur: 0.3 });
     }
     // the thrust and the round B-stage, the front skirt, the upstage handrail, two stair towers
+    // (S2-01's deck has no thrust or B-stage: in the match cut's rig they clear before it)
+    MM_DEF = 'out';
     for (j = 0; j < 7; j++) part('deck', D0 + 2.7 + j * 0.06, boxGeo(-2.5, 0, 4 + j * 2 + 0.03, 2.5, DECK.h, 4 + j * 2 + 1.97), { arrive: [0, 0, -3], dur: 0.35 });
     (function () {
       var top = [], bot = [], n = 20, faces = [], segs = [], r = 4.5, cz = 22.2;
@@ -1018,6 +1107,7 @@
       }
       part('deck', D0 + 3.1, { segs: segs, faces: faces }, { anim: 'pop', dur: 0.4 });
     })();
+    MM_DEF = null;
     part('deckp', D0 + 3.15, { segs: [[[-22, 0, 4], [22, 0, 4]], [[-22, DECK.h, 4], [22, DECK.h, 4]]], faces: [{ p: [[-22, 0, 4.01], [22, 0, 4.01], [22, DECK.h, 4.01], [-22, DECK.h, 4.01]], n: [0, 0, 1] },
       { p: [[-22, 0, -14], [-22, 0, 4], [-22, DECK.h, 4], [-22, DECK.h, -14]], n: [-1, 0, 0] }, { p: [[22, 0, 4], [22, 0, -14], [22, DECK.h, -14], [22, DECK.h, 4]], n: [1, 0, 0] }] }, { anim: 'fade', dur: 0.4 });
     (function () {
@@ -1032,6 +1122,7 @@
       part('sub', D0 + 3.2, S(s4), { anim: 'draw', dur: 0.4 });
     })();
     // secondary structures: two VIP decks on scaffold, either side of the field
+    MM_DEF = 'out';
     [-1, 1].forEach(function (s, si) {
       var xa = s * 66, xb = s * 88, t0 = D0 + 2.2 + si * 0.2;
       for (lv = 0; lv < 3; lv++) part('scaff', t0 + lv * 0.15, scaffoldGeo(Math.min(xa, xb), Math.max(xa, xb), 16, 34, lv * 1.4, (lv + 1) * 1.4, 8, 6, lv === 0), { anim: 'grow', anchor: [s * 77, lv * 1.4, 25], dur: 0.3, noX: true });
@@ -1041,9 +1132,13 @@
       }
     });
 
+    MM_DEF = null;
+
     /* ======== 05  Ground support: towers, sleeve blocks, the roof grid at deck level ======== */
-    TOWERS.forEach(function (tw, n) {
-      var s = tw[0] < 0 ? -1 : 1;
+    // (T5 and T6 twice: where the canvas's own rig has them, and where the match cut's has them: see MOVED)
+    eachTower(function (tw, n, mm) {
+      var s = n > 2 ? 1 : -1;
+      MM_DEF = mm;
       part('plate', W0 + n * 0.06, detailed([boxGeo(tw[0] - 1.3, 0, tw[1] - 1.3, tw[0] + 1.3, 0.25, tw[1] + 1.3)],
         [S([[[tw[0] - 1.3, 0.12, tw[1] - 1.3], [tw[0] - 2.4, 0.12, tw[1] - 2.4]], [[tw[0] + 1.3, 0.12, tw[1] - 1.3], [tw[0] + 2.4, 0.12, tw[1] - 2.4]],
           [[tw[0] + 1.3, 0.12, tw[1] + 1.3], [tw[0] + 2.4, 0.12, tw[1] + 2.4]], [[tw[0] - 1.3, 0.12, tw[1] + 1.3], [tw[0] - 2.4, 0.12, tw[1] + 2.4]]])]), { arrive: [0, 3, 0] });
@@ -1063,24 +1158,29 @@
       // (the head block is fitted before a tower is hinged up, so it rises with it)
       part('hoist', n ? W0 + 0.15 + (n - 1) * 0.1 + 8 * 0.045 : W0 + 0.35 + 8 * 0.22, detailed([boxGeo(tw[0] - 0.32, 25.85, tw[1] - 0.32, tw[0] + 0.32, 26.55, tw[1] + 0.32)],
         [boxGeo(tw[0] + s * 0.45, 24.9, tw[1] - 0.18, tw[0] + s * 0.8, 25.8, tw[1] + 0.18)]), { anim: 'pop', dur: 0.35, veh: rig });
+      MM_DEF = null;
     });
     // the roof: three arches, a front lip, cantilevers and purlins, pinned together at deck level, then lifted
+    // (S2-01's roof is the three arches and the purlins along the tower lines: the match cut's rig never has the lip,
+    // its cantilevers, skin or lights (MC-3: a lip that faded in place left a ghost above the front arch just before
+    // the dissolve), and its inner purlins clear before the cut)
     var XS = [];
     for (i = 0; i <= 12; i++) XS.push(-TOWER_X + i * 4);
     TOWER_Z.forEach(function (z, a) {
       for (i = 0; i < 12; i++) {
         part('roof', W0 + 1.5 + a * 0.24 + i * 0.04, trussGeo([XS[i], archY(XS[i]), z], [XS[i + 1], archY(XS[i + 1]), z], 0.9, 0.95),
-          { lift: true, anim: 'pop', dur: 0.3 });
+          { lift: true, anim: 'pop', dur: 0.3, mm: 'no' });   // (the match cut's rig has S2-01's arches: ARCH_M)
       }
     });
+    MM_DEF = 'out';
     for (i = 0; i < 12; i++) {
-      part('roof', W0 + 2.25 + i * 0.04, trussGeo([XS[i], lipY(XS[i]), LIP_Z], [XS[i + 1], lipY(XS[i + 1]), LIP_Z], 0.8, 0.95), { lift: true, anim: 'pop', dur: 0.3 });
+      part('roof', W0 + 2.25 + i * 0.04, trussGeo([XS[i], lipY(XS[i]), LIP_Z], [XS[i + 1], lipY(XS[i + 1]), LIP_Z], 0.8, 0.95), { lift: true, anim: 'pop', dur: 0.3, mm: 'no' });
     }
     for (i = 0; i <= 12; i += 2) {
-      var xr = XS[i], yr = archY(xr);
-      part('roof', W0 + 2.6 + i * 0.03, trussGeo([xr, yr, 5], [xr, lipY(xr), LIP_Z], 0.6, 0.9), { lift: true, anim: 'pop', dur: 0.3 });
-      part('roof', W0 + 2.7 + i * 0.03, trussGeo([xr, yr, 5], [xr, yr, -4.5], 0.6, 0.95), { lift: true, anim: 'pop', dur: 0.3 });
-      part('roof', W0 + 2.8 + i * 0.03, trussGeo([xr, yr, -4.5], [xr, yr, -14], 0.6, 0.95), { lift: true, anim: 'pop', dur: 0.3 });
+      var xr = XS[i], yr = archY(xr), edge = i === 0 || i === 12 ? 'no' : 'out';
+      part('roof', W0 + 2.6 + i * 0.03, trussGeo([xr, yr, 5], [xr, lipY(xr), LIP_Z], 0.6, 0.9), { lift: true, anim: 'pop', dur: 0.3, mm: 'no' });
+      part('roof', W0 + 2.7 + i * 0.03, trussGeo([xr, yr, 5], [xr, yr, -4.5], 0.6, 0.95), { lift: true, anim: 'pop', dur: 0.3, mm: edge });
+      part('roof', W0 + 2.8 + i * 0.03, trussGeo([xr, yr, -4.5], [xr, yr, -14], 0.6, 0.95), { lift: true, anim: 'pop', dur: 0.3, mm: edge });
     }
 
     /* ======== 06  Hoists, pre-rig, the lift ======== */
@@ -1091,8 +1191,9 @@
           { lift: true, anim: 'fade', dur: 0.5 });
       });
       part('skin', R0 + 0.9 + i * 0.02, { faces: [{ p: [[xa, lipY(xa), LIP_Z], [xb, lipY(xb), LIP_Z], [xb, archY(xb), 5], [xa, archY(xa), 5]], n: [0, -1, 0], two: true }] },
-        { lift: true, anim: 'fade', dur: 0.5 });
+        { lift: true, anim: 'fade', dur: 0.5, mm: 'no' });
     }
+    MM_DEF = 'no';   // (the canvas's own pre-rig; the match cut's rig has S2-01's bars instead: see "The match cut's rig" below)
     [3, -2, -7].forEach(function (z, n) {
       for (i = 0; i < 5; i++) {
         part('roof', R0 + n * 0.1 + i * 0.04, trussGeo([-20 + i * 8, 21.2, z], [-12 + i * 8, 21.2, z], 0.52, 0.6), { lift: true, arrive: [0, 2.5, 0], dur: 0.35 });
@@ -1105,20 +1206,88 @@
         lights.push({ o: [fx, yb2, z], n: lights.length, grp: n, p: pl });
       }
     });
+    MM_DEF = 'no';   // (the lip's lights: see the roof)
     for (i = 0; i < 16; i++) {
       var lx = -21 + i * 2.8, ly = lipY(lx) - 1.3;
       var pl2 = part('fixture', R0 + 0.45 + i * 0.012, boxGeo(lx - 0.26, ly, LIP_Z - 0.26, lx + 0.26, ly + 0.55, LIP_Z + 0.26), { lift: true, anim: 'pop', dur: 0.25 });
       lights.push({ o: [lx, ly, LIP_Z], n: lights.length, grp: 3, p: pl2 });
     }
+    MM_DEF = null;
     // the motor controller in the wings, its cables up every tower to the hoists
     part('hoist', R0 + 0.1, detailed([boxGeo(-21.4, DECK.h, -13.4, -20.2, DECK.h + 0.9, -12.6)], [S([[[-21.3, DECK.h + 0.6, -12.58], [-20.3, DECK.h + 0.6, -12.58]], [[-21.3, DECK.h + 0.4, -12.58], [-20.3, DECK.h + 0.4, -12.58]]])]), { anim: 'pop', dur: 0.3 });
-    TOWERS.forEach(function (tw, n) {
-      var s = tw[0] < 0 ? -1 : 1, c0 = [-20.8, DECK.h + 0.3, -12.6], foot = [tw[0] - s * 0.5, 0.3, tw[1] + 0.5];
+    eachTower(function (tw, n, mm) {
+      var s = n > 2 ? 1 : -1, c0 = [-20.8, DECK.h + 0.3, -12.6], foot = [tw[0] - s * 0.5, 0.3, tw[1] + 0.5];
       var run = [c0, [-20.8, DECK.h, tw[1] < -12 ? tw[1] + 1.5 : -12], [tw[0] - s * 1.6, DECK.h, tw[1] + 0.8], foot, [tw[0] - s * 0.42, 25.6, tw[1] + 0.42]];
       var segs = [];
       for (var q = 0; q < run.length - 1; q++) segs = segs.concat(pieces(run[q], run[q + 1], 2.5));
-      part('cable', Math.max(R0 + 0.2 + n * 0.05, (HINGE[n] ? HINGE[n][1] : 0) + 0.1), S(segs), { anim: 'draw', dur: 0.5, quiet: true });
+      part('cable', Math.max(R0 + 0.2 + n * 0.05, (HINGE[n] ? HINGE[n][1] : 0) + 0.1), S(segs), { anim: 'draw', dur: 0.5, quiet: true, mm: mm });
     });
+
+    /* ======== The match cut's rig: S2-01's structure, built with the rest (drawn only when MATCH: see there) ========
+       Fitted in S2-01's first frames from the MC-1 camera (brand/raw/mc2-fix-0926): each bar's image line and each
+       tower's column in the footage, solved for its place in the model at the depth given (roof heights at trim). */
+    MM_DEF = 'only';
+    // S2-01's three arches (at trim: y = 24 + rise (1 - (x / 24)^2) + off, a box truss dp deep): deeper and a little
+    // lower than the canvas's own, the front one flatter; built at the same moments as those, with their purlins
+    // along the tower lines
+    ARCH_M.forEach(function (A, a) {
+      function ay(x) { var u = x / TOWER_X; return 24 + A.rise * (1 - u * u) + A.off; }
+      for (i = 0; i < 12; i++) part('roof', W0 + 1.5 + a * 0.24 + i * 0.04, boxTrussGeo([XS[i], ay(XS[i]), A.z], [XS[i + 1], ay(XS[i + 1]), A.z], A.dp, 0.6, 0.95), { lift: true, anim: 'pop', dur: 0.3 });
+      // purlins to the arch in front: along both tower lines, and S2-01's two inner ones (x 1.5 and 13)
+      if (a) [-TOWER_X, 1.5, 13, TOWER_X].forEach(function (x, si) {
+        var B = ARCH_M[a - 1], ub = x / TOWER_X, yb = 24 + B.rise * (1 - ub * ub) + B.off;
+        part('roof', W0 + 2.7 + a * 0.1 + si * 0.12, trussGeo([x, yb, B.z], [x, ay(x), A.z], 0.6, 0.95), { lift: true, anim: 'pop', dur: 0.3 });
+      });
+    });
+    // three more towers: house left downstage (a PA tower, its beam to T1's head and a box hung from it) and two stage
+    // right (a beam at sleeve height from T4 across both, a box hung between each pair), stacked section by section.
+    // (MC-3: the two stage-right towers moved along the camera's right at the same depth, 0.54 m and 1.03 m, onto
+    // S2-01's columns; the beam lowered from their heads to their sleeve blocks and the boxes re-hung under it, as the
+    // footage has them: brand/raw/mc2c-fix-0926)
+    [[-34.39, 7, 24.2, W0 + 0.55], [27.83, 8.01, 26.55, W0 + 0.8], [39.12, 6.96, 26.95, W0 + 1.0]].forEach(function (q, n) {
+      var x = q[0], z = q[1], h = q[2], t0 = q[3], sec = (h - 0.25) / 8;
+      part('plate', t0 - 0.35, boxGeo(x - 1.3, 0, z - 1.3, x + 1.3, 0.25, z + 1.3), { arrive: [0, 3, 0] });
+      [-1, 1].forEach(function (e, en) { part('ballast', t0 - 0.2 + en * 0.05, boxGeo(x + e * 2.2 - 0.6, 0, z - 0.6, x + e * 2.2 + 0.6, 1.2, z + 0.6), { arrive: [0, 3, 0], dur: 0.35 }); });
+      for (lv = 0; lv < 8; lv++) {
+        var ya = 0.25 + lv * sec;
+        part('tower', t0 + lv * 0.16, trussGeo([x, ya, z], [x, ya + sec, z], 0.76, 0.8), { anim: 'grow', anchor: [x, ya, z], dur: 0.25 });
+      }
+      part('hoist', t0 + 8 * 0.16, boxGeo(x - 0.32, h, z - 0.32, x + 0.32, h + 0.7, z + 0.32), { anim: 'pop', dur: 0.3 });
+    });
+    part('rig', W0 + 2.2, trussGeo([-34.39, 23.6, 7], [-24, 25.1, 5], 0.5, 0.8), { arrive: [0, 3, 0], dur: 0.35 });
+    part('pa', W0 + 2.45, boxGeo(-29.8, 21.9, 5.45, -28.6, 23.8, 6.55), { arrive: [0, 2, 0], dur: 0.3 });
+    part('rig', W0 + 2.3, trussGeo([24, 23.85, 5], [27.83, 23.35, 8.01], 0.5, 0.8), { arrive: [0, 3, 0], dur: 0.35 });
+    part('rig', W0 + 2.38, trussGeo([27.83, 23.35, 8.01], [39.12, 23.7, 6.96], 0.5, 0.8), { arrive: [0, 3, 0], dur: 0.35 });
+    [[25.97, 6.54, 21.52, 22.99], [32.57, 7.57, 21.03, 22.56]].forEach(function (b, n) { part('pa', W0 + 2.55 + n * 0.08, boxGeo(b[0] - 0.85, b[2], b[1] - 0.75, b[0] + 0.85, b[3], b[1] + 0.75), { arrive: [0, 2, 0], dur: 0.3 }); });
+    // S2-01's T4 stands about 2.7 m taller than the canvas's: a top section and head plate on T4, hinged up with it
+    var T4R = new Rig(function (t, X) { hingeX(X, TOWERS[3][0], 0.25, TOWERS[3][1], 0, 1, -(Math.PI / 2) * (1 - hingeK(3, t))); });
+    part('tower', W0 + 0.73, trussGeo([TOWERS[3][0], 25.85, TOWERS[3][1]], [TOWERS[3][0], 28.6, TOWERS[3][1]], 0.76, 0.8), { anim: 'pop', dur: 0.22, veh: T4R });
+    part('hoist', W0 + 0.76, boxGeo(TOWERS[3][0] - 0.5, 28.6, TOWERS[3][1] - 0.5, TOWERS[3][0] + 0.5, 29.3, TOWERS[3][1] + 0.5), { anim: 'pop', dur: 0.3, veh: T4R });
+    // S2-01's pre-rig: four flat bars under the roof (heights at trim), lighting on the upper three: each moving head
+    // where one hangs in the footage (f: x of each; hd: how far below the bar its yoke starts and its head ends, m).
+    // (MC-3: read off S2-01 at 0.6 s and solved onto each bar's line: brand/raw/mc2c-fix-0926)
+    [{ z: 5, y: 22.41, d: 1.21, x0: -18.1, x1: 18.1, hd: [0.9, 2.2],
+       f: [-14.45, -12.48, -10.29, -8.06, -5.87, -4.02, -0.82, 1.24, 3.12, 5.34, 7.29, 9.5, 11.81, 13.58] },
+     { z: -4.5, y: 22.19, d: 1.13, x0: -18.8, x1: 17.2, hd: [0.65, 2.0],
+       f: [-16.8, -14.76, -12.84, -10.91, -8.83, -6.75, -4.81, 0.47, 2.41, 4.32, 6.29, 8.33, 10.44, 12.31] },
+     { z: -14, y: 21.27, d: 1.03, x0: -14.5, x1: 14.5, hd: [0.4, 1.3],
+       f: [-12.37, -10.11, -7.92, -5.73, -3.63, -1.37, 0.8, 2.85, 4.96, 7.15, 9.41, 11.64] },
+     { z: -14, y: 18.45, d: 0.61, x0: -14.0, x1: 10.0, hd: [0, 0], f: [] }].forEach(function (b, bi) {
+      var k, segs = [], nb = Math.max(4, Math.round((b.x1 - b.x0) / 1.1)), yt = b.y + b.d / 2, yl = b.y - b.d / 2, w = 0.3;
+      [-w / 2, w / 2].forEach(function (dz) {
+        segs.push([[b.x0, yt, b.z + dz], [b.x1, yt, b.z + dz]], [[b.x0, yl, b.z + dz], [b.x1, yl, b.z + dz]]);
+        for (k = 0; k < nb; k++) { var xa2 = lerp(b.x0, b.x1, k / nb), xb2 = lerp(b.x0, b.x1, (k + 1) / nb); segs.push(k % 2 ? [[xa2, yl, b.z + dz], [xb2, yt, b.z + dz]] : [[xa2, yt, b.z + dz], [xb2, yl, b.z + dz]]); }
+      });
+      [b.x0, b.x1].forEach(function (x) { segs.push([[x, yl, b.z - w / 2], [x, yt, b.z - w / 2]], [[x, yl, b.z + w / 2], [x, yt, b.z + w / 2]], [[x, yt, b.z - w / 2], [x, yt, b.z + w / 2]], [[x, yl, b.z - w / 2], [x, yl, b.z + w / 2]]); });
+      part('roof', R0 + bi * 0.1, { segs: segs }, { lift: true, arrive: [0, 2.5, 0], dur: 0.35 });
+      b.f.forEach(function (fx, k) {   // a moving head under the bar: a hanger from the bottom chord, the yoke, the head in it
+        var ya = yl - b.hd[0], yh = yl - b.hd[1], g2 = boxGeo(fx - 0.36, yh, b.z - 0.32, fx + 0.36, yh + 0.9, b.z + 0.32);
+        g2.segs.push([[fx - 0.42, ya, b.z], [fx - 0.42, yh + 0.45, b.z]], [[fx + 0.42, ya, b.z], [fx + 0.42, yh + 0.45, b.z]], [[fx - 0.42, ya, b.z], [fx + 0.42, ya, b.z]]);
+        if (b.hd[0] > 0.05) g2.segs.push([[fx, yl, b.z], [fx, ya, b.z]]);
+        part('fixture', R0 + 0.3 + bi * 0.08 + k * 0.015, g2, { lift: true, anim: 'pop', dur: 0.25 });
+      });
+    });
+    MM_DEF = null;
 
     /* ======== 07  Video: the halo module, LED columns growing down from rising bars ======== */
     part('spine', V0, trussGeo([0, DECK.h, -13.3], [0, 20.0, -13.3], 0.76, 0.8), { anim: 'grow', anchor: [0, DECK.h, -13.3], dur: 0.35, xl: 4 });
@@ -1402,7 +1571,7 @@
       { p: [-70, 4, -64], t0: G0 + 3.3, t1: G0 + 4.6, text: 'POWER  ·  6 × 12 190 GENSET', dx: -26, dy: -28, c: AMBER },
       { p: [0, DECK.h, -5], t0: D0 + 1.0, t1: D0 + 2.9, text: 'DECK  +2 200  ·  ' + nStd + ' STANDARDS', dx: 30, dy: -34, c: INK },
       { p: [-24, 26.6, 5], t0: W0 + 0.8, t1: W0 + 2.3, text: 'T1  ·  GROUND SUPPORT  ·  H 26 000', dx: 26, dy: -30, c: LIME },
-      { p: [24, 18, -4.5], t0: HINGE[4][1], t1: HINGE[5][1] + 0.3, text: 'T2 – T6  ·  HINGED UP', dx: 26, dy: -26, c: LIME },
+      { p: [24, 18, -4.5], pm: [MOVED[4][0], 18, MOVED[4][1]], t0: HINGE[4][1], t1: HINGE[5][1] + 0.3, text: 'T2 – T6  ·  HINGED UP', dx: 26, dy: -26, c: LIME },
       { p: [0, archY(0), 5], t0: T.roof[0] - 0.4, t1: T.roof[1] + 0.2, text: 'ROOF  ·  6 HOISTS  ·  SYNC LIFT', live: 'lift', dx: 30, dy: -34, c: LIME },
       { p: [0, 20.7, -13.3], t0: V0 + 0.15, t1: V0 + 1.2, text: 'SPINE  ·  H 18 000', dx: 34, dy: -24, c: LIME },
       { p: [HALO.c[0] + HALO.r1 * 0.72, HALO.c[1] + HALO.r1 * 0.72, -10.8], t0: V0 + 1.3, t1: V0 + 2.3, text: 'HALO  Ø 14 400', dx: 40, dy: -30, c: LIME },
@@ -1663,23 +1832,28 @@
     { t: 20.0,  target: [10, 0, -40], fit: 250, yaw: -40, pitch: 21, fov: 40 },       // the dock, the compound, the cranes setting up
     { t: 21.1,  target: [0, 1.5, -5], fit: 74, yaw: -28, pitch: 24, fov: 38 },        // the deck on its scaffold
     { t: 22.6,  target: [-24, 10, -1], dist: 58, yaw: -40, pitch: 11, fov: 40 },      // the towers: one stacked, the others hinged up
-    { t: 24.4,  target: [0, 7, -4],   fit: 112, yaw: -34, pitch: 15, fov: 38 },       // the roof pinned together on the deck, pre-rigged
-    { t: 26.6,  target: [0, 15, -4],  fit: 124, yaw: -14, pitch: 9,  fov: 38 },       // lifted to trim
-    { t: 26.65, target: [0, 11.2, -12], fit: 42, yaw: 0, pitch: 1.5, fov: 36, cut: true },   // cut to elevation, like the reference
+    { t: 24.2,  target: [0, 7, -4],   fit: 112, yaw: -34, pitch: 15, fov: 38 },       // the roof pinned together on the deck, pre-rigged
+    // MC-1, the match cut into S2-01: down to the footage's viewpoint as the lift starts (house left, low, looking up), then
+    // S2-01's slow push-in. The two last keys are fitted to S2-01's frames at 0.0 s and 0.6 s (the dissolve runs
+    // T.realCut - 0.6 → T.realCut): front towers, roof arch and deck edge on the footage's (brand/raw/mc1-align).
+    { t: 25.3,  target: [-7.2, 11.87, -3.41], dist: 68, yaw: -34.79, pitch: -4.13, fov: 40.58, fixedFov: true },
+    { t: 26.0,  target: [-7.2, 11.87, -3.41], dist: 60, yaw: -34.79, pitch: -4.13, fov: 40.58, fixedFov: true, ease: 'carry' },   // S2-01 at 0.0 s
+    { t: 26.6,  target: [-7.2, 11.87, -3.41], dist: 59.2, yaw: -34.79, pitch: -4.13, fov: 40.58, fixedFov: true, ease: 'lin' },   // T.realCut: S2-01 at 0.6 s
+    { t: 26.65, target: [0, 11.2, -12], fit: 42, yaw: 0, pitch: 1.5, fov: 36, cut: true },   // (no footage) cut to elevation, like the reference
     { t: 28.5,  target: [0, 11.2, -12], fit: 40, yaw: 0, pitch: 1.5, fov: 36 },
     { t: 30.0,  target: [0, 17, -8],  fit: 176, yaw: 0,  pitch: 5,  fov: 38 },        // the whole facade: wings, arch, band
     { t: 31.6,  target: [6, 12, 14],  fit: 190, yaw: 28, pitch: 14, fov: 38 },        // round to the field: PA, delays, FOH
     { t: 32.9,  target: [0, 33, -4],  fit: 205, yaw: 30, pitch: 9,  fov: 38 },        // exploded into layers
     { t: 33.7,  target: [0, 15, 0],   fit: 150, yaw: 24, pitch: 8,  fov: 38 },
-    { t: 36.0,  target: [-2, 18, -3], dist: 60, yaw: 36, pitch: -13, fov: 46, fixedFov: true },      // T.realCut: low three-quarter, the roof at trim under work lights
-    { t: 36.6,  target: [-2, 18, -3], dist: 59.4, yaw: 35.6, pitch: -13, fov: 46, fixedFov: true },
+    { t: 36.0,  target: [-2, 18, -3], dist: 60, yaw: 36, pitch: -13, fov: 46 },      // T.built: low three-quarter, the finished stage under work lights
+    { t: 36.6,  target: [-2, 18, -3], dist: 59.4, yaw: 35.6, pitch: -13, fov: 46 },
     { t: 39.1,  target: [0, 12, 0],   dist: 64.4, yaw: -1.3, pitch: -6.6, fov: 46, frame: "end" },   // (fallback) down behind the team at the desk
     { t: 46,    target: [0, 12, 0],   dist: 63.5, yaw: -0.8, pitch: -6.6, fov: 46, frame: "end" }
   ];
 
   function resolve(k) {
     var aspect = W / H, fov = (k.fov || 38) * DEG, dist = k.dist, f, px = W / 2, py = H / 2;
-    if (aspect < 1 && !k.fixedFov) fov = Math.min(fov * 1.35, 64 * DEG);   // fixedFov: phones see the same centre crop as the footage
+    if (aspect < 1 && !k.fixedFov) fov = Math.min(fov * 1.35, 64 * DEG);
     if (k.fit) {
       var fovX = 2 * Math.atan(Math.tan(fov / 2) * aspect);
       dist = (k.fit * (aspect < 1 ? 0.6 : aspect < 1.3 ? 0.85 : 1) / 2) / Math.tan(fovX / 2);
@@ -1687,16 +1861,29 @@
     if (k.frame === 'screen') {
       var inner = chrome(screen).inner;
       f = screenScale() * PLAN_D; px = inner.x + inner.w / 2; py = inner.y + inner.h / 2;
-    } else f = (H / 2) / Math.tan(fov / 2);
+    }
+    // fixedFov (the match cut): framed exactly as the footage is shown, fov being the footage's vertical field of view,
+    // scaled like the <video>'s object-fit: cover of its 16:9 frame (phones: the centred 9:16 strip), so the canvas
+    // lines land on the footage's at any screen shape
+    else if (k.fixedFov) f = Math.max(H, W / (PHONE ? 9 / 16 : 16 / 9)) / 2 / Math.tan(fov / 2);
+    else f = (H / 2) / Math.tan(fov / 2);
     if (k.frame === 'end') { px = W * (aspect > 1.25 ? 0.6 : 0.5); py = H * (aspect < 1 ? 0.36 : 0.45); }
     return { target: k.target, dist: dist, yaw: k.yaw * DEG, pitch: k.pitch * DEG, f: f, px: px, py: py };
   }
+  function hermite(u, s) { return ((s - 2) * u + (3 - s)) * u * u; }   // starts from rest, arrives at slope s (1 = a linear move's speed)
   function viewAt(keys, t) {
     var i = 0;
     while (i < keys.length - 1 && t >= keys[i + 1].t) i++;
     var a = resolve(keys[i]);
     if (i === keys.length - 1 || keys[i + 1].cut) return a;
-    var b = resolve(keys[i + 1]), u = inOut(clamp((t - keys[i].t) / (keys[i + 1].t - keys[i].t), 0, 1));
+    // A key's `ease` shapes the move that arrives at it: 'lin' is linear; 'carry' eases in and arrives at the speed of the
+    // linear move after it (distance only), so a push carries on without a hitch; otherwise it eases in and out.
+    var b = resolve(keys[i + 1]), raw = clamp((t - keys[i].t) / (keys[i + 1].t - keys[i].t), 0, 1), e = keys[i + 1].ease, u;
+    if (e === 'lin') u = raw;
+    else if (e === 'carry' && keys[i + 2] && !keys[i + 2].cut) {
+      var n2 = resolve(keys[i + 2]), la = Math.log(b.dist / a.dist);
+      u = hermite(raw, la ? clamp(Math.log(n2.dist / b.dist) / (keys[i + 2].t - keys[i + 1].t) * (keys[i + 1].t - keys[i].t) / la, 0, 3) : 0);
+    } else u = inOut(raw);
     return {
       target: lerp3(a.target, b.target, u), dist: Math.exp(lerp(Math.log(a.dist), Math.log(b.dist), u)),
       yaw: lerp(a.yaw, b.yaw, u), pitch: lerp(a.pitch, b.pitch, u),
@@ -1710,9 +1897,23 @@
     return { pos: pos, fw: fw, rt: rt, up: up, f: v.f, px: v.px, py: v.py, dist: v.dist, near: near };
   }
   function cameraA(t) { return camFrom(viewAt(CAM_A, t), 0.04); }
+  // The match cut's linger (MATCH): for 0.4 s after T.realCut the canvas holds its T.realCut frame while its lines fade
+  // over the footage, which keeps pushing in; CAM_X (seconds past T.realCut, set by the player's draw) carries the
+  // camera on along its last MC-1 move (S2-01 0.0 s → 0.6 s, linear), so the fading lines stay on the steel.
+  var CAM_X = 0, MC_K = -1;
+  CAM_B.forEach(function (k, i) { if (k.t === T.realCut && k.fixedFov) MC_K = i; });
+  function carryOn(v, x) {
+    var a = resolve(CAM_B[MC_K - 1]), b = resolve(CAM_B[MC_K]), u = 1 + x / (CAM_B[MC_K].t - CAM_B[MC_K - 1].t);
+    v.target = lerp3(a.target, b.target, u); v.dist = Math.exp(lerp(Math.log(a.dist), Math.log(b.dist), u));
+    v.yaw = lerp(a.yaw, b.yaw, u); v.pitch = lerp(a.pitch, b.pitch, u); v.f = Math.exp(lerp(Math.log(a.f), Math.log(b.f), u));
+    v.px = lerp(a.px, b.px, u); v.py = lerp(a.py, b.py, u);
+    return v;
+  }
   function cameraB(t) {
     var v = viewAt(CAM_B, t);
-    if (t > T.lift[1]) v.yaw += 0.05 * Math.sin((t - T.lift[1]) * 0.21);   // a slow breath in the long shots
+    if (CAM_X > 0 && MC_K > 0 && t >= T.realCut) v = carryOn(v, CAM_X);
+    // a slow breath in the long shots (held still for the match cut, where the camera is the footage's)
+    if (t > T.lift[1]) v.yaw += 0.05 * Math.sin((t - T.lift[1]) * 0.21) * (1 - span(t, [T.roof[0] - 0.4, T.roof[0] + 0.5]) * (1 - span(t, [T.realCut + 0.05, T.realCut + 0.8])));
     return camFrom(v, 0.5);
   }
   // The stage seen through the people's camera: the plan hovering at 1 : 62 above the table.
@@ -2413,7 +2614,7 @@
     var n = 0;
     for (var i = 0; i < CREW.length; i++) {
       var w = CREW[i];
-      if (t < w.t0 || t > w.t1) continue;
+      if (t < w.t0 || t > w.t1 || (w.mm && !mmShow(w.mm))) continue;
       var a = clamp((t - w.t0) / 0.25, 0, 1) * clamp((w.t1 - t) / 0.25, 0, 1);
       if (w.rig) a *= w.rig.at(t).a;
       if (a <= 0.02) continue;
@@ -2475,11 +2676,13 @@
     for (i = 0; i < parts.length; i++) {
       p = parts[i];
       if (t < p.t0 || (p.out && t >= p.out[1])) continue;
+      if (p.mm && !mmShow(p.mm)) continue;   // the match cut's rig (see MATCH)
       M = motion(p, t);
       if (!M) continue;
       X = M.X;
       if (X && X.a <= 0.01) continue;
       if (!p.quiet && t >= p.t0 + p.dur * 0.7) landed++;
+      if (p.mm === 'out' && MATCH && t >= MW[1]) continue;
       if (X) { mv(p, M, p.c); if (!pj(c, MX, MY, MZ)) continue; }
       else if (!pj(c, p.c[0], p.c[1] + M.dy, p.c[2])) continue;
       // skip what can't be seen: smaller than a pixel, or wholly off screen
@@ -2504,6 +2707,7 @@
         var keep = p.c[2] > 30 && !p.veh ? lerp(1, p.kind === 'foh' || p.kind === 'console' ? 0.12 : 0.3, power) : 1;
         if (focus > 0 && !isModule(p)) keep *= 1 - 0.6 * focus;
         if (p.out) keep *= 1 - span(t, p.out);
+        if (p.mm === 'out') keep *= mFade(t);
         if (p._M.X) keep *= p._M.X.a;
         p._keep = keep;
         // small structural parts read fine as outlines; screens always get their faces
@@ -2565,7 +2769,8 @@
     ctx.setLineDash([3 * dpr, 3 * dpr]);
     ctx.strokeStyle = rgba(AMBER, 0.85 * a); ctx.lineWidth = 1.2 * dpr;
     ctx.beginPath();
-    TOWERS.forEach(function (tw) {
+    TOWERS.forEach(function (tw0, n) {
+      var tw = towerAt(n);
       [-0.25, 0.25].forEach(function (o) {
         if (!pj(c, tw[0] + o, 25.85, tw[1])) return;
         var x0 = PX, y0 = PY;
@@ -2585,7 +2790,7 @@
     callouts.forEach(function (o) {
       var a = clamp((t - o.t0) / 0.25, 0, 1) * clamp((o.t1 - t) / 0.35, 0, 1) * fade;
       if (a <= 0) return;
-      var p = o.p, dy = o.live === 'lift' ? roofY(t) : 0;
+      var p = MATCH && o.pm ? o.pm : o.p, dy = o.live === 'lift' ? roofY(t) : 0;   // (pm: where it points in the match cut's rig)
       if (!pj(c, p[0], p[1] + dy, p[2])) return;
       var x = PX, y = PY, lx = x + o.dx * dpr, ly = y + o.dy * dpr, right = o.dx >= 0;
       if (lx < 16 * dpr || lx > W - 16 * dpr || ly < 96 * dpr || ly > H - 16 * dpr) return;   // (the header and the act list live up top)
@@ -3017,8 +3222,9 @@
     ctx.save(); ctx.globalCompositeOperation = 'lighter';
     var wl = span(t, [T.checks[0] + 1.4, T.checks[0] + 2.0]);
     WLT.forEach(function (L) {
-      var on = span(t, [L.t0, L.t0 + 0.3]) * k;
-      if (on > 0) pool(c, L.aim[0], 0.05, L.aim[1], 22, WARM, (0.07 + 0.05 * wl) * on);
+      if (!mmShow(L.mm)) return;
+      var on = span(t, [L.t0, L.t0 + 0.3]) * k * (L.mm === 'out' ? mFade(t) : 1);
+      if (on > 0) pool(c, L.aim[0], 0.05, L.aim[1], L.big ? 34 : 22, WARM, (0.07 + 0.05 * wl) * on);
     });
     if (wl > 0) [[-14, 0], [0, -4], [14, 0], [-8, -10], [8, -10]].forEach(function (q) { pool(c, q[0], DECK.h + 0.02, q[1], 11, WARM, 0.12 * wl * k); });
     ctx.restore();
@@ -3110,10 +3316,16 @@
       glowDot(PX, PY, Math.max(2.5 * dpr, 0.9 * c.f / PZ), AMBER, 0.75 * blink * X.a * k);
     });
     WLT.forEach(function (L) {
-      var on = span(t, [L.t0, L.t0 + 0.3]) * k;
+      if (!mmShow(L.mm)) return;
+      var on = span(t, [L.t0, L.t0 + 0.3]) * k * (L.mm === 'out' ? mFade(t) : 1);
       if (on <= 0) return;
+      var fx = L.aim[0] - L.x, fz = L.aim[1] - L.z, fl = Math.hypot(fx, fz) || 1;
+      if (L.big) {   // a light mast: four big lamps, two by two
+        for (var a2 = -1; a2 <= 1; a2 += 2) for (var b2 = -1; b2 <= 1; b2 += 2)
+          if (pj(c, L.x + fz / fl * a2 * 0.85, L.y + b2 * 0.5, L.z - fx / fl * a2 * 0.85)) glowDot(PX, PY, clamp(2.2 * c.f / PZ, 3 * dpr, 12 * dpr), WARM, 0.9 * on);
+        return;
+      }
       for (var q = -1.5; q <= 1.5; q += 1) {
-        var fx = L.aim[0] - L.x, fz = L.aim[1] - L.z, fl = Math.hypot(fx, fz) || 1;
         if (pj(c, L.x + fz / fl * q * 0.45, L.y + 0.1, L.z - fx / fl * q * 0.45)) glowDot(PX, PY, clamp(1.1 * c.f / PZ, 2.5 * dpr, 8 * dpr), WARM, 0.75 * on);
       }
     });
@@ -3575,18 +3787,20 @@
     [T.video[0], '07  VIDEO  ·  LED COLUMNS'], [T.video[0] + 2.05, '07  SCENIC  ·  WINGS  ·  IMAG'], [T.audio[0], '08  AUDIO  ·  ARRAYS  ·  DELAYS'],
     [T.light[0], '09  LIGHTING  ·  ARCH  ·  FX'], [T.site[0], '09  SITE  ·  FOH  ·  BARRIER'], [T.explode[0], 'EXPLODED VIEW'],
     [T.checks[0], '10  CHECKS  ·  PIXEL MAP'], [T.checks[0] + 0.8, '10  CHECKS  ·  FOCUS  ·  LINE CHECK'], [T.checks[0] + 1.6, '10  CREW CLEAR  ·  WORK LIGHTS']];
-  var COUNTED = 0;
+  var COUNTED = 0, COUNTED_M = null;
+  // MATCH (set by the player): scene 2's footage takes over at T.realCut (the match cut into S2-01), so the canvas's
+  // notes clear before the dissolve; without it the canvas build runs to T.built.
   function drawReadout(t, landed) {
-    var a = span(t, [14.8, 15.3]) * (1 - span(t, [T.realCut - 0.6, T.realCut - 0.2]));
+    var cut = MATCH ? T.realCut : T.built, a = span(t, [14.8, 15.3]) * (1 - span(t, [cut - 0.6, cut - 0.2]));
     if (a <= 0) return;
-    if (!COUNTED) parts.forEach(function (p) { if (!p.quiet) COUNTED++; });
+    if (COUNTED_M !== MATCH) { COUNTED = 0; COUNTED_M = MATCH; parts.forEach(function (p) { if (!p.quiet && mmShow(p.mm)) COUNTED++; }); }
     // on phones the Skip button sits bottom-left, so the readout moves up above it
     var d = dpr, x = Math.max(20 * d, (W - 1280 * d) / 2 + 32 * d), y = H - (W / d < 600 ? 84 : 30) * d, phase = '', i, crew = 0, plant = 0;
     PHASES.forEach(function (ph) { if (t >= ph[0]) phase = ph[1]; });
     if (phase === '06  SYNC LIFT') phase += '  ·  6 / 6 HOISTS  ·  +' + (TRIM + roofY(t)).toFixed(3);
     if (phase === '10  CHECKS  ·  PIXEL MAP') phase += '  ·  COL ' + ('0' + clamp(Math.floor((t - T.checks[0] - 0.1) / 0.9 * LED.cols) + 1, 1, LED.cols)).slice(-2) + ' / ' + LED.cols;
     if (phase === '10  CHECKS  ·  FOCUS  ·  LINE CHECK') phase += '  ·  ' + ['L', 'L  R', 'L  R  SUBS', 'L  R  SUBS  DELAYS'][clamp(Math.floor((t - T.checks[0] - 0.8) / 0.2), 0, 3)];
-    for (i = 0; i < CREW.length; i++) if (t >= CREW[i].t0 && t <= CREW[i].t1) crew++;
+    for (i = 0; i < CREW.length; i++) if (t >= CREW[i].t0 && t <= CREW[i].t1 && mmShow(CREW[i].mm)) crew++;
     for (i = 0; i < KITRIGS.length; i++) if (KITRIGS[i].rig.at(t).a > 0.5) plant++;
     for (i = 0; i < TRUCKS.length; i++) if (t >= TRUCKS[i].t0 && t < TRUCKS[i].t1 + 3) plant++;
     ctx.save();
@@ -3661,7 +3875,7 @@
         var c = cameraB(t), liftK = span(t, [T.lift[0], T.roof[0]]), power = inOut(span(t, T.power));
         var hit = (t - T.explode[3]) / 0.35;   // the slam shakes the frame for a moment
         if (hit > 0 && hit < 1) { c.px += Math.sin(t * 91) * 3 * dpr * (1 - hit); c.py += Math.cos(t * 77) * 3 * dpr * (1 - hit); }
-        var planFade = 1 - 0.55 * span(t, [T.roof[0], T.explode[0]]);
+        var planFade = (1 - 0.55 * span(t, [T.roof[0], T.explode[0]])) * mFade(t);   // (S2-01 has no marks on the ground)
         var night = 1 - 0.6 * span(t, [T.power[0] + 0.5, T.power[1]]);   // the site stays, quieter, once the show is on
         TESTK = span(t, [T.checks[0] + 0.05, T.checks[0] + 0.3]) * (1 - span(t, [T.checks[0] + 1.9, T.checks[0] + 2.2]));
         var q0 = now();
@@ -3696,7 +3910,7 @@
         drawDrones(t, c);
         q0 = lap("fx", q0);
         drawTeam(t, c);
-        drawCallouts(t, c, 1 - span(t, [T.explode[0] - 0.1, T.explode[0] + 0.3]));
+        drawCallouts(t, c, (1 - span(t, [T.explode[0] - 0.1, T.explode[0] + 0.3])) * (MATCH ? 1 - span(t, [T.realCut - 0.9, T.realCut - 0.5]) : 1));
         drawExplodeLabels(t, c);
         drawInsets(t, c);
       }
@@ -3704,7 +3918,17 @@
     ctx.restore();
     drawChrome(t, r, chromeK, pen);
     if (t >= SWITCH) drawReadout(t, landed);
+    if (SCREEN) {
+      // In the match cut the canvas is shown in screen blend over the footage's box, whose backdrop is BG: take BG
+      // out of the frame (c' = (c - BG) / (1 - BG), per channel), so the moment the blend starts the picture does not
+      // change at all (screen of c' over BG is c again), and the canvas adds only its lines to the footage.
+      ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1;
+      ctx.globalCompositeOperation = 'difference'; ctx.fillStyle = BG; ctx.fillRect(0, 0, W, H);
+      ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = 0.046; ctx.drawImage(canvas, 0, 0);
+      ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
+    }
   }
+  var SCREEN = false;   // set by the player's draw(): the canvas is on screen in screen blend (the match cut)
 
   /* ==========================================================================
      Scene 4, drawn live: the logo is built and brought into place.
@@ -4397,10 +4621,11 @@
      footage only when its clips are marked "ready" and load; otherwise it
      falls back to this canvas, so the film always plays:
        01 People          clips s1-01 … s1-08    fallback: the v2 prologue (canvas 0 → T.drawIn)
-       02 Build           canvas T.drawIn → T.realCut (always), then clips s2-01 … s2-05
-                          (no fallback needed: without them the canvas carries straight on)
+       02 Build           canvas T.drawIn → T.realCut (always: survey to the roof lift), then clips
+                          s2-01 … s2-05 (the roof at trim, rigging, LED, lighting, PA, the finished site)
+                          fallback: the canvas carries straight on (T.realCut → T.built: LED to checks)
        03 Arrival         clips s3-01 … s3-10    fallback: the power-up, crowd, fireworks, drones
-                          and the team at FOH (canvas T.realCut → T.s3End)
+                          and the team at FOH (canvas T.built → T.s3End)
        04 Unconventional  clips s4-01 … s4-03    fallback: the canvas logo above; the footage
                           version needs s4-03 (the lit hold), so the film always ends on the name;
                           under the title the hold dissolves into the owner's exact logo (EXACT)
@@ -4425,8 +4650,9 @@
      ========================================================================== */
   var XF = 0.22, WAIT_MAX = 8, STILLS = { wipe: [0.9, 2.5], title: 3.1, len: 3.5 };
   var FEATHER = 'linear-gradient(to bottom, transparent, #000 9%, #000 91%, transparent)';   // must match .intro__still.is-fitw
-  // The film ends on the owner's exact logo (slot film-s4-03 `exact`: brand/unconventional-logo.jpg copied pixel for
-  // pixel into a 653×443 PNG, its dark backdrop feathered out over a 48 px margin). Under the title card the AI hold
+  // The film ends on the owner's exact logo (slot film-s4-03 `exact`: brand/unconventional-logo.jpg, 557×347, at (48, 48)
+  // in a 653×443 PNG, its dark backdrop feathered out over the margin; `exact2x`: the same layout at 1306×886; the files
+  // must keep this layout, EXACT is measured on it). Under the title card the AI hold
   // (phones: the lit still) dissolves into it, registered on the U. EXACT: the U in that PNG (centre, width) and the
   // word's width, in its own pixels; EXREF: the U in the frame it replaces (the hold / the clip's end frame, and the
   // phones' 9:16 lit still), as fractions of that frame. It is never shown larger than its own pixels (see exactCap).
@@ -4447,9 +4673,10 @@
     { act: 'people', brief: true, clips: ['film-s1-01', 'film-s1-02a', 'film-s1-02b', 'film-s1-03', 'film-s1-04', 'film-s1-05', 'film-s1-06', 'film-s1-07', 'film-s1-08'],
       fb: { world: 'stage', t0: 0, t1: T.drawIn } },
     { act: 'build', fb: { world: 'stage', t0: T.drawIn, t1: T.realCut } },
-    { act: 'build', clips: ['film-s2-01', 'film-s2-02', 'film-s2-03', 'film-s2-03b', 'film-s2-04', 'film-s2-05'] },
+    { act: 'build', clips: ['film-s2-01', 'film-s2-02', 'film-s2-03', 'film-s2-03b', 'film-s2-04', 'film-s2-05'],
+      fb: { world: 'stage', t0: T.realCut, t1: T.built } },
     { act: 'arrival', clips: ['film-s3-01', 'film-s3-02', 'film-s3-03', 'film-s3-04', 'film-s3-05', 'film-s3-06', 'film-s3-07', 'film-s3-08', 'film-s3-09', 'film-s3-10'],
-      fb: { world: 'stage', t0: T.realCut, t1: T.s3End } },
+      fb: { world: 'stage', t0: T.built, t1: T.s3End } },
     { act: 'logo', clips: ['film-s4-01', 'film-s4-02', 'film-s4-03'], need: 'film-s4-03', fb: { world: 'logo', t0: 0, t1: Infinity } }
   ];
 
@@ -4497,7 +4724,11 @@
       if (!list.length && sc.fb) list.push({ kind: 'canvas', world: sc.fb.world, t0: sc.fb.t0, t1: sc.fb.t1, scene: si, key: si * 100 });
       list.forEach(function (g) { g.act = sc.act; g.brief = !!sc.brief && g.kind !== 'canvas'; out.push(g); });
     });
-    for (var i = 0; i < out.length; i++) out[i].join = i ? joinOf(out[i - 1], out[i]) : joinT('none', 0);
+    MATCH = false;
+    for (var i = 0; i < out.length; i++) {
+      out[i].join = i ? joinOf(out[i - 1], out[i]) : joinT('none', 0);
+      if (i && out[i].kind !== 'canvas' && out[i - 1].kind === 'canvas' && out[i - 1].t1 === T.realCut) MATCH = true;   // footage takes over at the match cut
+    }
     SEG = out;
     layout();
   }
@@ -4555,16 +4786,36 @@
     return im;
   }
   // The owner's exact logo: an image, so it needs no autoplay (the canvas ending uses it too). A slot may add
-  // `exact2x`, the same PNG at twice the size, for high-density screens (see exactCap).
+  // `exact2x`, the same PNG at exactly twice the size. The file is picked here rather than by srcset (which gives every
+  // 1x screen the 1x file): the 2x file wherever the logo, once the frame has settled, would be drawn larger than the
+  // 1x file's pixels in device px. That is every 2x or 3x screen, and a big 1x screen, which can then settle to its
+  // usual size (see exactCap). Its density (_dens) is set at once, so the ending is planned for that file while it
+  // loads (a late file never moves the frame). If the 2x file fails, the 1x file is loaded instead, and if the ending
+  // is already under way the frame eases to the 1x file's size (RESETTLE s) rather than jumping.
   function exactSrc() { var s = slots['film-s4-03']; return s && s.exact ? s.exact : ''; }
-  function exactImg(s) {
-    var im = img(s.exact, 'intro__exact', function () {
-      im._dens = s.exact2x && (im.currentSrc || '').indexOf(s.exact2x) >= 0 ? 2 : 1;
+  function exactNeed(g) {   // device px per pixel of the 1x file where the frame settles, before any cap
+    return exactFit(g, true).s * (g.kind === 'canvas' ? 1 : settleBase()[2]) * (window.devicePixelRatio || 1);
+  }
+  function exactImg(s, g) {
+    var two = !!s.exact2x && exactNeed(g) > 1.001;
+    var im = img(two ? s.exact2x : s.exact, 'intro__exact', function () {
+      im._dens = Math.max(1, im.naturalWidth / EXACT.w);   // 2 for the 2x file
       late(im, '_at');
-    }, function () { late(im, '_badAt'); }, s.exact2x ? s.exact + ' 1x, ' + s.exact2x + ' 2x' : '');
+    }, function () {
+      if (two) {
+        two = false; im._bad = false;
+        console.warn('[film] "film-s4-03" exact2x ' + s.exact2x + ' did not load; using ' + s.exact + '.');
+        if (curSeg && isLast(curSeg) && exactOf(curSeg) === im && !paused()) { im._capFrom = exactCap(im); im._capAt = loc; }
+        im._dens = 1;
+        im.src = s.exact;
+        return;
+      }
+      late(im, '_badAt');
+    });
+    im._dens = two ? 2 : 1;
     return im;
   }
-  function logoExact() { if (!logoX && exactSrc()) logoX = exactImg(slots['film-s4-03']); return logoX; }
+  function logoExact(g) { if (!logoX && exactSrc()) logoX = exactImg(slots['film-s4-03'], g); return logoX; }
   function exactOf(g) { return !g ? null : g.kind === 'canvas' ? (g.world === 'logo' ? logoX : null) : g.clip.exact; }
   // The exact logo arrived (or failed) after its moment, with the film under the title: its dissolve (or the frame's
   // re-settle) runs from now rather than cutting in, and the clock starts again for it. (With Pause motion it simply shows.)
@@ -4575,7 +4826,7 @@
   }
   function ensure(g, preload) {
     if (!g) return;
-    if (g.kind === 'canvas') { if (g.world === 'logo') logoExact(); return; }
+    if (g.kind === 'canvas') { if (g.world === 'logo') logoExact(g); return; }
     var c = g.clip, s = c.slot;
     if (g.kind === 'stills') {
       if (!c.dark) {
@@ -4584,7 +4835,7 @@
         c.dark = img(s.phoneStills[0], 'intro__still is-fitw', ok, bad);
         c.lit = img(s.phoneStills[1], 'intro__still is-fitw', ok, bad);
       }
-      if (s.exact && !c.exact) c.exact = exactImg(s);
+      if (s.exact && !c.exact) c.exact = exactImg(s, g);
       return;
     }
     if (!c.el) makeVideo(c, preload);
@@ -4592,7 +4843,7 @@
     if (s.hold && !PHONE && !c.hold) c.hold = img(s.hold, 'intro__still');
     if (s.phoneEnd && PHONE && !c.end) c.end = img(s.phoneEnd, 'intro__still');
     if (s.overlay && !c.over) c.over = img(s.overlay, 'intro__still is-screen');
-    if (s.exact && !c.exact) c.exact = exactImg(s);
+    if (s.exact && !c.exact) c.exact = exactImg(s, g);
   }
   function makeVideo(c, preload) {
     var v = document.createElement('video'), s = c.slot;
@@ -4707,7 +4958,7 @@
   function enter(g, l, jump) {
     ensure(g, 'auto');
     var ex = exactOf(g);
-    if (ex) ex._at = ex._badAt = undefined;   // a new pass: the exact logo's dissolve is on its planned time again
+    if (ex) ex._at = ex._badAt = ex._capAt = undefined;   // a new pass: the exact logo's dissolve is on its planned time again
     if (g.kind === 'canvas') { raise(canvas); raise(ex); return; }
     var c = g.clip;
     arm(c);
@@ -4834,9 +5085,12 @@
     var inK = j.type === 'none' || j.type === 'cut' ? 1 : j.type === 'dip' ? smooth(clamp(loc / (j.d / 2), 0, 1)) : smooth(clamp(loc / j.d, 0, 1));
     var outK = nx && nx.join.type === 'dip' ? 1 - smooth(clamp((loc - (g.len - nx.join.d / 2)) / (nx.join.d / 2), 0, 1)) : 1;
     var cv = g.kind === 'canvas' ? g : p && p.kind === 'canvas' ? p : null;
+    SCREEN = g.kind !== 'canvas' && !!p && p.kind === 'canvas' && j.type === 'match';   // (the same test as the blend below)
     if (cv) {
       var lt = cv === g ? loc : Math.min(ploc, cv.len);
+      CAM_X = SCREEN ? clamp(ploc - cv.len, 0, 0.4) : 0;   // the match cut's linger: the camera carries on (see carryOn)
       if (cv.world === 'logo') renderLogo(lt); else render(cv.t0 + Math.min(lt, cv.len));
+      CAM_X = 0;
     }
     // the canvas (its ending, the canvas logo, dissolves into the exact logo too: see xfade)
     var cA = 0, blend = '', lx = g.kind === 'canvas' && isLast(g) ? exactMix(g, loc) : 0, LX = xfade(lx);
@@ -4896,8 +5150,9 @@
   // The exact logo's place in the media box (CSS px, before the settle transform) and its scale (1 = its own
   // pixels): its U over the U of the frame it replaces, but never so wide that the word would leave the screen.
   // g0-g1: the gap under the U in the replaced layers' own box (for split). The canvas logo is matched as it rests
-  // (after its settle), and there the scale is capped at once (the canvas camera does not make room for it).
-  function exactFit(g) {
+  // (after its settle), and there the scale is capped at once (the canvas camera does not make room for it);
+  // raw: without that cap (exactNeed).
+  function exactFit(g, raw) {
     var bw = W / dpr, bh = H / dpr, s;
     if (g.kind === 'canvas') {
       var c = logoCam(LG.settle[1]), ux, uy, uw, ub;
@@ -4906,7 +5161,7 @@
       pj(c, U_ARM + U_HALF, 7, 0); uw = (PX - uw) / dpr;
       pj(c, 0, U_BASE, 0); ub = PY / dpr;
       pj(c, 0, W_CAP, W_Z);   // the top of the word (it stands in front of the U)
-      s = Math.min(uw / EXACT.uw, (bw - 32) / EXACT.ww, exactCap(logoX));
+      s = Math.min(uw / EXACT.uw, (bw - 32) / EXACT.ww, raw ? Infinity : exactCap(logoX));
       return { s: s, x: ux - EXACT.ux * s, y: uy - EXACT.uy * s, g0: ub, g1: Math.max(ub + 2, PY / dpr) };
     }
     var r = g.kind === 'stills' ? EXREF.tall : EXREF.wide, fw;
@@ -4923,11 +5178,17 @@
     e.style.left = f.x.toFixed(1) + 'px'; e.style.top = f.y.toFixed(1) + 'px';
     e.style.width = (EXACT.w * f.s).toFixed(1) + 'px'; e.style.height = (EXACT.h * f.s).toFixed(1) + 'px';
   }
-  // "Never larger than its own pixels", as a scale of the 1x file (1 = one CSS px per pixel of it). With a 2x master
-  // (slot `exact2x`, once the browser has picked it) the rule holds in device pixels too. With only the 1x file it holds
-  // in CSS px, so a 2x or 3x screen upscales the logo like any 1x image on the web: holding it in device px there would
-  // halve it. The owner's logo is 557 px wide; a larger (or vector) master is the real fix.
-  function exactCap(e) { return e && e._dens > 1 ? e._dens / Math.max(1, window.devicePixelRatio || 1) : 1; }
+  // "Never larger than its own pixels", as a scale of the 1x file (1 = one CSS px per pixel of it). With only the 1x
+  // file it holds in CSS px, so a 2x or 3x screen upscales the logo like any 1x image on the web: holding it in device
+  // px there would halve it. With the 2x file (slot `exact2x`, picked in exactImg) it holds in device px: up to 2 CSS px
+  // per 1x pixel on a 1x screen (so a big 1x screen settles to its usual size), 1 on a 2x screen. It never drops below
+  // the 1x file's 1, so a 3x screen (there is no 3x file) draws the 2x file at up to 1.5 device px per pixel rather than
+  // settling smaller than it did with the 1x file alone. Both files come from the owner's 557 px logo (the 2x one by
+  // enlargement); a larger (or vector) master is the real fix.
+  function exactCap(e) {
+    var c = e && e._dens > 1 ? Math.max(1, e._dens / Math.max(1, window.devicePixelRatio || 1)) : 1;
+    return e && e._capAt >= 0 ? lerp(e._capFrom, c, smooth(clamp((loc - e._capAt) / RESETTLE, 0, 1))) : c;   // (the 2x file failed late)
+  }
   // 0 → 1 over EXACT.fade s: the dissolve into the exact logo. It starts with the title card or, where the logo
   // would still be larger than its own pixels, later in the settle, once the shrinking frame has brought it down
   // (the canvas logo: once it has settled). If the logo only arrived later than that, it runs from then (see late).
@@ -4941,6 +5202,7 @@
       start = g.titleAt + SETTLE * u;
     }
     if (e._at > start) start = e._at;
+    if (e._capAt >= 0) start = Math.max(start, e._capAt + RESETTLE);   // (the 2x file failed late: once the frame has eased down)
     return clamp((l - start) / EXACT.fade, 0, 1);
   }
   // The dissolve (x from exactMix) for the frame it replaces (o) and the exact logo (e), above the gap under the U (U)
@@ -4964,9 +5226,9 @@
   // Where footage settles under the title: aside on wide screens, up on tall ones; and no larger than keeps the
   // exact logo within its own pixels (so on big screens it settles a little smaller). That is planned while the logo
   // loads; if it fails, the frame eases back out to its usual size from that moment (RESETTLE s).
+  function settleBase() { var aspect = W / H; return aspect >= 1.25 ? [22, -13, 0.42] : aspect >= 1 ? [0, -16, 0.48] : [0, -16, 0.82]; }
   function settleTo(g) {
-    var aspect = W / H, to = aspect >= 1.25 ? [22, -13, 0.42] : aspect >= 1 ? [0, -16, 0.48] : [0, -16, 0.82];
-    var e = g.clip && g.clip.exact, w;
+    var to = settleBase(), e = g.clip && g.clip.exact, w;
     if (e) {
       w = !e._bad ? 1 : e._badAt >= 0 ? 1 - smooth(clamp((loc - e._badAt) / RESETTLE, 0, 1)) : 0;
       if (w > 0) to[2] = lerp(to[2], Math.min(to[2], exactCap(e) / exactFit(g).s), w);
@@ -5123,14 +5385,18 @@
   });
   // Review hook, only with ?dev on the URL: time a single frame at any second of the film.
   if (/[?&]dev\b/.test(window.location.search)) {
-    window.__film = { T: T, LG: LG, parts: parts.length, crew: CREW.length, prof: prof,
-      frame: function (t) { var a = performance.now(); render(t); return performance.now() - a; },
+    window.__film = { T: T, LG: LG, parts: parts.length, crew: CREW.length, prof: prof, cams: CAM_B,
+      // frame(t[, screen[, x]]): one canvas frame at canvas time t (screen: as it is drawn under the match cut's screen
+      // blend; x: seconds into the match cut's linger, when the camera carries on past T.realCut: see carryOn)
+      frame: function (t, s, x) { var a = performance.now(), k = SCREEN; if (s !== undefined) SCREEN = !!s; CAM_X = x || 0; render(t); SCREEN = k; CAM_X = 0; return performance.now() - a; },
+      // rig([on]): which rig the canvas draws (true: the match cut's, set by the player when S2-01 follows); on sets it, for review
+      rig: function (on) { if (on !== undefined) MATCH = !!on; return MATCH; },
       logo: function (t) { var a = performance.now(); renderLogo(t); return performance.now() - a; },
       seek: function (m) { seekMaster(m); draw(); kick(); return { seg: curSeg.name || curSeg.world, local: loc }; },
       // run the clock by hand (the app's browser pane does not animate a hidden tab): n steps of dt seconds
       step: function (dt, n) { for (var i = 0; i < (n || 1); i++) { advance(dt); draw(); } return { seg: curSeg.name || curSeg.world, local: +loc.toFixed(3), m: +(curSeg.m0 + Math.min(loc, curSeg.len)).toFixed(3), prev: prevSeg ? prevSeg.name || prevSeg.world : null, act: section.getAttribute('data-act'), end: section.classList.contains('is-end'), canvas: canvas.style.opacity }; },
       plan: function () { return SEG.map(function (g) { return { what: g.name || g.world + ' ' + g.t0 + '-' + g.t1, act: g.act, m0: +g.m0.toFixed(2), len: g.len, join: g.join.type }; }); },
-      at: function (t, p) { var c = cameraB(t); return pj(c, p[0], p[1], p[2]) ? [PX / dpr, PY / dpr, PZ] : null; } };
+      at: function (t, p, x) { CAM_X = x || 0; var c = cameraB(t); CAM_X = 0; return pj(c, p[0], p[1], p[2]) ? [PX / dpr, PY / dpr, PZ] : null; } };
   }
   kick();
 })();
