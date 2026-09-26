@@ -42,7 +42,7 @@
   <script src="content/media.js" defer></script>
   <script src="content/brands.js" defer></script>
   <script src="js/main.js" defer></script>
-  <script src="js/intro.js" defer></script>
+  <script src="js/film.js" defer></script>
 </head>
 
 <body>
@@ -70,24 +70,30 @@
 
   <main id="main">
 
-    <!-- ===== The intro film ===========================================
-         From concept to reality: a drawing on a screen becomes a 3D build,
-         piece by piece, then the real event. Rendered live by js/intro.js;
-         a produced film in the "intro" media slot replaces the render. -->
+    <!-- ===== The intro film =============================================
+         People, concept, build, reality: two people meet, a team sparks an
+         idea, the plan lands on a CAD screen, a mega stage builds itself
+         part by part and comes alive. Rendered live by js/film.js. -->
     <section class="intro" id="top" aria-labelledby="intro-title" data-intro>
-      <div class="intro__film" data-slot="intro" data-slot-mode="background" data-tone="a"></div>
       <canvas class="intro__canvas" data-intro-canvas aria-hidden="true"></canvas>
-      <p class="visually-hidden">A short film: an engineering drawing lies flat on a screen, lifts into three dimensions and builds itself piece by piece into a stage, then the lights come on.</p>
+      <p class="visually-hidden">A short film: two people meet, then a team gathers round a table and their ideas spark into a plan. The plan lands on a screen, then a vast festival stage builds itself piece by piece and comes alive with light, lasers, flame and a crowd.</p>
       <div class="intro__scrim" aria-hidden="true"></div>
 
       <div class="intro__hud" aria-hidden="true">
         <div class="container intro__hud-inner">
           <ol class="intro__acts">
-            <li data-act-label="concept">01 Concept</li>
-            <li data-act-label="build">02 Build</li>
-            <li data-act-label="reality">03 Reality</li>
+            <li data-act-label="people">01 People</li>
+            <li data-act-label="concept">02 Concept</li>
+            <li data-act-label="build">03 Build</li>
+            <li data-act-label="reality">04 Reality</li>
           </ol>
           <span class="intro__progress"><span data-intro-progress></span></span>
+        </div>
+      </div>
+
+      <div class="intro__tools">
+        <div class="container intro__tools-inner">
+          <button class="intro__skip" type="button" data-intro-skip>Skip intro</button>
         </div>
       </div>
 
