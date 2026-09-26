@@ -42,6 +42,7 @@
   <script src="content/media.js" defer></script>
   <script src="content/brands.js" defer></script>
   <script src="js/main.js" defer></script>
+  <script src="js/intro.js" defer></script>
 </head>
 
 <body>
@@ -60,29 +61,44 @@
 
       <nav class="site-nav" id="site-nav" aria-label="Primary">
         <ul class="site-nav__list">
-          <li><a href="#thesis">Why we exist</a></li>
-          <li><a href="#offer">What we do</a></li>
-          <li><a href="#how">How we work</a></li>
+          <li><a href="about.html">Who we are</a></li>
         </ul>
-        <a class="btn btn--accent btn--sm" href="#contact">Start a conversation</a>
+        <a class="btn btn--accent btn--sm" href="about.html#contact">Start a conversation</a>
       </nav>
     </div>
   </header>
 
   <main id="main">
 
-    <!-- ===== Hero ===================================================== -->
-    <section class="hero" id="top" aria-labelledby="hero-title">
-      <div class="hero__media" data-slot="hero" data-slot-mode="background" data-tone="a"></div>
-      <div class="hero__scrim" aria-hidden="true"></div>
+    <!-- ===== The intro film ===========================================
+         From concept to reality: a drawing on a screen becomes a 3D build,
+         piece by piece, then the real event. Rendered live by js/intro.js;
+         a produced film in the "intro" media slot replaces the render. -->
+    <section class="intro" id="top" aria-labelledby="intro-title" data-intro>
+      <div class="intro__film" data-slot="intro" data-slot-mode="background" data-tone="a"></div>
+      <canvas class="intro__canvas" data-intro-canvas aria-hidden="true"></canvas>
+      <p class="visually-hidden">A short film: an engineering drawing lies flat on a screen, lifts into three dimensions and builds itself piece by piece into a stage, then the lights come on.</p>
+      <div class="intro__scrim" aria-hidden="true"></div>
 
-      <div class="container hero__content">
-        <p class="eyebrow hero__eyebrow">Live production &middot; Selective by design</p>
-        <h1 class="hero__title" id="hero-title">The moments that <em>can't be briefed.</em></h1>
-        <p class="hero__lede">Unconventional produces the live moments that sit beyond a traditional agency's reach: culturally delicate, technically ambitious, on impossible timelines, with everything riding on them. Judgment, trust and execution under pressure. Nothing else.</p>
-        <div class="hero__actions">
-          <a class="btn btn--accent" href="#contact">Start a conversation</a>
-          <a class="btn btn--ghost" href="#thesis">Why we exist</a>
+      <div class="intro__hud" aria-hidden="true">
+        <div class="container intro__hud-inner">
+          <ol class="intro__acts">
+            <li data-act-label="concept">01 Concept</li>
+            <li data-act-label="build">02 Build</li>
+            <li data-act-label="reality">03 Reality</li>
+          </ol>
+          <span class="intro__progress"><span data-intro-progress></span></span>
+        </div>
+      </div>
+
+      <div class="intro__end">
+        <div class="container intro__end-inner">
+          <p class="eyebrow">From concept to reality</p>
+          <h1 class="intro__title" id="intro-title">The moments that <em>can't be briefed.</em></h1>
+          <div class="intro__actions">
+            <a class="btn btn--accent" href="about.html">Who we are</a>
+            <button class="btn btn--ghost btn--replay" type="button" data-intro-replay>Replay the film</button>
+          </div>
         </div>
       </div>
 
@@ -95,7 +111,7 @@
     <!-- ===== Brands ===================================================
          Populated from content/brands.js. Stays hidden until at least one
          brand is confirmed there; nothing unconfirmed ever reaches the page. -->
-    <section class="brands" aria-labelledby="brands-title" data-brands hidden>
+    <section class="brands" id="brands" aria-labelledby="brands-title" data-brands hidden>
       <div class="container brands__head">
         <h2 class="eyebrow brands__title" id="brands-title">The company we keep</h2>
         <p class="brands__note">Shown with permission. The work stays between us.</p>
@@ -113,155 +129,11 @@
       </div>
     </section>
 
-    <!-- ===== Thesis =================================================== -->
-    <section class="section thesis" id="thesis" aria-labelledby="thesis-title">
-      <div class="container thesis__grid">
-        <div class="thesis__text">
-          <p class="eyebrow reveal">Why we exist</p>
-          <h2 class="statement reveal" id="thesis-title">Some moments can't be briefed, scoped or executed by a traditional agency. <span class="muted">Not for lack of talent. Because the work lives beyond their reach.</span></h2>
-
-          <ul class="reasons reveal" aria-label="What puts the work beyond reach">
-            <li>Cultural nuance</li>
-            <li>Technical ambition</li>
-            <li>Compressed timelines</li>
-            <li>The power dynamics between brands, artists, athletes, leagues, platforms and audiences</li>
-          </ul>
-
-          <div class="prose reveal">
-            <p>Agencies optimize for process and predictability. We optimize for judgment, trust, ambition and execution under pressure. We don't scale up. We sell expertise.</p>
-            <p>We marry vision, cultural intelligence, relationships, dealmaking and narrative control with technical innovation, turnkey global scale, bespoke systems and flawless live execution &mdash; and we remove the single biggest failure point in experiential production: the gap between concept, culture and technical reality.</p>
-            <p class="prose__strong">We are clear. We are transparent. We value partnership &mdash; and we are there at the inception of a moment, not a domino in someone else's chain.</p>
-          </div>
-        </div>
-
-        <figure class="thesis__figure reveal">
-          <div class="frame frame--portrait" data-slot="about" data-tone="b"></div>
-        </figure>
-      </div>
-    </section>
-
-    <!-- ===== What we bring ============================================ -->
-    <section class="section bring" id="bring" aria-labelledby="bring-title">
-      <div class="container">
-        <header class="section-head">
-          <p class="eyebrow reveal">What we bring</p>
-          <h2 class="section-title reveal" id="bring-title">Most companies sell ideas they can't execute, or execute ideas they didn't shape. <span class="muted">We close that gap.</span></h2>
-        </header>
-
-        <ul class="bring__grid">
-          <li class="reveal"><h3>Crews that scale globally</h3><p>Without compromising quality.</p></li>
-          <li class="reveal"><h3>Real-time problem solving</h3><p>When the stakes are highest.</p></li>
-          <li class="reveal"><h3>Credibility</h3><p>With production partners, vendors and venues.</p></li>
-          <li class="reveal"><h3>Pattern recognition</h3><p>From a decade of complex live systems.</p></li>
-          <li class="reveal"><h3>Access</h3><p>Opportunity creation across brands, artists, athletes, leagues and platforms.</p></li>
-          <li class="reveal"><h3>Cultural translation</h3><p>Music, sports, gaming, fashion, media &mdash; and activations, experiential, corporate, finance, pharma, conferences.</p></li>
-          <li class="reveal"><h3>Trust at the highest level</h3><p>Earned in rooms where there is no second take.</p></li>
-          <li class="reveal"><h3>Narrative ownership</h3><p>Why this moment exists, who it's for, and why it matters.</p></li>
-          <li class="reveal"><h3>No net</h3><p>Comfortable operating without one.</p></li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- ===== What we do =============================================== -->
-    <section class="section offer" id="offer" aria-labelledby="offer-title">
-      <div class="container">
-        <header class="section-head">
-          <p class="eyebrow reveal">What we do</p>
-          <h2 class="section-title reveal" id="offer-title">We sell outcomes.</h2>
-          <p class="section-lede reveal">Three ways we're brought in. Each one ends in a room full of people who saw something they weren't expecting.</p>
-        </header>
-
-        <ol class="cards">
-          <li class="card reveal">
-            <div class="frame frame--43" data-slot="offer-1" data-tone="a"></div>
-            <div class="card__body">
-              <span class="card__num" aria-hidden="true">01</span>
-              <h3 class="card__title">Flagship cultural moments</h3>
-              <p>High-visibility, high-complexity live experiences: sports &times; music &times; fandom, brand-owned cultural platforms, league-, artist- and athlete-led moments. The kind that become IP and repeatable formats.</p>
-            </div>
-          </li>
-          <li class="card reveal">
-            <div class="frame frame--43" data-slot="offer-2" data-tone="b"></div>
-            <div class="card__body">
-              <span class="card__num" aria-hidden="true">02</span>
-              <h3 class="card__title">Embedded experiential partner</h3>
-              <p>The black-ops experiential arm inside the world's biggest agencies &mdash; or a direct partner for brands who won't accept translation loss. We're brought in when the stakes are too high to miss, the brief is intentionally ambitious, and the execution risk is existential.</p>
-            </div>
-          </li>
-          <li class="card reveal">
-            <div class="frame frame--43" data-slot="offer-3" data-tone="c"></div>
-            <div class="card__body">
-              <span class="card__num" aria-hidden="true">03</span>
-              <h3 class="card__title">Artist- and athlete-led platforms</h3>
-              <p>Scalable live systems around tours, fan experiences, gaming and betting integrations, and brand partnerships &mdash; for artists, athletes and leagues, and for the tech, software, finance, legal and pharma companies who want the same standard.</p>
-            </div>
-          </li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ===== How we're different ====================================== -->
-    <section class="section different" id="different" aria-labelledby="different-title">
-      <div class="container">
-        <p class="eyebrow reveal" id="different-title">How we're different</p>
-        <ul class="creed">
-          <li class="reveal">Producers of moments, <span class="muted">not campaigns.</span></li>
-          <li class="reveal">Builders of live systems, <span class="muted">not one-offs.</span></li>
-          <li class="reveal">Fluent in culture, <span class="muted">not just execution.</span></li>
-          <li class="reveal">Comfortable where risk, ambiguity and excellence <span class="muted">intersect.</span></li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- ===== How we work ============================================== -->
-    <section class="section how" id="how" aria-labelledby="how-title">
-      <div class="container">
-        <header class="section-head">
-          <p class="eyebrow reveal">How we work</p>
-          <h2 class="section-title reveal" id="how-title">Creative that is technical. Technical that can be creative.</h2>
-        </header>
-
-        <ol class="steps">
-          <li class="step reveal">
-            <span class="step__num" aria-hidden="true">01</span>
-            <h3>Common ground from day one</h3>
-            <p>Creative and technical build the idea together &mdash; never a handoff after the concept is already sold.</p>
-          </li>
-          <li class="step reveal">
-            <span class="step__num" aria-hidden="true">02</span>
-            <h3>Decisions in writing</h3>
-            <p>Every big meeting ends with confirmed action items and change orders. Decisions stick, and the work moves.</p>
-          </li>
-          <li class="step reveal">
-            <span class="step__num" aria-hidden="true">03</span>
-            <h3>A core team that is never compromised</h3>
-            <p>Creative Director. Executive Producer. Technical Director. Project Manager. Drafter. Fabrication Director.</p>
-          </li>
-          <li class="step reveal">
-            <span class="step__num" aria-hidden="true">04</span>
-            <h3>Turnkey scale</h3>
-            <p>Three fully built-out systems &mdash; broadcast trucks in road cases, live in 45 minutes &mdash; anywhere in the USA. Three major shows at once if that's what it takes. Global crews when the work leaves the country.</p>
-          </li>
-        </ol>
-
-        <p class="how__closing reveal">Capacity is finite. We choose our moments &mdash; and we don't publish them.</p>
-      </div>
-    </section>
-
-    <!-- ===== Contact ================================================== -->
-    <section class="section contact" id="contact" aria-labelledby="contact-title">
-      <div class="container">
-        <div class="cta-panel reveal">
-          <div class="cta-panel__media" data-slot="cta" data-slot-mode="background" data-tone="b"></div>
-          <div class="cta-panel__scrim" aria-hidden="true"></div>
-          <div class="cta-panel__content">
-            <p class="eyebrow">Contact</p>
-            <h2 class="cta-panel__title" id="contact-title">We don't show our work. The people we work with can.</h2>
-            <p class="cta-panel__lede">If you're wondering why they're in the room with us &mdash; ask them. Or ask us.</p>
-            <a class="btn btn--accent btn--lg" href="mailto:hello@unconventional.pro">hello@unconventional.pro</a>
-            <p class="cta-panel__small">Selective by design. Referrals welcome.</p>
-          </div>
-        </div>
+    <!-- ===== Bridge to the "Who we are" page ============================ -->
+    <section class="bridge" aria-labelledby="bridge-title">
+      <div class="container bridge__inner">
+        <h2 class="bridge__title reveal" id="bridge-title">Wondering why they work with us?</h2>
+        <a class="btn btn--ghost reveal" href="about.html">Who we are</a>
       </div>
     </section>
   </main>
@@ -273,10 +145,11 @@
 
       <nav aria-label="Footer">
         <ul class="site-footer__nav">
-          <li><a href="#thesis">Why we exist</a></li>
-          <li><a href="#offer">What we do</a></li>
-          <li><a href="#how">How we work</a></li>
-          <li><a href="#contact">Contact</a></li>
+          <li><a href="about.html">Who we are</a></li>
+          <li><a href="about.html#what">What we do</a></li>
+          <li><a href="about.html#how">How we work</a></li>
+          <li><a href="about.html#discretion">Discretion</a></li>
+          <li><a href="about.html#contact">Contact</a></li>
         </ul>
       </nav>
 
