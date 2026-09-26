@@ -1630,7 +1630,7 @@
     return true;
   }
   function drawLasers(t, c, power) {
-    var on = span(t, [P0(1.0), P0(1.4)]) * power * (t > T.end + 1 ? 0.55 : 1);
+    var on = span(t, [P0(1.0), P0(1.4)]) * power * (1 - 0.45 * smooth(span(t, [T.end + 0.6, T.end + 1.8])));   // quieter under the title
     if (on <= 0) return;
     ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.lineCap = 'round';
     lasers.forEach(function (L) {
@@ -2318,14 +2318,22 @@
     if (paused() && motionToggle) motionToggle.click();
     render(0);
     kick();
+    // the title card (and this button) hides again, so keyboard focus moves to Skip, which is back
+    if (skipBtn) { try { skipBtn.focus({ preventScroll: true }); } catch (e) { skipBtn.focus(); } }
   });
   if (skipBtn) skipBtn.addEventListener('click', function () {
     filmT = Math.max(filmT, T.end + 0.2);
     render(filmT);
     kick();
-    // the button hides itself once the title card is up, so keyboard focus moves to the title
-    var title = section.querySelector('#intro-title');
-    if (title) { title.setAttribute('tabindex', '-1'); try { title.focus({ preventScroll: true }); } catch (e) { title.focus(); } }
+    // the button hides itself once the title card is up, so keyboard focus moves to the title,
+    // once it has become visible (its reveal is staggered by a fraction of a second)
+    var title = section.querySelector('#intro-title'), tries = 0;
+    function focusOn(el) { el.setAttribute('tabindex', '-1'); try { el.focus({ preventScroll: true }); } catch (e) { el.focus(); } return document.activeElement === el; }
+    (function attempt() {
+      if (title && focusOn(title)) return;
+      if (++tries < 15) setTimeout(attempt, 100);
+      else focusOn(section);   // last resort: the film section itself, which is labelled by the title
+    })();
   });
   // Review hook, only with ?dev on the URL: time a single frame at any second of the film.
   if (/[?&]dev\b/.test(window.location.search)) {
