@@ -80,7 +80,7 @@ window.MEDIA_SLOTS = {
     spec: "Fourth photo of the same event · same spec as intro-photo-1."
   },
 
-  /* ---- Film v3 (preview.html, played by js/film3.js) ----------------------
+  /* ---- Film v3, first cut (preview2.html = Preview 2, played by js/film3.js)
      The footage of the four-scene film, one slot per shot, in playing order.
      A scene plays as footage only when its clips are "ready" and load; until
      then that scene plays on the live canvas (scene 4 needs film-s4-03, so
