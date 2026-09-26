@@ -863,6 +863,14 @@ html:not(.js) .intro__tools { display: none; }
   mask-image: linear-gradient(to bottom, transparent, #000 9%, #000 91%, transparent);
 }
 .intro__tint { background: var(--accent); mix-blend-mode: multiply; opacity: 0; }
+/* The owner's exact logo, the film's last frame: film3.js places and sizes it over the hold, registered on the U. */
+.intro__exact {
+  position: absolute;
+  display: block;
+  max-width: none;
+  pointer-events: none;
+  opacity: 0;
+}
 /* Feathers the edges of the footage's final frame when it settles aside under the title card. */
 .intro__vignette {
   background:
@@ -873,15 +881,17 @@ html:not(.js) .intro__tools { display: none; }
 .intro[data-act="arrival"] [data-act-label="arrival"],
 .intro[data-act="logo"] [data-act-label="logo"] { color: var(--accent); }
 .intro__hud-note { margin-top: 12px; }
+/* It sits over footage, so it has its own dark backing: even over pure white the text keeps about 7:1. */
 .intro__brief {
   display: inline-block;
-  padding: 5px 9px;
+  padding: 6px 10px;
   border: 1px solid rgba(244, 241, 234, .22);
   border-radius: 999px;
-  font: 500 .64rem/1 var(--font-mono);
+  background: rgba(11, 11, 12, .72);
+  font: 500 .72rem/1 var(--font-mono);
   letter-spacing: .14em;
   text-transform: uppercase;
-  color: var(--ink-muted);
+  color: var(--ink);
   opacity: 0;
   transition: opacity .6s var(--ease);
 }
@@ -908,7 +918,7 @@ html:not(.js) .intro__caption { display: none; }
 }
 .intro.is-brief.has-caption .intro__caption p { opacity: 1; }
 @media (max-width: 599px) {
-  .intro__brief { padding: 4px 7px; font-size: .56rem; }
+  .intro__brief { padding: 5px 9px; font-size: .7rem; }
   .intro__caption { bottom: 74px; }
   .intro__caption p { font-size: .62rem; }
 }
