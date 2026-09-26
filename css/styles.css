@@ -828,6 +828,19 @@ html:not(.js) .intro__tools { display: none; }
   .intro__tools { inset: auto 0 22px 0; }
   .intro__tools-inner { justify-content: flex-start; }
 }
+/* Previews 1 and 2: the link between the two cuts (.intro__switch) has Skip's pill look but stays up at the end,
+   so the cuts can be compared after the film. The labels never wrap, and on phones the row keeps clear of the
+   round Pause motion button (bottom right) and shortens its labels (the words in .intro__wide drop out). */
+.intro.is-end .intro__switch { opacity: 1; visibility: visible; }
+.intro__badge,
+.intro__skip { white-space: nowrap; }
+@media (max-width: 599px) {
+  .intro__tools-inner { padding-right: calc(var(--gutter) + 44px); }
+  .intro__wide { display: none; }
+}
+@media (max-width: 359px) {
+  .intro__badge { display: none; }   /* the smallest phones: the link and Skip only */
+}
 
 /* Film v3 (preview.html, js/film3.js): footage layers, acts 03 Arrival and 04 Unconventional,
    and the "An imagined brief" tag with its captions while scene 1's footage plays. */
