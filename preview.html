@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Security policy: only this site's own files, plus Google Fonts, may load.
+       Adding an embed, analytics or a form service later? Its domain has to be allowed here first. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; media-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self'">
+
+  <!-- PREVIEW of the new intro film (js/film.js). Not linked from anywhere; the live home page still runs js/intro.js.
+       Kept behind the front door and out of search engines. -->
+  <meta name="robots" content="noindex">
+
+  <title>Film preview — Unconventional</title>
+  <meta name="theme-color" content="#0b0b0c">
+
+
+  <link rel="icon" href="favicon.ico" sizes="64x64">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/gate.css">
+  <script src="js/guard.js"></script>
+
+  <script src="js/boot.js"></script>
+  <script src="content/media.js" defer></script>
+  <script src="content/brands.js" defer></script>
+  <script src="js/main.js" defer></script>
+  <script src="js/film.js" defer></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ===== Header ===================================================== -->
+  <header class="site-header" data-header>
+    <div class="container site-header__inner">
+      <a class="wordmark" href="#top" aria-label="Unconventional, back to top">unconventional<span class="wordmark__dot" aria-hidden="true">.</span></a>
+
+      <!-- The toggle sits before the nav so keyboard focus moves from it straight into the open menu. -->
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-nav-toggle>
+        <span class="nav-toggle__bars" aria-hidden="true"></span>
+        <span class="visually-hidden">Menu</span>
+      </button>
+
+      <nav class="site-nav" id="site-nav" aria-label="Primary">
+        <ul class="site-nav__list">
+          <li><a href="about.html">Who we are</a></li>
+        </ul>
+        <a class="btn btn--accent btn--sm" href="about.html#contact">Start a conversation</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ===== The intro film, version 2 (preview) ========================
+         People, concept, build, reality: two people meet, a team sparks an
+         idea, the plan lands on a CAD screen, a mega stage builds itself
+         part by part and comes alive. Rendered live by js/film.js. -->
+    <section class="intro" id="top" aria-labelledby="intro-title" data-intro>
+      <canvas class="intro__canvas" data-intro-canvas aria-hidden="true"></canvas>
+      <p class="visually-hidden">A short film: two people meet, then a team gathers round a table and their ideas spark into a plan. The plan lands on a screen, then a vast festival stage builds itself piece by piece and comes alive with light, lasers, flame and a crowd.</p>
+      <div class="intro__scrim" aria-hidden="true"></div>
+
+      <div class="intro__hud" aria-hidden="true">
+        <div class="container intro__hud-inner">
+          <ol class="intro__acts">
+            <li data-act-label="people">01 People</li>
+            <li data-act-label="concept">02 Concept</li>
+            <li data-act-label="build">03 Build</li>
+            <li data-act-label="reality">04 Reality</li>
+          </ol>
+          <span class="intro__progress"><span data-intro-progress></span></span>
+        </div>
+      </div>
+
+      <div class="intro__tools">
+        <div class="container intro__tools-inner">
+          <span class="intro__badge">Preview</span>
+          <button class="intro__skip" type="button" data-intro-skip>Skip intro</button>
+        </div>
+      </div>
+
+      <div class="intro__end">
+        <div class="container intro__end-inner">
+          <p class="eyebrow">From concept to reality</p>
+          <h1 class="intro__title" id="intro-title">The moments that <em>can't be briefed.</em></h1>
+          <div class="intro__actions">
+            <a class="btn btn--accent" href="about.html">Who we are</a>
+            <button class="btn btn--ghost btn--replay" type="button" data-intro-replay>Replay the film</button>
+          </div>
+        </div>
+      </div>
+
+      <button class="motion-toggle" type="button" aria-pressed="false" data-motion-toggle>
+        <span class="motion-toggle__icon" aria-hidden="true"></span>
+        <span data-motion-label>Pause motion</span>
+      </button>
+    </section>
+
+    <!-- ===== Brands ===================================================
+         Populated from content/brands.js. Stays hidden until at least one
+         brand is confirmed there; nothing unconfirmed ever reaches the page. -->
+    <section class="brands" id="brands" aria-labelledby="brands-title" data-brands hidden>
+      <div class="container brands__head">
+        <h2 class="eyebrow brands__title" id="brands-title">The company we keep</h2>
+        <p class="brands__note">Shown with permission. The work stays between us.</p>
+      </div>
+      <div class="marquee marquee--brands">
+        <div class="marquee__track" data-marquee>
+          <ul class="marquee__group" data-brands-list></ul>
+        </div>
+      </div>
+      <!-- Second bar: the same marks in reverse order, sliding the other way. -->
+      <div class="marquee marquee--brands marquee--reverse" aria-hidden="true">
+        <div class="marquee__track" data-marquee="reverse">
+          <ul class="marquee__group" data-brands-list="reverse"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Bridge to the "Who we are" page ============================ -->
+    <section class="bridge" aria-labelledby="bridge-title">
+      <div class="container bridge__inner">
+        <h2 class="bridge__title reveal" id="bridge-title">Wondering why they work with us?</h2>
+        <a class="btn btn--ghost reveal" href="about.html">Who we are</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== Footer ===================================================== -->
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <a class="wordmark wordmark--lg" href="#top" aria-label="Unconventional, back to top">unconventional<span class="wordmark__dot" aria-hidden="true">.</span></a>
+
+      <nav aria-label="Footer">
+        <ul class="site-footer__nav">
+          <li><a href="about.html">Who we are</a></li>
+          <li><a href="about.html#what">What we do</a></li>
+          <li><a href="about.html#how">How we work</a></li>
+          <li><a href="about.html#discretion">Discretion</a></li>
+          <li><a href="about.html#contact">Contact</a></li>
+        </ul>
+      </nav>
+
+      <p class="site-footer__legal">&copy; <span data-year>2026</span> Unconventional. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>
