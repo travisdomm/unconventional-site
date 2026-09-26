@@ -8,7 +8,7 @@
        Adding an embed, analytics or a form service later? Its domain has to be allowed here first. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; media-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self'">
 
-  <!-- PREVIEW of the new intro film (js/film.js). Not linked from anywhere; the live home page still runs js/intro.js.
+  <!-- PREVIEW of intro film v3 (js/film3.js). Not linked from anywhere; the live home page runs js/film.js (v2).
        Kept behind the front door and out of search engines. -->
   <meta name="robots" content="noindex">
 
@@ -60,25 +60,32 @@
 
   <main id="main">
 
-    <!-- ===== The intro film, version 2 (preview) ========================
-         People, concept, build, reality: two people meet, a team sparks an
-         idea, the plan lands on a CAD screen, a mega stage builds itself
-         part by part and comes alive. Rendered live by js/film.js. -->
+    <!-- ===== The intro film, version 3 (preview) ========================
+         Four scenes: people meet and plan an imagined event; the stage is
+         built from the drawing (canvas, then footage); the guests arrive at a
+         mountain-top show; the logo is built and brought into place. Played
+         by js/film3.js: footage from the film-s… slots in content/media.js,
+         and the live canvas wherever a scene's footage is not ready yet. -->
     <section class="intro" id="top" aria-labelledby="intro-title" data-intro>
       <canvas class="intro__canvas" data-intro-canvas aria-hidden="true"></canvas>
-      <p class="visually-hidden">A short film: two people meet, then a team gathers round a table and their ideas spark into a plan. The plan lands on a screen, then a vast festival stage builds itself piece by piece and comes alive with light, lasers, flame and a crowd.</p>
+      <p class="visually-hidden">A short film about how an event comes together, told through an imagined brief for a fictional event. Two people meet and agree to work together, and their team plans the site, the size of the event, how success will be measured, the marketing and the sponsorship. The stage is drawn, then built: the survey, the ground works, cranes, scaffolding, towers, motors, video, sound and light. Guests fly in, arrive at a mountain-top venue, and a huge crowd fills the field. Finally the Unconventional logo is built, lowered into place and lit.</p>
       <div class="intro__scrim" aria-hidden="true"></div>
 
       <div class="intro__hud" aria-hidden="true">
         <div class="container intro__hud-inner">
           <ol class="intro__acts">
             <li data-act-label="people">01 People</li>
-            <li data-act-label="concept">02 Concept</li>
-            <li data-act-label="build">03 Build</li>
-            <li data-act-label="reality">04 Reality</li>
+            <li data-act-label="build">02 Build</li>
+            <li data-act-label="arrival">03 Arrival</li>
+            <li data-act-label="logo">04 Unconventional</li>
           </ol>
           <span class="intro__progress"><span data-intro-progress></span></span>
         </div>
+        <div class="container intro__hud-note"><span class="intro__brief">An imagined brief</span></div>
+      </div>
+
+      <div class="intro__caption" aria-hidden="true">
+        <div class="container"><p data-intro-caption></p></div>
       </div>
 
       <div class="intro__tools">
