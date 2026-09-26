@@ -4399,7 +4399,8 @@
        03 Arrival         clips s3-01 … s3-10    fallback: the power-up, crowd, fireworks, drones
                           and the team at FOH (canvas T.realCut → T.s3End)
        04 Unconventional  clips s4-01 … s4-03    fallback: the canvas logo above; the footage
-                          version needs s4-03 (the lit hold), so the film always ends on the name
+                          version needs s4-03 (the lit hold), so the film always ends on the name;
+                          under the title the hold dissolves into the owner's exact logo (EXACT)
      Joins: soft cuts inside a scene; the canvas dissolves into s2-01 on the
      match-cut frame (its lines linger in screen blend for 0.4 s); s1-08's
      paper turns dark with lime lines and dissolves into the canvas drawing;
@@ -4409,11 +4410,29 @@
      current one plays) and let go of when done. A clip that errors, or does
      not load within WAIT_MAX seconds, is dropped; if autoplay is refused,
      the whole film falls back to the canvas.
+     Loading: the clip on screen is played as soon as its element exists
+     (iPhones and iPads buffer nothing before play(), so waiting for a frame
+     first would wait forever); it stays invisible until it has a frame at
+     the right place (or shows its poster at its start). Where a browser does
+     not buffer the next clip on its own, that clip is warmed: played unseen,
+     paused on its first frame, set back to its in point. A clip whose
+     playhead stops (a network stall) for WAIT_MAX seconds is dropped too.
      Timing: `?film=SECONDS` is a time on this sequence (with no footage it is
      the same as the canvas time: 0 people, 11 build, 36 arrival, 41.6 logo).
      ========================================================================== */
   var XF = 0.22, WAIT_MAX = 8, STILLS = { wipe: [0.9, 2.5], title: 3.1, len: 3.5 };
   var FEATHER = 'linear-gradient(to bottom, transparent, #000 9%, #000 91%, transparent)';   // must match .intro__still.is-fitw
+  // The film ends on the owner's exact logo (slot film-s4-03 `exact`: brand/unconventional-logo.jpg copied pixel for
+  // pixel into a 653×443 PNG, its dark backdrop feathered out over a 48 px margin). Under the title card the AI hold
+  // (phones: the lit still) dissolves into it, registered on the U. EXACT: the U in that PNG (centre, width) and the
+  // word's width, in its own pixels; EXREF: the U in the frame it replaces (the hold / the clip's end frame, and the
+  // phones' 9:16 lit still), as fractions of that frame. It is never shown larger than its own pixels (see exactCap).
+  // g0-g1: the dark gap between the U and the word (the PNG: U ends at row 315, the word starts at 341; the hold: 745 and
+  // 752 of 1080). The two words sit at different heights, so below that line the old word goes out before the exact
+  // one comes in (they are never seen double) while the U crossfades in place: see xfade. The canvas ending (no
+  // footage: autoplay refused, or s4-03 lost) dissolves into the same PNG (logoX), registered on the canvas U.
+  var SETTLE = 1.2, RESETTLE = 0.8, EXACT = { w: 653, h: 443, ux: 335.5, uy: 223.5, uw: 161, ww: 471, g0: 318, g1: 338, fade: 0.7 };
+  var EXREF = { wide: { x: 0.5034, y: 0.4366, w: 0.2620, ar: 16 / 9, g0: 0.681, g1: 0.6945 }, tall: { x: 0.5019, y: 0.4820, w: 0.3722, ar: 9 / 16 } };
   // Captions under "An imagined brief" while scene 1 plays (site text: no shot depends on text in the footage).
   var CAPTIONS = {
     'film-s1-03': [[0, 'Brief · Site · Summit plateau']],
@@ -4432,8 +4451,11 @@
   ];
 
   var PHONE = false, FOOTAGE = true, CLIPS = {}, SEG = [], M_END = 1;
+  // iOS / iPadOS (which reports itself as a Mac with touch) buffers a video only once it is played: warm every next clip.
+  // Elsewhere a next clip is warmed only if it has had a second to buffer and still has no frame (then WARM_NEXT turns on).
+  var WARM_NEXT = /iP(hone|ad|od)/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
   var curSeg = null, prevSeg = null, loc = 0, ploc = 0, waitN = 0, zTop = 2;
-  var mediaBox = null, vignette = null, tint = null;
+  var mediaBox = null, vignette = null, tint = null, logoX = null;
   var captionEl = section.querySelector('[data-intro-caption]');
 
   function clipFor(name) {
@@ -4445,7 +4467,8 @@
         name: name, slot: s, src: PHONE && s.srcMobile ? s.srcMobile : s.src,
         in: Math.max(0, +s.in || 0), out: Math.max(0, +s.out || 0), dur: 0,
         el: null, meta: false, ready: false, done: false, failed: false, seekTo: -1, wait: 0,
-        hold: null, end: null, over: null, dark: null, lit: null, stillsOk: 0, stillsFailed: false, contain: false
+        shown: false, posterOk: false, warm: false, lastT: -1, autoAt: 0,
+        hold: null, end: null, over: null, dark: null, lit: null, exact: null, stillsOk: 0, stillsFailed: false, contain: false
       } : null;
       if (c) c.dur = c.out > c.in ? c.out - c.in : Math.max(0.5, +s.use || 3);
     }
@@ -4490,7 +4513,8 @@
     SEG.forEach(function (g, i) { g.len = segLen(g); if (i) m -= g.join.over; g.m0 = m; m += g.len; });
     var L = SEG[SEG.length - 1];
     L.titleAt = L.kind === 'canvas' ? LG.title : L.kind === 'stills' ? STILLS.title : L.clip.dur + (L.clip.slot.hold ? 0.4 : 0);
-    L.restAt = L.kind === 'canvas' ? LG.settle[1] + 0.05 : L.titleAt + 1.25;
+    // (the film rests once it has settled aside and, if there is one, dissolved into the exact logo: see exactMix)
+    L.restAt = L.kind === 'canvas' ? LG.settle[1] + 0.05 + (L.world === 'logo' && exactSrc() ? EXACT.fade : 0) : L.titleAt + SETTLE + 0.05 + (L.clip.slot.exact ? EXACT.fade : 0);
     M_END = L.m0 + L.titleAt;
   }
   function nextOf(g) { var i = SEG.indexOf(g); return i >= 0 ? SEG[i + 1] || null : null; }
@@ -4516,18 +4540,39 @@
     var v = a <= 0.001 ? 0 : a >= 0.999 ? 1 : Math.round(a * 1000) / 1000;
     if (el._op !== v) { el.style.opacity = String(v); el._op = v; }
   }
-  function img(src, cls, onload, onerror) {
+  function img(src, cls, onload, onerror, srcset) {
     var im = document.createElement('img');
     im.className = cls; im.alt = ''; im.decoding = 'async';
     im.addEventListener('load', function () { im._ok = true; if (onload) onload(); if (!raf && curSeg) draw(); });   // (a held frame needs redrawing)
     im.addEventListener('error', function () { im._bad = true; if (onerror) onerror(); });
+    if (srcset) im.srcset = srcset;
     im.src = src;
     box().appendChild(im);
     setOp(im, 0);
     return im;
   }
+  // The owner's exact logo: an image, so it needs no autoplay (the canvas ending uses it too). A slot may add
+  // `exact2x`, the same PNG at twice the size, for high-density screens (see exactCap).
+  function exactSrc() { var s = slots['film-s4-03']; return s && s.exact ? s.exact : ''; }
+  function exactImg(s) {
+    var im = img(s.exact, 'intro__exact', function () {
+      im._dens = s.exact2x && (im.currentSrc || '').indexOf(s.exact2x) >= 0 ? 2 : 1;
+      late(im, '_at');
+    }, function () { late(im, '_badAt'); }, s.exact2x ? s.exact + ' 1x, ' + s.exact2x + ' 2x' : '');
+    return im;
+  }
+  function logoExact() { if (!logoX && exactSrc()) logoX = exactImg(slots['film-s4-03']); return logoX; }
+  function exactOf(g) { return !g ? null : g.kind === 'canvas' ? (g.world === 'logo' ? logoX : null) : g.clip.exact; }
+  // The exact logo arrived (or failed) after its moment, with the film under the title: its dissolve (or the frame's
+  // re-settle) runs from now rather than cutting in, and the clock starts again for it. (With Pause motion it simply shows.)
+  function late(im, key) {
+    if (curSeg && isLast(curSeg) && exactOf(curSeg) === im && !paused()) im[key] = loc;
+    kick();
+    if (!raf && curSeg) draw();
+  }
   function ensure(g, preload) {
-    if (!g || g.kind === 'canvas') return;
+    if (!g) return;
+    if (g.kind === 'canvas') { if (g.world === 'logo') logoExact(); return; }
     var c = g.clip, s = c.slot;
     if (g.kind === 'stills') {
       if (!c.dark) {
@@ -4536,13 +4581,15 @@
         c.dark = img(s.phoneStills[0], 'intro__still is-fitw', ok, bad);
         c.lit = img(s.phoneStills[1], 'intro__still is-fitw', ok, bad);
       }
+      if (s.exact && !c.exact) c.exact = exactImg(s);
       return;
     }
     if (!c.el) makeVideo(c, preload);
-    else if (preload === 'auto' && c.el.preload !== 'auto') c.el.preload = 'auto';
+    else if (preload === 'auto' && c.el.preload !== 'auto') { c.el.preload = 'auto'; c.autoAt = performance.now(); }
     if (s.hold && !PHONE && !c.hold) c.hold = img(s.hold, 'intro__still');
     if (s.phoneEnd && PHONE && !c.end) c.end = img(s.phoneEnd, 'intro__still');
     if (s.overlay && !c.over) c.over = img(s.overlay, 'intro__still is-screen');
+    if (s.exact && !c.exact) c.exact = exactImg(s);
   }
   function makeVideo(c, preload) {
     var v = document.createElement('video'), s = c.slot;
@@ -4551,9 +4598,32 @@
     v.playsInline = true; v.setAttribute('playsinline', '');
     v.disablePictureInPicture = true; v.tabIndex = -1; v.setAttribute('aria-hidden', 'true');
     v.preload = preload || 'metadata';
-    if (s.poster) v.poster = s.poster;
+    c.autoAt = v.preload === 'auto' ? performance.now() : 0;
+    c.warm = c.shown = false; arm(c);
+    // the poster is the 16:9 keyframe: a phone strip is cut off-centre (at `focus`), so it gets none and stays dark
+    // until its first frame, instead of showing a centred poster that jumps sideways when the video starts
+    if (s.poster && c.src === s.src) v.poster = s.poster;
     if (typeof s.focus === 'number' && c.src === s.src) v.style.objectPosition = (clamp(s.focus, 0, 1) * 100).toFixed(1) + '% 50%';
-    function check() { if (c.meta && v.readyState >= 2 && !v.seeking) c.ready = true; }
+    // ready: a frame at the right place is decoded (on iOS that only happens once the clip has been played)
+    function check() {
+      if (!c.meta || v.readyState < 2 || v.seeking) return;
+      c.ready = true;
+      if (!c.shown) { c.shown = true; if (!raf && c.el === v && onScreen(c)) draw(); }   // a held frame (the paused still) shows it too
+    }
+    v.addEventListener('playing', function () {
+      if (c.warm) {
+        c.warm = false;
+        if (c.meta && !onScreen(c)) {   // a warmed next clip: keep its first frame, back at the in point
+          v.pause();
+          if (Math.abs(v.currentTime - c.in) > 0.02) v.currentTime = c.in;
+          c.ready = c.shown = true;
+          return;
+        }
+      }
+      check();
+    });
+    v.addEventListener('timeupdate', check);
+    v.addEventListener('waiting', function () { c.ready = false; });   // out of data mid-clip: the clock holds (and the stall watchdog runs)
     v.addEventListener('loadedmetadata', function () {
       var full = v.duration;
       if (isFinite(full) && full > 0) {
@@ -4572,7 +4642,7 @@
     v.addEventListener('canplay', check);
     v.addEventListener('error', function () {
       if (c.src !== s.src) {   // the phone file is missing: try the full-size one
-        c.src = s.src; c.meta = false; c.ready = false;
+        c.src = s.src; c.meta = c.ready = c.shown = c.warm = false;
         if (typeof s.focus === 'number') v.style.objectPosition = (clamp(s.focus, 0, 1) * 100).toFixed(1) + '% 50%';
         v.src = c.src;
         return;
@@ -4586,27 +4656,44 @@
   }
   function drop(c) {   // let go of a clip's elements (they are made again if the clip is needed again)
     if (c.el) { try { c.el.pause(); c.el.removeAttribute('src'); c.el.load(); } catch (e) { /* ignore */ } c.el.remove(); c.el = null; }
-    [c.hold, c.end, c.over, c.dark, c.lit].forEach(function (im) { if (im) im.remove(); });
-    c.hold = c.end = c.over = c.dark = c.lit = null;
-    c.meta = c.ready = c.done = false; c.seekTo = -1; c.stillsOk = 0;
+    [c.hold, c.end, c.over, c.dark, c.lit, c.exact].forEach(function (im) { if (im) im.remove(); });
+    c.hold = c.end = c.over = c.dark = c.lit = c.exact = null;
+    c.meta = c.ready = c.done = c.shown = c.warm = false; c.seekTo = -1; c.stillsOk = 0;
+    arm(c);
   }
+  // (Re)arm a clip's timers: the load / stall wait starts again from zero whenever a clip is entered, sought or let go of.
+  function arm(c) { c.wait = 0; c.lastT = -1; }
+  function onScreen(c) { return (!!curSeg && curSeg.clip === c) || (!!prevSeg && prevSeg.clip === c); }
   function seekClip(c, l) {
     c.done = l >= c.dur - 0.04;
+    arm(c);
     if (!c.el) return;
     if (c.meta) { c.ready = false; c.el.currentTime = c.in + Math.min(Math.max(0, l), c.dur - 0.04); }
     else c.seekTo = l;
   }
+  function refused(e) { if (e && e.name === 'NotAllowedError') noFootage('autoplay was refused'); }
+  // Play a clip that is on screen. Not gated on a loaded frame: iOS buffers nothing until play() is called.
+  // (An ended element is left alone: play() would restart it from 0.)
   function playV(c) {
-    if (!c.el || c.done || !c.ready || !c.el.paused) return;
+    if (!c || !c.el || c.done || c.el.ended || !c.el.paused) return;
     var p = c.el.play();
-    if (p && p.catch) p.catch(function (e) { if (e && e.name === 'NotAllowedError') noFootage('autoplay was refused'); });
+    if (p && p.catch) p.catch(refused);
+  }
+  // Warm the next clip where the browser will not buffer it by itself (see WARM_NEXT): play it unseen; its 'playing'
+  // handler pauses it on the first frame and marks it ready.
+  function warmV(c) {
+    if (!c || !c.el || c.ready || c.warm || c.done || c.el.ended || !c.el.paused || c.el.readyState >= 2) return;
+    if (!WARM_NEXT) { if (!c.autoAt || performance.now() - c.autoAt < 1000) return; WARM_NEXT = true; }
+    c.warm = true;
+    var p = c.el.play();
+    if (p && p.catch) p.catch(function (e) { c.warm = false; refused(e); });
   }
   function pauseV(c) { if (c && c.el && !c.el.paused) c.el.pause(); }
   function layersOf(g) {
     if (!g) return [];
-    if (g.kind === 'canvas') return [canvas];
+    if (g.kind === 'canvas') return [canvas, exactOf(g)];
     var c = g.clip;
-    return g.kind === 'stills' ? [c.dark, c.lit] : [c.el, c.hold, c.end, c.over];
+    return g.kind === 'stills' ? [c.dark, c.lit, c.exact] : [c.el, c.hold, c.end, c.over, c.exact];
   }
   function hide(g) {
     layersOf(g).forEach(function (el) { setOp(el, 0); });
@@ -4616,14 +4703,19 @@
   // Enter a segment: bring its layers to the top (the canvas stays above the footage in the match cut).
   function enter(g, l, jump) {
     ensure(g, 'auto');
-    if (g.kind === 'canvas') { raise(canvas); return; }
+    var ex = exactOf(g);
+    if (ex) ex._at = ex._badAt = undefined;   // a new pass: the exact logo's dissolve is on its planned time again
+    if (g.kind === 'canvas') { raise(canvas); raise(ex); return; }
     var c = g.clip;
+    arm(c);
     if (g.kind === 'clip') {
       if (jump || l > 0.05) seekClip(c, l); else { c.done = false; if (c.meta && Math.abs(c.el.currentTime - c.in) > 0.05) seekClip(c, 0); }
-      raise(c.el); raise(c.over); raise(c.hold); raise(c.end);
+      // until its first frame, a clip shows its poster only at its start, and only the full-size file (see makeVideo)
+      c.posterOk = !!c.slot.poster && c.src === c.slot.src && l <= 0.05;
+      raise(c.el); raise(c.over); raise(c.hold); raise(c.end); raise(c.exact);
       if (c.name === 'film-s1-08') { tintEl(); raise(tint); }
       if (g.join.type === 'match' && !jump) raise(canvas);
-    } else { raise(c.dark); raise(c.lit); }
+    } else { raise(c.dark); raise(c.lit); raise(c.exact); }
   }
   function tintEl() {
     if (!tint) { tint = document.createElement('div'); tint.className = 'intro__tint'; box().appendChild(tint); setOp(tint, 0); }
@@ -4641,10 +4733,13 @@
   // Keep the next footage segment loading while this one plays; let go of everything else.
   function ahead() {
     var i = SEG.indexOf(curSeg), keep = [curSeg, prevSeg];
-    for (var k = i + 1; k < SEG.length && k <= i + 2; k++) if (SEG[k].kind !== 'canvas') { keep.push(SEG[k]); ensure(SEG[k], k === i + 1 ? 'auto' : 'metadata'); }
+    for (var k = i + 1; k < SEG.length && k <= i + 2; k++) {
+      if (SEG[k].kind !== 'canvas') keep.push(SEG[k]);
+      ensure(SEG[k], k === i + 1 ? 'auto' : 'metadata');   // (for the canvas logo: its exact logo)
+    }
     Object.keys(CLIPS).forEach(function (name) {
       var c = CLIPS[name];
-      if (!c || (!c.el && !c.dark && !c.hold && !c.end && !c.over)) return;
+      if (!c || (!c.el && !c.dark && !c.hold && !c.end && !c.over && !c.exact)) return;
       for (var j = 0; j < keep.length; j++) if (keep[j] && keep[j].clip === c) return;
       drop(c);
     });
@@ -4692,15 +4787,21 @@
     if (prevSeg && loc >= g.join.d + (g.join.type === 'match' ? 0.4 : 0)) { hide(prevSeg); prevSeg = null; ahead(); }
     if (prevSeg) ploc += dt;
     if (prevSeg && prevSeg.kind === 'clip') tailClip(prevSeg.clip);
+    if (nx && nx.kind === 'clip') warmV(nx.clip);
     if (g.kind === 'clip') {
       var c = g.clip;
-      if (!c.ready && !c.done) { c.wait += dt; if (c.wait > WAIT_MAX) fail(c, 'did not load in time'); return; }
-      c.wait = 0;
-      if (!c.done) {
-        playV(c);
-        loc = clamp(c.el.currentTime - c.in, 0, c.dur);
+      if (!c.done && c.el) {
+        playV(c);   // on screen: play it now, loaded or not (iOS loads nothing until then)
+        // Watchdog: the clip must be loaded and its playhead moving. Not loaded yet, or stopped mid-clip
+        // (a network stall), for WAIT_MAX seconds in all: it is dropped and the film carries on without it.
+        var ct = c.el.currentTime;
+        if (c.ready && ct !== c.lastT) { c.lastT = ct; c.wait = 0; }
+        else { c.wait += dt; if (c.wait > WAIT_MAX) { fail(c, c.ready ? 'stalled' : 'did not load in time'); return; } }
+        if (!c.ready) return;
+        loc = clamp(ct - c.in, 0, c.dur);
         if (c.el.ended || loc >= c.dur - 0.04) { c.done = true; loc = c.dur; pauseV(c); }
-      } else if (!nx) loc += dt;   // the last clip: its end frame holds, then the hold still and the title
+      } else if (!c.done) return;
+      else if (!nx) loc += dt;   // the last clip: its end frame holds, then the hold still and the title
       else loc = Math.max(loc, c.dur);
     } else if (g.kind === 'stills') {
       var s = g.clip;
@@ -4734,15 +4835,20 @@
       var lt = cv === g ? loc : Math.min(ploc, cv.len);
       if (cv.world === 'logo') renderLogo(lt); else render(cv.t0 + Math.min(lt, cv.len));
     }
-    // the canvas
-    var cA = 0, blend = '';
-    if (g.kind === 'canvas') cA = inK * outK;
+    // the canvas (its ending, the canvas logo, dissolves into the exact logo too: see xfade)
+    var cA = 0, blend = '', lx = g.kind === 'canvas' && isLast(g) ? exactMix(g, loc) : 0, LX = xfade(lx);
+    if (g.kind === 'canvas') cA = inK * outK * LX.oU;
     else if (p && p.kind === 'canvas') {
       cA = 1;
       if (j.type === 'match') { blend = 'screen'; cA = 1 - smooth(clamp((loc - 0.6) / 0.4, 0, 1)); }
     }
     setOp(canvas, cA);
     if (canvas._blend !== blend) { canvas.style.mixBlendMode = blend; canvas._blend = blend; }
+    if (logoX) {
+      var lo = exactOf(g) === logoX;
+      if (lo) { placeExact(g); splitX(g, lx, LX, [canvas]); } else split(canvas, 0, 0, 1);
+      setOp(logoX, lo && logoX._ok ? inK * outK * LX.eU : 0);
+    }
     // footage
     if (p && p.kind !== 'canvas') footage(p, ploc, 1);
     if (g.kind !== 'canvas') footage(g, loc, (j.type === 'match' ? smooth(clamp(loc / 0.6, 0, 1)) : inK) * outK);
@@ -4751,10 +4857,13 @@
   }
   function footage(g, l, a) {
     var c = g.clip;
+    // the last frame hands over to the exact logo: it fades in over the frame, then the frame under it fades out
+    var x = exactMix(g, l), X = xfade(x), xo = X.oU;
+    if (c.exact) { placeExact(g); setOp(c.exact, c.exact._ok ? a * X.eU : 0); }
     if (g.kind === 'stills') {
-      setOp(c.dark, c.dark && c.dark._ok ? a : 0);
+      setOp(c.dark, c.dark && c.dark._ok ? a * xo : 0);
       var w = smooth(span(l, STILLS.wipe));
-      setOp(c.lit, c.lit && c.lit._ok && w > 0 ? a : 0);
+      setOp(c.lit, c.lit && c.lit._ok && w > 0 ? a * xo : 0);
       if (c.lit) {   // the lit still is wiped on from left to right (a soft edge), inside the same top and bottom feather
         var edge = (w * 130 - 15).toFixed(1), m = w >= 1 ? '' : 'linear-gradient(90deg, #000 ' + edge + '%, transparent ' + (+edge + 15).toFixed(1) + '%), ' + FEATHER;
         if (c.lit._mask !== m) {
@@ -4765,10 +4874,11 @@
       }
       return;
     }
-    setOp(c.el, a);
-    if (c.hold) setOp(c.hold, c.hold._ok ? a * smooth(clamp((l - c.dur) / 0.4, 0, 1)) : 0);
-    if (c.end) setOp(c.end, c.end._ok ? a * smooth(clamp((l - (c.dur - 0.8)) / 0.8, 0, 1)) : 0);
-    if (c.over) setOp(c.over, c.over._ok ? a * 0.9 * smooth(clamp((l - 0.1) / 0.6, 0, 1)) : 0);   // lime lines traced over a locked shot (S1-07)
+    if (c.exact) splitX(g, x, X, [c.el, c.hold]);
+    setOp(c.el, c.shown || c.posterOk ? a * xo : 0);   // invisible until it has a frame (iOS would show an empty box or a play glyph)
+    if (c.hold) setOp(c.hold, c.hold._ok ? a * xo * smooth(clamp((l - c.dur) / 0.4, 0, 1)) : 0);
+    if (c.end) setOp(c.end, c.end._ok ? a * xo * smooth(clamp((l - (c.dur - 0.8)) / 0.8, 0, 1)) : 0);
+    if (c.over) setOp(c.over, c.over._ok ? a * xo * 0.9 * smooth(clamp((l - 0.1) / 0.6, 0, 1)) : 0);   // lime lines traced over a locked shot (S1-07)
     if (c.name === 'film-s1-08' && c.el) {
       // The paper darkens, then comes back inverted (dark paper, light lines) under a lime multiply, so the
       // lines turn lime, ready to dissolve into the canvas drawing. (Animating invert() itself would pass
@@ -4780,14 +4890,92 @@
       setOp(tint, tk * a);
     }
   }
-  var lastSettle = -1;
+  // The exact logo's place in the media box (CSS px, before the settle transform) and its scale (1 = its own
+  // pixels): its U over the U of the frame it replaces, but never so wide that the word would leave the screen.
+  // g0-g1: the gap under the U in the replaced layers' own box (for split). The canvas logo is matched as it rests
+  // (after its settle), and there the scale is capped at once (the canvas camera does not make room for it).
+  function exactFit(g) {
+    var bw = W / dpr, bh = H / dpr, s;
+    if (g.kind === 'canvas') {
+      var c = logoCam(LG.settle[1]), ux, uy, uw, ub;
+      pj(c, 0, (U_TOP + U_BASE) / 2, 0); ux = PX / dpr; uy = PY / dpr;
+      pj(c, -U_ARM - U_HALF, 7, 0); uw = PX;
+      pj(c, U_ARM + U_HALF, 7, 0); uw = (PX - uw) / dpr;
+      pj(c, 0, U_BASE, 0); ub = PY / dpr;
+      pj(c, 0, W_CAP, W_Z);   // the top of the word (it stands in front of the U)
+      s = Math.min(uw / EXACT.uw, (bw - 32) / EXACT.ww, exactCap(logoX));
+      return { s: s, x: ux - EXACT.ux * s, y: uy - EXACT.uy * s, g0: ub, g1: Math.max(ub + 2, PY / dpr) };
+    }
+    var r = g.kind === 'stills' ? EXREF.tall : EXREF.wide, fw;
+    if (g.kind === 'stills') fw = bw;   // .is-fitw: the full width, centred
+    else fw = g.clip.contain ? Math.min(bw, bh * r.ar) : Math.max(bw, bh * r.ar);   // object-fit: cover (or contain)
+    var fh = fw / r.ar, top = (bh - fh) / 2;
+    s = Math.min(r.w * fw / EXACT.uw, (bw - 32) / EXACT.ww);
+    return { s: s, x: (bw - fw) / 2 + r.x * fw - EXACT.ux * s, y: top + r.y * fh - EXACT.uy * s, g0: top + (r.g0 || 0) * fh, g1: top + (r.g1 || 0) * fh };
+  }
+  function placeExact(g) {
+    var e = exactOf(g), f = exactFit(g), key = f.x.toFixed(1) + ' ' + f.y.toFixed(1) + ' ' + f.s.toFixed(4);
+    if (e._fit === key) return;
+    e._fit = key;
+    e.style.left = f.x.toFixed(1) + 'px'; e.style.top = f.y.toFixed(1) + 'px';
+    e.style.width = (EXACT.w * f.s).toFixed(1) + 'px'; e.style.height = (EXACT.h * f.s).toFixed(1) + 'px';
+  }
+  // "Never larger than its own pixels", as a scale of the 1x file (1 = one CSS px per pixel of it). With a 2x master
+  // (slot `exact2x`, once the browser has picked it) the rule holds in device pixels too. With only the 1x file it holds
+  // in CSS px, so a 2x or 3x screen upscales the logo like any 1x image on the web: holding it in device px there would
+  // halve it. The owner's logo is 557 px wide; a larger (or vector) master is the real fix.
+  function exactCap(e) { return e && e._dens > 1 ? e._dens / Math.max(1, window.devicePixelRatio || 1) : 1; }
+  // 0 → 1 over EXACT.fade s: the dissolve into the exact logo. It starts with the title card or, where the logo
+  // would still be larger than its own pixels, later in the settle, once the shrinking frame has brought it down
+  // (the canvas logo: once it has settled). If the logo only arrived later than that, it runs from then (see late).
+  function exactMix(g, l) {
+    var e = exactOf(g), start;
+    if (!e || !e._ok || !isLast(g)) return 0;
+    if (g.kind === 'canvas') start = LG.settle[1];
+    else {
+      var s = exactFit(g).s, C = exactCap(e), k = s <= C ? 0 : clamp((1 - C / s) / (1 - settleTo(g)[2]), 0, 1);
+      var u = k < 0.5 ? Math.cbrt(k / 4) : 1 - Math.cbrt(2 * (1 - k)) / 2;   // the settle's inOut, inverted
+      start = g.titleAt + SETTLE * u;
+    }
+    if (e._at > start) start = e._at;
+    return clamp((l - start) / EXACT.fade, 0, 1);
+  }
+  // The dissolve (x from exactMix) for the frame it replaces (o) and the exact logo (e), above the gap under the U (U)
+  // and below it (W): the U crossfades in place, registered; below the gap the old word has gone before the exact word
+  // comes in, so the two words, which sit at different heights, are never seen double.
+  function xfade(x) {
+    return { oU: 1 - smooth(clamp((x - 0.35) / 0.65, 0, 1)), oW: 1 - smooth(clamp(x / 0.45, 0, 1)),
+      eU: smooth(clamp(x / 0.7, 0, 1)), eW: smooth(clamp((x - 0.4) / 0.6, 0, 1)) };
+  }
+  // Below the line y0 → y1 (CSS px in the element's own box) the element shows at k of its opacity (k = 1: no mask).
+  function split(el, y0, y1, k) {
+    if (!el) return;
+    var m = k >= 0.999 ? '' : 'linear-gradient(to bottom, #000 ' + y0.toFixed(1) + 'px, rgba(0,0,0,' + Math.max(0, k).toFixed(3) + ') ' + y1.toFixed(1) + 'px)';
+    if (el._split !== m) { el._split = m; el.style.webkitMaskImage = m; el.style.maskImage = m; }
+  }
+  function splitX(g, x, X, olds) {   // olds: the layers of the frame being replaced
+    var on = x > 0 && x < 1, f = on ? exactFit(g) : null;
+    olds.forEach(function (el) { split(el, on ? f.g0 : 0, on ? f.g1 : 0, on ? X.oW / X.oU : 1); });
+    split(exactOf(g), on ? EXACT.g0 * f.s : 0, on ? EXACT.g1 * f.s : 0, on ? (X.eU > 0 ? X.eW / X.eU : 0) : 1);
+  }
+  // Where footage settles under the title: aside on wide screens, up on tall ones; and no larger than keeps the
+  // exact logo within its own pixels (so on big screens it settles a little smaller). That is planned while the logo
+  // loads; if it fails, the frame eases back out to its usual size from that moment (RESETTLE s).
+  function settleTo(g) {
+    var aspect = W / H, to = aspect >= 1.25 ? [22, -13, 0.42] : aspect >= 1 ? [0, -16, 0.48] : [0, -16, 0.82];
+    var e = g.clip && g.clip.exact, w;
+    if (e) {
+      w = !e._bad ? 1 : e._badAt >= 0 ? 1 - smooth(clamp((loc - e._badAt) / RESETTLE, 0, 1)) : 0;
+      if (w > 0) to[2] = lerp(to[2], Math.min(to[2], exactCap(e) / exactFit(g).s), w);
+    }
+    return to;
+  }
+  var lastSettle = '';
   function settle(g) {   // footage hold: under the title the frame shrinks aside (the canvas logo does this with its camera)
     if (!mediaBox) return;
-    var k = isLast(g) && g.kind !== 'canvas' ? inOut(span(loc, [g.titleAt, g.titleAt + 1.2])) : 0;
-    if (Math.abs(k - lastSettle) < 0.0005) return;
-    lastSettle = k;
-    var aspect = W / H, to = aspect >= 1.25 ? [22, -13, 0.42] : aspect >= 1 ? [0, -16, 0.48] : [0, -16, 0.82];
-    mediaBox.style.transform = k > 0 ? 'translate(' + (to[0] * k).toFixed(2) + '%, ' + (to[1] * k).toFixed(2) + '%) scale(' + lerp(1, to[2], k).toFixed(4) + ')' : '';
+    var k = isLast(g) && g.kind !== 'canvas' ? inOut(span(loc, [g.titleAt, g.titleAt + SETTLE])) : 0, to = k > 0 ? settleTo(g) : null;
+    var tf = k > 0 ? 'translate(' + (to[0] * k).toFixed(2) + '%, ' + (to[1] * k).toFixed(2) + '%) scale(' + lerp(1, to[2], k).toFixed(4) + ')' : '';
+    if (tf !== lastSettle) { lastSettle = tf; mediaBox.style.transform = tf; }
     setOp(vignette, k);
   }
   function hud(g) {
@@ -4796,7 +4984,8 @@
     if (ended !== lastEnd) { section.classList.toggle('is-end', ended); lastEnd = ended; }
     var brief = !!g.brief;
     if (brief !== lastBrief) { section.classList.toggle('is-brief', brief); lastBrief = brief; }
-    var cap = '', list = brief && g.clip ? CAPTIONS[g.name] : null;
+    // a slot can replace its captions (captions: [] turns the caption box off for that shot)
+    var cap = '', list = brief && g.clip ? (g.clip.slot && Array.isArray(g.clip.slot.captions) ? g.clip.slot.captions : CAPTIONS[g.name]) : null;
     if (list) list.forEach(function (e) { if (loc >= e[0]) cap = e[1]; });
     if (captionEl && cap !== lastCap) { captionEl.textContent = cap; section.classList.toggle('has-caption', !!cap); lastCap = cap; }
     if (progressEl) progressEl.style.transform = 'scaleX(' + clamp((g.m0 + Math.min(loc, g.len)) / M_END, 0, 1).toFixed(4) + ')';
@@ -4811,6 +5000,7 @@
     if (prevSeg) hide(prevSeg);
     if (curSeg && curSeg !== g) hide(curSeg);
     prevSeg = null; curSeg = null;
+    Object.keys(CLIPS).forEach(function (name) { if (CLIPS[name]) arm(CLIPS[name]); });   // a new pass: no clip keeps an old wait
     if (p && g.join.over > 0 && l < g.join.d + (g.join.type === 'match' ? 0.4 : 0)) {   // mid-transition: both layers
       curSeg = p; loc = m - p.m0; enter(p, loc, true);
       prevSeg = p; ploc = loc;
@@ -4830,7 +5020,15 @@
 
   function paused() { return root.classList.contains('motion-paused'); }
   function running() { return inView && !document.hidden && !paused(); }
-  function resting() { return curSeg && isLast(curSeg) && !prevSeg && loc >= curSeg.restAt; }
+  // At rest: the end state is reached, including the exact logo's dissolve (or the re-settle when it failed). While the
+  // logo is still loading the clock rests too; its load handler (late) starts it again for the dissolve.
+  function resting() {
+    if (!curSeg || !isLast(curSeg) || prevSeg || loc < curSeg.restAt) return false;
+    var e = exactOf(curSeg);
+    if (!e) return true;
+    if (e._bad) return !(e._badAt >= 0) || loc >= e._badAt + RESETTLE;
+    return !e._ok || exactMix(curSeg, loc) >= 1;
+  }
   function frame(now) {
     raf = 0;
     var dt = last ? Math.min(0.05, (now - last) / 1000) : 0;
