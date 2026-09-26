@@ -42,7 +42,7 @@
   <script src="content/media.js" defer></script>
   <script src="content/brands.js" defer></script>
   <script src="js/main.js" defer></script>
-  <script src="js/film.js" defer></script>
+  <script src="js/film3.js" defer></script>
 </head>
 
 <body>
@@ -70,25 +70,26 @@
 
   <main id="main">
 
-    <!-- ===== The intro film =============================================
-         People, concept, build, reality: two people meet, a team sparks an
-         idea, the plan lands on a CAD screen, a mega stage builds itself
-         part by part and comes alive. Rendered live by js/film.js. -->
+    <!-- ===== The intro film (version 3, live since 2026-09-26) ==============
+         People meet and plan; the stage is built from the drawing (canvas,
+         then footage); the guests arrive at a mountain-top show; the logo is
+         built and brought into place. Played by js/film3.js: footage from the
+         film-s… slots in content/media.js, and the live canvas wherever a
+         scene's footage is missing. preview.html plays the same cut;
+         preview2.html keeps the first cut. -->
     <section class="intro" id="top" aria-labelledby="intro-title" data-intro>
       <canvas class="intro__canvas" data-intro-canvas aria-hidden="true"></canvas>
-      <p class="visually-hidden">A short film: two people meet, then a team gathers round a table and their ideas spark into a plan. The plan lands on a screen, then a vast festival stage builds itself piece by piece and comes alive with light, lasers, flame and a crowd.</p>
+      <p class="visually-hidden">A short film about how an event comes together, told through an imagined brief for a fictional event. Two people meet and agree to work together, and their team plans the site, the marketing and the sponsorship. The stage is drawn, then built: the survey, the ground works, cranes, scaffolding, towers, motors, video, sound and light. Guests fly in, arrive at a mountain-top venue, and a huge crowd fills the field. Finally the Unconventional logo is built, lowered into place and lit.</p>
       <div class="intro__scrim" aria-hidden="true"></div>
 
       <div class="intro__hud" aria-hidden="true">
         <div class="container intro__hud-inner">
-          <ol class="intro__acts">
-            <li data-act-label="people">01 People</li>
-            <li data-act-label="concept">02 Concept</li>
-            <li data-act-label="build">03 Build</li>
-            <li data-act-label="reality">04 Reality</li>
-          </ol>
           <span class="intro__progress"><span data-intro-progress></span></span>
         </div>
+      </div>
+
+      <div class="intro__caption" aria-hidden="true">
+        <div class="container"><p data-intro-caption></p></div>
       </div>
 
       <div class="intro__tools">
