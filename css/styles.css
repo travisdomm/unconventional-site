@@ -817,6 +817,9 @@ html:not(.js) .intro__tools { display: none; }
 }
 .intro__skip:hover { color: var(--ink); border-color: var(--accent); }
 .intro.is-end .intro__skip { opacity: 0; visibility: hidden; }
+/* Skip moves keyboard focus to the title (or the section): a place to continue from, not a control to outline. */
+.intro[tabindex="-1"]:focus,
+.intro__title[tabindex="-1"]:focus { outline: none; }
 
 @media (max-width: 599px) {
   .intro__progress { display: none; }
