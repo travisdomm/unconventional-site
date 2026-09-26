@@ -10,9 +10,10 @@
   <!-- TEMPORARY FRONT DOOR ==================================================
        This page is the door; the real site is home.html, which sends anyone
        who has not come through here back to this page (js/guard.js).
-       To take the gate down: rename home.html to index.html (over this file),
-       delete js/gate.js, js/guard.js and css/gate.css, and remove the gate
-       lines and the "noindex" tag from the head of the page.
+       To take the gate down: copy home.html over this file, remove the gate
+       lines and the "noindex" tag from the heads of index.html and about.html,
+       point about.html's three home.html links back at "./", and delete
+       js/gate.js, js/guard.js and css/gate.css.
        ======================================================================= -->
   <meta name="robots" content="noindex">
 
@@ -77,6 +78,8 @@
         </label>
         <p class="gate__error" data-gate-error role="alert" hidden>Not quite. And no, it isn't written on this page anymore.</p>
         <button class="btn btn--accent" type="submit">Let me in</button>
+        <!-- Shown by js/gate.js only to visitors this device already remembers. -->
+        <p class="gate__skip" data-gate-skip hidden>Welcome back. You're already on the list. <a href="home.html" data-gate-skip-link>Walk straight in</a></p>
       </form>
 
       <p class="gate__small">Selective by design. The door included.</p>

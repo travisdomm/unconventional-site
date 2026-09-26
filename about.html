@@ -7,7 +7,8 @@
   <!-- Security policy: only this site's own files, plus Google Fonts, may load. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; media-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self'">
 
-  <!-- TEMPORARY FRONT DOOR: the gate stylesheet, the guard, and this noindex go away when the gate comes down. -->
+  <!-- TEMPORARY FRONT DOOR: the gate stylesheet, the guard, and this noindex go away when the gate comes down.
+       The three links to home.html (logo, footer logo, "The film") go back to "./" then too. -->
   <meta name="robots" content="noindex">
 
   <title>Who we are — Unconventional</title>
@@ -48,7 +49,7 @@
   <!-- ===== Header ===================================================== -->
   <header class="site-header" data-header>
     <div class="container site-header__inner">
-      <a class="wordmark" href="./" aria-label="Unconventional, home">unconventional<span class="wordmark__dot" aria-hidden="true">.</span></a>
+      <a class="wordmark" href="home.html" aria-label="Unconventional, home">unconventional<span class="wordmark__dot" aria-hidden="true">.</span></a>
 
       <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-nav-toggle>
         <span class="nav-toggle__bars" aria-hidden="true"></span>
@@ -302,11 +303,11 @@
   <!-- ===== Footer ===================================================== -->
   <footer class="site-footer">
     <div class="container site-footer__inner">
-      <a class="wordmark wordmark--lg" href="./" aria-label="Unconventional, home">unconventional<span class="wordmark__dot" aria-hidden="true">.</span></a>
+      <a class="wordmark wordmark--lg" href="home.html" aria-label="Unconventional, home">unconventional<span class="wordmark__dot" aria-hidden="true">.</span></a>
 
       <nav aria-label="Footer">
         <ul class="site-footer__nav">
-          <li><a href="./">The film</a></li>
+          <li><a href="home.html">The film</a></li>
           <li><a href="#what">What we do</a></li>
           <li><a href="#how">How we work</a></li>
           <li><a href="#discretion">Discretion</a></li>
