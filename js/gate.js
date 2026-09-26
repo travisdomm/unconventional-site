@@ -7,14 +7,17 @@
    salted SHA-256 fingerprints are, so a look at the source does not hand
    them over.
 
-   Loaded in the <head> of index.html WITHOUT defer, so a visitor who is
-   already in is sent on before the door paints. The rest waits for the page.
+   The door is ALWAYS the front page, even for visitors who are already in
+   (the owner's call, 2026-09-25): they see it too, plus a "walk straight in"
+   link, so "don't make me log in again" means no typing, not no door.
+   Inner pages and direct links skip the door for them (js/guard.js).
    ?next=about.html (set by js/guard.js) sends people back to the page they
    were trying to open.
 
    To take the gate down: copy home.html over index.html, remove the gate
-   lines and the temporary "noindex" tag from its head, and delete
-   js/gate.js, js/guard.js and css/gate.css.
+   lines and the temporary "noindex" tag from the heads of index.html and
+   about.html, point about.html's three home.html links back at "./", and
+   delete js/gate.js, js/guard.js and css/gate.css (full steps: CLAUDE.md).
    ========================================================================== */
 (function () {
   'use strict';
@@ -55,14 +58,11 @@
   var asked = params.get('next') || '';
   var next = /^[a-z0-9-]+\.html(#[a-z0-9-]+)?$/.test(asked) ? asked : HOME + hash;
 
-  // Owner switches: ?door shows this page even when already in, ?lock forgets the entry first.
+  // Owner switch: ?lock makes this browser forget the entry (the "walk straight in" link goes away).
   if (params.has('lock')) {
     try { localStorage.removeItem(TOKEN_KEY); } catch (e) { /* storage blocked */ }
     try { sessionStorage.removeItem(TOKEN_KEY); } catch (e) { /* storage blocked */ }
   }
-
-  // Already in: straight through, before the door paints.
-  if (remembered() && !params.has('door') && !params.has('lock')) { location.replace(next); return; }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', setUp);
   else setUp();
@@ -72,7 +72,23 @@
     var error = document.querySelector('[data-gate-error]');
     var hint = document.querySelector('[data-gate-hint]');
     var closedLine = document.querySelector('[data-gate-hint-closed]');
+    var skip = document.querySelector('[data-gate-skip]');
+    var skipLink = document.querySelector('[data-gate-skip-link]');
     var errorText = error ? error.textContent : '';
+
+    // Already in on this device or in this session: the door stays, with a way straight through.
+    // Remembered on this device: the box starts ticked, so logging in by hand keeps it remembered.
+    function reflectEntry() {
+      var inNow = remembered();
+      if (skip && skipLink) {
+        if (inNow) skipLink.href = next;
+        skip.hidden = !inNow;
+      }
+      var onDevice = false;
+      try { onDevice = localStorage.getItem(TOKEN_KEY) === TOKEN; } catch (e) { /* storage blocked */ }
+      if (onDevice && form && form.elements.remember) form.elements.remember.checked = true;
+    }
+    reflectEntry();
 
     if (hint && HINT_TEXT) {
       var line = document.createElement('p');
@@ -113,6 +129,16 @@
         busy = false;
         if (hashes[0] === LOGIN_HASH && hashes[1] === PASSWORD_HASH) open(); else fail();
       }, function () { busy = false; fail(); });
+    });
+
+    // Back button: browsers can restore this page exactly as it was left (faded out on the way in).
+    // Bring the door back, clear the password, and show the current entry state.
+    window.addEventListener('pageshow', function (event) {
+      if (!event.persisted) return;
+      document.documentElement.classList.remove('gate-open');
+      busy = false;
+      form.elements.password.value = '';
+      reflectEntry();
     });
   }
 })();
