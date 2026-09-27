@@ -8,20 +8,76 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; media-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self'">
 
 
-  <title>Production IP — Unconventional</title>
-  <meta name="description" content="PRODOS is Unconventional's Production Operating System, built in-house to run live production: budget, schedule, show call, crew time, spend and billing.">
+  <title>PRODOS — Production Operating System by Unconventional</title>
+  <meta name="description" content="PRODOS, our Production Operating System, runs a live production's budget, schedule, show call, crew time and billing in one place. Built in-house.">
+  <meta name="robots" content="max-image-preview:large">
   <link rel="canonical" href="https://www.unconventional.pro/production-ip.html">
   <meta name="theme-color" content="#0b0b0c">
 
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Unconventional">
-  <meta property="og:title" content="PRODOS — Unconventional">
-  <meta property="og:description" content="Our own operating system for live production. Built in-house.">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:title" content="PRODOS, our Production Operating System — Unconventional">
+  <meta property="og:description" content="Our own operating system for live production: money, time and show call in one place. Built in-house.">
   <meta property="og:url" content="https://www.unconventional.pro/production-ip.html">
-  <meta property="og:image" content="https://www.unconventional.pro/media/og-image.jpg">
+  <meta property="og:image" content="https://www.unconventional.pro/media/og-prodos.jpg">
+  <meta property="og:image:type" content="image/jpeg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="PRODOS Today screen for a fictional sample show.">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image:alt" content="PRODOS Today screen for a fictional sample show.">
+
+  <!-- Structured data for search engines and AI crawlers. A data block: browsers never run it, and the CSP allows it.
+       PRODOS is a CreativeWork, not a SoftwareApplication: the site never offers it for sale. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://www.unconventional.pro/#organization",
+        "name": "Unconventional",
+        "url": "https://www.unconventional.pro/"
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://www.unconventional.pro/production-ip.html#webpage",
+        "url": "https://www.unconventional.pro/production-ip.html",
+        "name": "PRODOS — Production Operating System by Unconventional",
+        "description": "PRODOS, our Production Operating System, runs a live production's budget, schedule, show call, crew time and billing in one place. Built in-house.",
+        "isPartOf": { "@id": "https://www.unconventional.pro/#website" },
+        "about": { "@id": "https://www.unconventional.pro/production-ip.html#prodos" },
+        "publisher": { "@id": "https://www.unconventional.pro/#organization" },
+        "breadcrumb": { "@id": "https://www.unconventional.pro/production-ip.html#breadcrumb" },
+        "primaryImageOfPage": {
+          "@type": "ImageObject",
+          "url": "https://www.unconventional.pro/media/prodos/prodos-today.jpg",
+          "width": 1600,
+          "height": 1000,
+          "caption": "PRODOS Today screen for a fictional sample show."
+        },
+        "inLanguage": "en-US"
+      },
+      {
+        "@type": "CreativeWork",
+        "@id": "https://www.unconventional.pro/production-ip.html#prodos",
+        "name": "PRODOS",
+        "alternateName": "PRODOS Production Operating System",
+        "description": "Unconventional's Production Operating System, built in-house to run live production: budget, schedule, show call, crew time, spend and billing in one place.",
+        "creator": { "@id": "https://www.unconventional.pro/#organization" }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://www.unconventional.pro/production-ip.html#breadcrumb",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Unconventional", "item": "https://www.unconventional.pro/" },
+          { "@type": "ListItem", "position": 2, "name": "Production IP", "item": "https://www.unconventional.pro/production-ip.html" }
+        ]
+      }
+    ]
+  }
+  </script>
 
   <link rel="icon" href="favicon.ico" sizes="64x64">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
@@ -31,11 +87,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400;500;600&display=swap">
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles.css?v=20260927">
 
-  <script src="js/boot.js"></script>
-  <script src="content/media.js" defer></script>
-  <script src="js/main.js" defer></script>
+  <script src="js/boot.js?v=20260927"></script>
+  <script src="content/media.js?v=20260927" defer></script>
+  <script src="js/main.js?v=20260927" defer></script>
 </head>
 
 <body>
@@ -67,7 +123,7 @@
     <section class="page-hero" id="top" aria-labelledby="page-title">
       <div class="container page-hero__content">
         <p class="eyebrow">Production IP</p>
-        <h1 class="page-hero__title" id="page-title">We built our own <em>operating system.</em></h1>
+        <h1 class="page-hero__title" id="page-title">We built our own <em>production operating system.</em></h1>
         <p class="page-hero__lede">PRODOS, our Production Operating System, holds a live production's money, time and show call in one place, from the first estimate to the final invoice. We built it in-house to run the way we produce.</p>
       </div>
 
@@ -245,15 +301,17 @@
         <ul class="site-footer__nav">
           <li><a href="./">The film</a></li>
           <li><a href="about.html">Who we are</a></li>
+          <li><a href="cultural-moments.html">Cultural moments</a></li>
+          <li><a href="agencies.html">For agencies</a></li>
+          <li><a href="conferences.html">Conferences &amp; keynotes</a></li>
           <li><a href="production-ip.html" aria-current="page">Production IP</a></li>
-          <li><a href="about.html#what">What we do</a></li>
           <li><a href="about.html#how">How we work</a></li>
           <li><a href="about.html#discretion">Discretion</a></li>
           <li><a href="about.html#contact">Contact</a></li>
         </ul>
       </nav>
 
-      <p class="site-footer__legal">&copy; <span data-year>2026</span> Unconventional. All rights reserved.</p>
+      <p class="site-footer__legal">&copy; <span data-year>2026</span> Unconventional. Live experiential production.</p>
     </div>
   </footer>
 </body>
