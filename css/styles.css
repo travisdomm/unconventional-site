@@ -1447,3 +1447,17 @@ html:not(.js) .intro__caption { display: none; }
 
 /* Contact lede: break between the two sentences, never inside the first. */
 .cta-panel__lede .sentence { display: inline-block; }
+
+/* ===== SEO pages (SEO v2, 2026-09-27) =====================================
+   The new text-only pages (cultural-moments.html, agencies.html, conferences.html) reuse the
+   Who we are classes above; the last rule below is their only addition. On Who we are, the three
+   offer headings now link to their pages: same look at rest, plus the site's usual lime arrow so
+   they read as links. */
+.part__list h3 a { color: inherit; transition: color .3s var(--ease); }
+.part__list h3 a::after { content: "\2192"; display: inline-block; margin-left: .35em; font-size: .75em; color: var(--accent); transition: transform .3s var(--ease); }
+.part__list h3 a:hover, .part__list h3 a:focus-visible { color: var(--accent); }
+.part__list h3 a:hover::after { transform: translateX(4px); }
+.motion-paused .part__list h3 a, .motion-paused .part__list h3 a::after { transition: none; }
+@media (prefers-reduced-motion: reduce) { .part__list h3 a, .part__list h3 a::after { transition: none; } }
+/* On the new pages a text link sits inside .part__body, a grid: keep it (and its underline) as wide as its words. */
+.part__body > .text-link { justify-self: start; }
