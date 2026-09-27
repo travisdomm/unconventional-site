@@ -202,12 +202,15 @@
     brandsLists.forEach(function (list) {
       // A list marked "reverse" gets the marks in the opposite order, so the two bars never mirror each other.
       var order = list.getAttribute('data-brands-list') === 'reverse' ? brands.slice().reverse() : brands;
+      // Bars marked decorative (aria-hidden, as on the home page, which lists the names as hidden text instead)
+      // get empty alt text, so each name is read, and indexed, once.
+      var decorative = !!list.closest('[aria-hidden="true"]');
       order.forEach(function (brand) {
         var item = document.createElement('li');
         var img = document.createElement('img');
         img.className = 'brand-logo';
         img.src = brand.logo;
-        img.alt = brand.name;
+        img.alt = decorative ? '' : brand.name;
         img.decoding = 'async';
         img.addEventListener('load', scheduleMarquee);
         item.appendChild(img);
