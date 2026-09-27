@@ -2,7 +2,7 @@
    MEDIA SLOTS — what goes in every visual spot on the site.
 
    Every visual is a named "slot". The HTML only says
-   <div data-slot="about"></div>; this file says what goes in it.
+   <div data-slot="cta"></div>; this file says what goes in it.
 
    To fill a slot:
      1. Make or pick the asset to the slot's `spec`.
@@ -86,7 +86,8 @@ window.MEDIA_SLOTS = {
      The footage of the four-scene film, one slot per shot, in playing order.
      A scene plays as footage only when its clips are "ready" and load; until
      then that scene plays on the live canvas (scene 4 needs film-s4-03, so
-     the film always ends on the exact name). Missing or "empty" shots are
+     the film always ends on the name, then on the owner's own image of the
+     logo, full screen: see `final` below). Missing or "empty" shots are
      skipped. The clips are aria-hidden (the film's text description is in the
      page); alt records what each shot shows.
      Every clip: MP4 (H.264), 1280×720, no audio, about 3 Mbit/s, already
@@ -103,22 +104,20 @@ window.MEDIA_SLOTS = {
                    for an untrimmed take)
        focus       0–1: where a phone crops the desktop clip if it has no strip
                    (the same x the strip was cut at)
-       hold        (s4-03) the final frame as a still, shown after the clip ends
        phoneEnd    (s3-08) a 9:16 still that phones crossfade to at the end
        phoneStills (s4-03) the unlit and lit 9:16 stills phones get instead of the clip
-       exact       (s4-03) the owner's own logo: the film ends on it (the hold, or the
-                   phones' lit still, dissolves into it under the title; without footage the
-                   canvas logo does). A 653×443 PNG with the logo's 557×347 at (48, 48); a new
-                   file must keep that layout (film3.js's EXACT is measured on it). Never drawn
-                   larger than its own pixels: with this file alone that holds in CSS px, so
-                   2x/3x screens upscale it and big 1x screens settle the frame smaller.
-       exact2x     optional (s4-03): the same PNG at exactly twice the size (1306×886).
-                   film3.js picks it (not srcset) wherever the settled logo would be drawn
-                   larger than the 1x file's pixels in device px: every 2x/3x screen, and big
-                   1x screens, which then settle to their usual size (up to 2 CSS px per 1x
-                   pixel). The rule then holds in device px on 1x and 2x screens; 3x screens
-                   keep the 1x file's CSS-px size (there is no 3x file). If it does not load,
-                   the 1x file is used
+       final       (s4-03) the film's last frame: the owner's own image of the logo, which
+                   stays full screen (it never shrinks or moves aside; the title card is a
+                   compact block along the bottom, over the floor). `final` (+ the lighter
+                   `finalSmall`) on landscape and wide screens, `finalTall` (+ `finalTallSmall`)
+                   on portrait ones; film3.js takes the small file wherever it has the pixels
+                   for the screen, and tries the other size if one does not load. It dissolves
+                   in as s4-03 ends (phones: after the lit still), lined up on that frame;
+                   without footage the canvas logo glides onto it and dissolves into it too.
+                   It is fitted to cover the screen but never to crop the U or the word, so
+                   a new file must keep the same composition (film3.js's FINAL is measured on
+                   these files: the logo's place in them, and where they lie on s4-03's last
+                   frame and on the lit phone still)
        overlay     optional: a transparent PNG of lime lines laid over the clip in
                    screen blend (S1-07's traced drawing, made from the chosen take) */
   "film-s1-01": {
@@ -314,55 +313,23 @@ window.MEDIA_SLOTS = {
   },
   "film-s4-03": {
     type: "video", status: "ready", usedBy: "the home film and Preview 1 (scene 4, Unconventional)",
-    src: "media/film/s4-03.mp4", hold: "media/film/s4-hold.jpg",
+    src: "media/film/s4-03.mp4",
     phoneStills: ["media/film/s4-03-9x16-dark.jpg", "media/film/s4-03-9x16.jpg"],
-    exact: "media/film/logo-exact.png", exact2x: "media/film/logo-exact-v2@2x.png",
+    final: "media/film/logo-final-16x9.jpg", finalSmall: "media/film/logo-final-16x9-1600.jpg",
+    finalTall: "media/film/logo-final-9x16.jpg", finalTallSmall: "media/film/logo-final-9x16-900.jpg",
     use: 4.75, focus: 0.5,
     alt: "At night the neon inside the steel U strikes, then the word UNCONVENTIONAL lights up below it on the stage deck.",
-    spec: "S4-03 Lit: the neon in the U strikes, then UNCONVENTIONAL lights (all letters together in this take, not left to right); locked camera. Trimmed to 0.25–5.0 s (the strike starts at 0.25 s). Desktop only (no phone strip: the word is too wide). hold = the final frame as a 1920×1080 JPG, crossfaded in after the clip. phoneStills = two 9:16 JPGs (1080×1920), unlit then lit, wiped left to right on phones. exact = the owner's logo (brand/unconventional-logo.jpg, 557×347) at (48, 48) in a 653×443 PNG whose 48 px margin continues its dark backdrop and fades it out (the backdrop also fades a little into the photo at the left, top and right, where there is no mark). The 1x file is logo-exact.png itself: its 557×347 window is the owner's JPG pixel for pixel (no re-sampling at 1x). exact2x (logo-exact-v2@2x.png, 1306×886) keeps that layout and alpha exactly at twice the size; its window is the owner's logo enlarged locally, no new detail: Catmull-Rom 4x plus a gentle two-scale sharpen, each pixel then held within ±6 levels of the source pixels around it (no halos), shrunk to 2x with Lanczos3. Measured against the owner's JPG (shrunk back to 1x by area): 44.7 dB PSNR, max difference 15 levels, sharpness ×1.05, no shift; no pixel steps more than 6 levels outside the source pixels around it (brand/raw/mc2-fix-0926/logo/rebuild2x.ps1). (logo-exact-v2.png, a re-sampled 1x, is no longer used: 39.5 dB, max 31, brighter neon clipping.) The film ends on it: under the title card the hold (phones: the lit still) dissolves into it, the U laid over the U, never shown larger than the chosen file's pixels (see the field notes above)."
+    spec: "S4-03 Lit: the neon in the U strikes, then UNCONVENTIONAL lights (all letters together in this take, not left to right); locked camera. Trimmed to 0.25–5.0 s (the strike starts at 0.25 s). Desktop only (no phone strip: the word is too wide). phoneStills = two 9:16 JPGs (1080×1920), unlit then lit, wiped left to right on phones. final / finalTall = the film's last frame, the owner's own images of the logo in the night desert scene (2026-09-26), lit: final = logo-final-16x9.jpg (2560×1429; finalSmall 1600×893), the owner's landscape with only the neon channel lit to match their portrait (the towers, ridge, sky and deck are the owner's pixels); finalTall = logo-final-9x16.jpg (1536×2752; finalTallSmall 900×1613), the owner's lit portrait. Both share this clip's composition, so the clip's last frame (phones: the lit still) dissolves into them in register (0.9 s), and the image then stays full screen with the title card small along the bottom. Replaced on 2026-09-27: the hold still (s4-hold.jpg) and the exact logo that the frame used to shrink aside to (logo-exact.png, logo-exact-v2@2x.png); those files stay in media/film/ because Preview 2 still plays them (content/media-p2.js)."
   },
 
-  /* ---- Who we are: 01 Why we exist --------------------------------------- */
-  "about": {
-    type: "image",
-    status: "empty",
-    page: "about.html",
-    src: "media/about.jpg",
-    alt: "",
-    spec: "Image · 4:5 portrait · min 1200×1500 · JPG/WebP · aim < 400 KB. Sits beside the thesis text; moody, abstract."
-  },
+  /* Who we are (about.html) has been text-only since 2026-09-26, on the owner's instruction ("no pictures"):
+     its slots about, offer-1, offer-2 and offer-3 were removed from this file. */
 
-  /* ---- Who we are: 03 What we do (3 cards) ------------------------------- */
-  "offer-1": {
-    type: "image",
-    status: "empty",
-    page: "about.html",
-    src: "media/offer-1.jpg",
-    alt: "",
-    spec: "Image · 4:3 · min 1200×900 · JPG/WebP · aim < 300 KB. Flagship cultural moments. The three offer images should feel like one series."
-  },
-  "offer-2": {
-    type: "image",
-    status: "empty",
-    page: "about.html",
-    src: "media/offer-2.jpg",
-    alt: "",
-    spec: "Image · 4:3 · min 1200×900 · JPG/WebP · aim < 300 KB. Embedded experiential partner. Series with offer-1 / offer-3."
-  },
-  "offer-3": {
-    type: "image",
-    status: "empty",
-    page: "about.html",
-    src: "media/offer-3.jpg",
-    alt: "",
-    spec: "Image · 4:3 · min 1200×900 · JPG/WebP · aim < 300 KB. Artist- and athlete-led platforms. Series with offer-1 / offer-2."
-  },
-
-  /* ---- Who we are: 06 Contact -------------------------------------------- */
+  /* ---- Production IP: "See it run" panel ---------------------------------- */
   "cta": {
     type: "image",
     status: "empty",
-    page: "about.html",
+    page: "production-ip.html",
     src: "media/cta.jpg",
     alt: "",
     spec: "Image or silent loop · 21:9 wide · min 2400×1030 · sits behind centred text under a dark scrim, so low-detail and moody works best."
