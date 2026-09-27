@@ -13,8 +13,11 @@
      03 Arrival          photoreal footage (film-s3-01 … s3-10); until it is
                          ready, the v2 power-up, crowd and team at FOH
      04 Unconventional   the logo built and brought into place: footage
-                         (film-s4-01 … s4-03 + the hold still), or the canvas
-                         logo build near the end of this file
+                         (film-s4-01 … s4-03), or the canvas logo build near
+                         the end of this file; either way the film ends on
+                         the owner's own image of the logo, full screen
+                         (slot film-s4-03 `final`: see FINAL), with the title
+                         card as a compact block along the bottom
    The sequence player at the end of the file decides, scene by scene, what
    plays (see "Film v3: the sequence player"). With every slot empty the whole
    film runs on this canvas, and ?film=SECONDS means the same as before.
@@ -77,7 +80,8 @@
 
    Inputs (content/media.js): intro-drawing (shown on the CAD screen) and the
    film-s… footage slots. Motion stops for "Pause motion" and
-   prefers-reduced-motion (then one still is held: the logo under the title).
+   prefers-reduced-motion (then one still is held: the owner's image of the
+   logo, full screen, with the title card).
    ?film=21.5 on the URL starts the film at that second. Skip jumps to the
    logo and the title card.
    Every structure here is original: no names, logos or set pieces of any
@@ -3946,7 +3950,10 @@
                resolves into steel letters standing in front of the U
        strike  the neon in the U strikes with one soft stutter, then glows
        letters UNCONVENTIONAL lights up letter by letter, left to right
-       hold    a clean hold; under the title card the logo settles aside.
+       hold    the logo glides onto the owner's image of it (its U onto the
+               image's U, its word onto the image's word: fitLogo) and
+               dissolves into it, full screen; the title card comes up
+               below (see FINAL in the player).
      No lime in the logo itself: the lime lives in the set (a work light).
      Every number on screen is a dimension of this model.
      ========================================================================== */
@@ -3957,8 +3964,9 @@
     tiles: [3.95, 5.35],
     strike: 5.45,
     letters: [5.95, 7.15],
-    title: 7.5,            // the title card comes up
-    settle: [7.5, 8.7]     // the logo moves aside to make room for it
+    reg: [7.1, 7.75],      // the logo glides onto the owner's image (its U and its word each onto the image's; without the image it stays)
+    mix: 7.45,             // the dissolve into the owner's image starts (it takes FINAL.fade)
+    title: 8.35            // the title card comes up, once the image is in (LG.mix + FINAL.fade)
   };
   var U_BASE = 2.4, U_TOP = 10.4, U_ARM = 2.5, U_HALF = 0.8, U_RAIL = 0.5, U_DEP = 0.6, U_LIFT = 5.2;
   var U_ARC = U_BASE + U_HALF + U_ARM;          // the centre of the bottom bend
@@ -4143,38 +4151,67 @@
   function wordData() { if (!WD) { try { WD = buildWord(); } catch (e) { WD = null; } } return WD; }
   function wordWidth() { return WD ? WD.WW : W_CAP * W_RATIO; }
 
-  /* ---- The logo camera: close on the U in the air, down with it, then front-on; aside under the title ---- */
+  /* ---- The logo camera: close on the U in the air, down with it, then front-on; onto the owner's image at the end ---- */
   var LCAM = [
     { t: 0,   target: [0, 10.2, 0],   d: 0.68,  yaw: -30, pitch: 9 },
     { t: 2.4, target: [0, 11.7, 0],   d: 0.74,  yaw: -16, pitch: 7 },
     { t: 3.0, target: [0, 11.2, 0.4], d: 0.8,   yaw: -12, pitch: 6 },
     { t: 4.6, target: [0, 5.6, 1.6],  d: 0.97,  yaw: -3,  pitch: 3.5 },
     { t: 5.6, target: [0, 5.2, 2.0],  d: 1.0,   yaw: 0,   pitch: 3 },
-    { t: 8.7, target: [0, 5.2, 2.0],  d: 0.985, yaw: 0,   pitch: 3 }
+    { t: 7.75, target: [0, 5.2, 2.0], d: 0.985, yaw: 0,   pitch: 3 }   // (LG.reg[1])
   ];
-  var LFOV = 38 * DEG, LHOLD = { W: 0, H: 0, WW: 0 };
+  var LFOV = 38 * DEG, LHOLD = { W: 0, H: 0, WW: 0, fk: '' };
   function fitLogo() {
-    var WW = wordWidth();
-    if (LHOLD.W === W && LHOLD.H === H && LHOLD.WW === WW) return LHOLD;
+    var WW = wordWidth(), kind = finalOn() ? finalKind() : '', fk = kind ? kind + ' ' + finalFit(kind).key : '';
+    if (LHOLD.W === W && LHOLD.H === H && LHOLD.WW === WW && LHOLD.fk === fk) return LHOLD;
     // the hold keeps clear of the header and act labels above and the readout below: 70 % of the height, centred a little low
     var aspect = W / H, ty = Math.tan(LFOV / 2), tx = ty * aspect, fx = aspect < 1 ? 0.92 : 0.86, fy = 0.68, half = WW / 2 + 0.6, py0 = H * 0.535;
     var D = Math.max(half / (tx * fx) + (W_Z - 2), 5.4 / (ty * fy) + (W_Z - 2), (U_TOP + 0.4 - 5.2) / (ty * fy) - 2);
     var c = camFrom({ target: [0, 5.2, 2], dist: D * 0.985, yaw: 0, pitch: 3 * DEG, f: (H / 2) / ty, px: W / 2, py: py0 }, 0.3);
-    pj(c, 0, U_TOP, 0); var top = PY;
-    pj(c, 0, 0, W_Z); var bot = PY;
     pj(c, -WW / 2, 0, W_Z); var left = PX;
-    pj(c, WW / 2, 0, W_Z); var right = PX;
-    // where the logo settles under the title card: the upper right on wide screens, the top on tall ones
-    var goal = aspect >= 1.25 ? { x: 0.72, y: 0.37, h: 0.28 } : aspect >= 1 ? { x: 0.5, y: 0.34, h: 0.24 } : { x: 0.5, y: 0.34, w: 0.8 };
-    LHOLD = { W: W, H: H, WW: WW, D: D, py0: py0, from: [W / 2, (top + bot) / 2], to: [goal.x * W, goal.y * H],
-      s: goal.h ? Math.min(1, goal.h * H / (bot - top)) : Math.min(1, goal.w * W / (right - left)) };
+    pj(c, WW / 2, 0, W_Z); var right = PX, bot = PY;
+    pj(c, 0, U_TOP, 0); var ux = PX, top = PY;
+    // At the end the logo glides onto the owner's image (LG.reg): the top of its U onto the top of the image's U,
+    // the foot of its word onto the foot of the image's word, the word never wider than the screen.
+    var to = [ux, top], s = 1, mU = null, mW = null;
+    if (kind) {
+      var f = finalFit(kind), F = FINAL[kind], iTop = (f.y + F.keep.t * f.h) * dpr, iBot = (f.y + F.keep.b * f.h) * dpr;
+      s = Math.min((iBot - iTop) / (bot - top), (W - 24 * dpr) / (right - left));
+      to = [(f.x + F.U.x * f.w) * dpr, iTop + ((iBot - iTop) - s * (bot - top)) / 2];
+      // The two logos' proportions differ (the image's U is wider for its height, and its word larger), so over the
+      // same glide the drawn U and the drawn word are each also fitted onto the image's own U and word (mU, mW: from
+      // where the glide leaves them onto the image's boxes, see logoMorph). The dissolve then crosses between two
+      // shapes in one place: never a narrow word inside a wide one, or a second U outline.
+      var X = function (v) { return to[0] + s * (v - ux); }, Y = function (v) { return to[1] + s * (v - top); };
+      var gx = function (u) { return (f.x + u * f.w) * dpr; }, gy = function (v) { return (f.y + v * f.h) * dpr; };
+      var ro = U_ARM + U_HALF, uL, uR, uT, uB, wT;
+      pj(c, -ro, 8, U_DEP); uL = PX; pj(c, ro, 8, U_DEP); uR = PX;
+      pj(c, 0, U_TOP, U_DEP); uT = PY; pj(c, 0, U_BASE, U_DEP); uB = PY;
+      pj(c, 0, W_CAP, W_Z); wT = PY;
+      mU = boxTo(X(uL), X(uR), Y(uT), Y(uB), gx(F.U.x - F.U.w / 2), gx(F.U.x + F.U.w / 2), gy(F.keep.t), gy(2 * F.U.y - F.keep.t));
+      mW = boxTo(X(left), X(right), Y(wT), Y(bot), gx(F.keep.l), gx(F.keep.r), gy(F.wt), gy(F.keep.b));
+    }
+    LHOLD = { W: W, H: H, WW: WW, fk: fk, D: D, py0: py0, from: [ux, top], to: to, s: s, mU: mU, mW: mW };
     return LHOLD;
   }
+  // The affine map (x' = ax x + bx, y' = ay y + by) that takes the box [x0, x1] x [y0, y1] onto [X0, X1] x [Y0, Y1].
+  function boxTo(x0, x1, y0, y1, X0, X1, Y0, Y1) {
+    var ax = (X1 - X0) / ((x1 - x0) || 1), ay = (Y1 - Y0) / ((y1 - y0) || 1);
+    return { ax: ax, bx: X0 - ax * x0, ay: ay, by: Y0 - ay * y0 };
+  }
+  // The drawn U's and word's fit onto the image's (fitLogo: mU, mW), grown in over the glide: null before it.
+  function logoMorph(t) {
+    var F = fitLogo(), k = inOut(span(t, LG.reg));
+    if (!F.mU || k <= 0) return null;
+    function at(M) { return { ax: lerp(1, M.ax, k), bx: M.bx * k, ay: lerp(1, M.ay, k), by: M.by * k }; }
+    return { U: at(F.mU), W: at(F.mW) };
+  }
+  function morphTo(M) { if (M) ctx.setTransform(M.ax, 0, 0, M.ay, M.bx, M.by); else ctx.setTransform(1, 0, 0, 1, 0, 0); }
   function logoCam(t) {
     var F = fitLogo(), i = 0;
     while (i < LCAM.length - 1 && t >= LCAM[i + 1].t) i++;
     var a = LCAM[i], b = LCAM[Math.min(i + 1, LCAM.length - 1)], u = a === b ? 0 : inOut(clamp((t - a.t) / (b.t - a.t), 0, 1));
-    var k = inOut(span(t, LG.settle)), sc = lerp(1, F.s, k), cx = lerp(F.from[0], F.to[0], k), cy = lerp(F.from[1], F.to[1], k);
+    var k = inOut(span(t, LG.reg)), sc = lerp(1, F.s, k), cx = lerp(F.from[0], F.to[0], k), cy = lerp(F.from[1], F.to[1], k);
     return camFrom({
       target: lerp3(a.target, b.target, u), dist: F.D * Math.exp(lerp(Math.log(a.d), Math.log(b.d), u)),
       yaw: lerp(a.yaw, b.yaw, u) * DEG, pitch: lerp(a.pitch, b.pitch, u) * DEG,
@@ -4580,7 +4617,7 @@
 
   // The logo's readout, in the build's language: what is happening, in numbers of this model.
   function drawLogoReadout(t, ly) {
-    var a = span(t, [0.45, 0.85]) * (1 - span(t, [LG.title - 0.5, LG.title - 0.1]));
+    var a = span(t, [0.45, 0.85]) * (1 - span(t, [LG.reg[0] - 0.4, LG.reg[0]]));
     if (a <= 0) return;
     var d = dpr, x = Math.max(20 * d, (W - 1280 * d) / 2 + 32 * d), y = H - (W / d < 600 ? 84 : 30) * d, one, two, pins = 0, k;
     for (k = 1; k < USEC.length; k++) if (t >= Math.max(USEC[k - 1].t1, USEC[k].t1)) pins += 4;
@@ -4609,8 +4646,10 @@
     drawLogoSet(t, c, neon, litShare);
     drawRiser(c, neon);
     drawHoists(t, c, ly);
-    drawU(t, c, ly, steel, neon);
-    drawWord(t, c);
+    var m = logoMorph(t);   // (during the glide onto the owner's image: the U and the word each fitted onto its own)
+    morphTo(m && m.U); drawU(t, c, ly, steel, neon);
+    morphTo(m && m.W); drawWord(t, c);
+    morphTo(null);
     drawLogoReadout(t, ly);
   }
 
@@ -4627,8 +4666,9 @@
        03 Arrival         clips s3-01 … s3-10    fallback: the power-up, crowd, fireworks, drones
                           and the team at FOH (canvas T.built → T.s3End)
        04 Unconventional  clips s4-01 … s4-03    fallback: the canvas logo above; the footage
-                          version needs s4-03 (the lit hold), so the film always ends on the name;
-                          under the title the hold dissolves into the owner's exact logo (EXACT)
+                          version needs s4-03 (the lit logo), so the film always ends on the name;
+                          then it dissolves into the owner's own image of the logo, which stays
+                          full screen, with the title card small along the bottom (FINAL)
      Joins: soft cuts inside a scene; the canvas dissolves into s2-01 on the
      match-cut frame (its lines linger in screen blend for 0.4 s); s1-08's
      paper turns dark with lime lines and dissolves into the canvas drawing;
@@ -4648,20 +4688,28 @@
      Timing: `?film=SECONDS` is a time on this sequence (with no footage it is
      the same as the canvas time: 0 people, 11 build, 36 arrival, 41.6 logo).
      ========================================================================== */
-  var XF = 0.22, WAIT_MAX = 8, STILLS = { wipe: [0.9, 2.5], title: 3.1, len: 3.5 };
+  var XF = 0.22, WAIT_MAX = 8, STILLS = { wipe: [0.9, 2.5], mix: 2.7, title: 3.6, len: 3.6 };
   var FEATHER = 'linear-gradient(to bottom, transparent, #000 9%, #000 91%, transparent)';   // must match .intro__still.is-fitw
-  // The film ends on the owner's exact logo (slot film-s4-03 `exact`: brand/unconventional-logo.jpg, 557×347, at (48, 48)
-  // in a 653×443 PNG, its dark backdrop feathered out over the margin; `exact2x`: the same layout at 1306×886; the files
-  // must keep this layout, EXACT is measured on it). Under the title card the AI hold
-  // (phones: the lit still) dissolves into it, registered on the U. EXACT: the U in that PNG (centre, width) and the
-  // word's width, in its own pixels; EXREF: the U in the frame it replaces (the hold / the clip's end frame, and the
-  // phones' 9:16 lit still), as fractions of that frame. It is never shown larger than its own pixels (see exactCap).
-  // g0-g1: the dark gap between the U and the word (the PNG: U ends at row 315, the word starts at 341; the hold: 745 and
-  // 752 of 1080). The two words sit at different heights, so below that line the old word goes out before the exact
-  // one comes in (they are never seen double) while the U crossfades in place: see xfade. The canvas ending (no
-  // footage: autoplay refused, or s4-03 lost) dissolves into the same PNG (logoX), registered on the canvas U.
-  var SETTLE = 1.2, RESETTLE = 0.8, EXACT = { w: 653, h: 443, ux: 335.5, uy: 223.5, uw: 161, ww: 471, g0: 318, g1: 338, fade: 0.7 };
-  var EXREF = { wide: { x: 0.5034, y: 0.4366, w: 0.2620, ar: 16 / 9, g0: 0.681, g1: 0.6945 }, tall: { x: 0.5019, y: 0.4820, w: 0.3722, ar: 9 / 16 } };
+  // The film ends on the owner's own image of the logo, full screen (slot film-s4-03: `final` / `finalSmall` for landscape
+  // and wide screens, `finalTall` / `finalTallSmall` for portrait ones; the smaller file wherever it has enough pixels).
+  // It never shrinks or moves aside: the title card is a compact block along the bottom (css .intro.has-final), and the
+  // image is fitted around it (finalFit): as large as covers the screen, but never cropping the U or the word
+  // (`keep`), which stay clear of the header above and the title card below. Where that cannot cover the screen (the
+  // word is too wide for a tall phone, or a 4:3 screen), the image's edge is feathered into the page. It dissolves in
+  // over what came before, registered on it: s4-03's last frame (16:9, object-fit: cover) or, on phones, the lit 9:16
+  // still (full width, centred): `reg` is where the image lies on that frame, as fractions of it (measured by edge
+  // correlation, brand/raw/final-shot-0926/). If the fit differs from that place (a 4:3 screen crops the word in the
+  // clip), both glide to the fit together during the dissolve. The canvas ending (no footage) glides its U onto the
+  // image's `U` and its word onto the image's word (`keep` l, r, b and `wt`, the top of the word: fitLogo) before the
+  // same dissolve. `keep`, `wt` and `U` are fractions of the image (U: centre and width; its top is keep.t); a new
+  // file must keep the same layout, or be measured again. `smallW`: the small file's width.
+  var FINAL = {
+    fade: 0.9,
+    wide: { ar: 2560 / 1429, smallW: 1600, keep: { l: 0.122, r: 0.890, t: 0.181, b: 0.823 }, wt: 0.698,
+      U: { x: 0.5035, y: 0.4357, w: 0.2593 }, reg: { x: -0.00439, y: -0.00072, w: 1.00864 } },
+    tall: { ar: 1536 / 2752, smallW: 900, keep: { l: 0.031, r: 0.979, t: 0.3645, b: 0.668 }, wt: 0.6187,
+      U: { x: 0.5017, y: 0.482, w: 0.3722 }, reg: { x: 0, y: -0.00355, w: 1 } }
+  };
   // Captions under "An imagined brief" while scene 1 plays (site text: no shot depends on text in the footage).
   var CAPTIONS = {
     'film-s1-03': [[0, 'Brief · Site · Summit plateau']],
@@ -4685,7 +4733,11 @@
   // Elsewhere a next clip is warmed only if it has had a second to buffer and still has no frame (then WARM_NEXT turns on).
   var WARM_NEXT = /iP(hone|ad|od)/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
   var curSeg = null, prevSeg = null, loc = 0, ploc = 0, waitN = 0, zTop = 2;
-  var mediaBox = null, vignette = null, tint = null, logoX = null;
+  var mediaBox = null, tint = null;
+  // the owner's image, one element per shape (made when the ending is near), and the room the page leaves it:
+  // HEAD = the header's height, ROOM = from the title card's top to the bottom of the film (both CSS px, see measureEnd)
+  var FIN = { wide: null, tall: null }, HEAD = 76, ROOM = 0;
+  var endInner = section.querySelector('.intro__end-inner'), headerEl = document.querySelector('[data-header]');
   var captionEl = section.querySelector('[data-intro-caption]');
 
   function clipFor(name) {
@@ -4698,7 +4750,7 @@
         in: Math.max(0, +s.in || 0), out: Math.max(0, +s.out || 0), dur: 0,
         el: null, meta: false, ready: false, done: false, failed: false, seekTo: -1, wait: 0,
         shown: false, posterOk: false, warm: false, lastT: -1, autoAt: 0,
-        hold: null, end: null, over: null, dark: null, lit: null, exact: null, stillsOk: 0, stillsFailed: false, contain: false
+        end: null, over: null, dark: null, lit: null, stillsOk: 0, stillsFailed: false, contain: false
       } : null;
       if (c) c.dur = c.out > c.in ? c.out - c.in : Math.max(0.5, +s.use || 3);
     }
@@ -4746,9 +4798,11 @@
     var m = 0;
     SEG.forEach(function (g, i) { g.len = segLen(g); if (i) m -= g.join.over; g.m0 = m; m += g.len; });
     var L = SEG[SEG.length - 1];
-    L.titleAt = L.kind === 'canvas' ? LG.title : L.kind === 'stills' ? STILLS.title : L.clip.dur + (L.clip.slot.hold ? 0.4 : 0);
-    // (the film rests once it has settled aside and, if there is one, dissolved into the exact logo: see exactMix)
-    L.restAt = L.kind === 'canvas' ? LG.settle[1] + 0.05 + (L.world === 'logo' && exactSrc() ? EXACT.fade : 0) : L.titleAt + SETTLE + 0.05 + (L.clip.slot.exact ? EXACT.fade : 0);
+    // mixAt: the dissolve into the owner's image starts (footage: as s4-03 ends); the title card comes up once it is in
+    L.mixAt = L.kind === 'canvas' ? LG.mix : L.kind === 'stills' ? STILLS.mix : L.clip.dur;
+    L.titleAt = L.kind === 'canvas' ? LG.title : L.kind === 'stills' ? STILLS.title : L.clip.dur + (finalOn() ? FINAL.fade : 0);
+    // (the film rests once the image is in: see finalMix and resting)
+    L.restAt = Math.max(L.titleAt, L.mixAt + (finalOn() ? FINAL.fade : 0)) + 0.05;
     M_END = L.m0 + L.titleAt;
   }
   function nextOf(g) { var i = SEG.indexOf(g); return i >= 0 ? SEG[i + 1] || null : null; }
@@ -4762,10 +4816,6 @@
     mediaBox.setAttribute('aria-hidden', 'true');
     section.insertBefore(mediaBox, canvas);
     mediaBox.appendChild(canvas);
-    vignette = document.createElement('div');
-    vignette.className = 'intro__vignette';
-    mediaBox.appendChild(vignette);
-    vignette.style.zIndex = '100000';
     return mediaBox;
   }
   function raise(el) { if (el) el.style.zIndex = String(++zTop); }
@@ -4785,48 +4835,95 @@
     setOp(im, 0);
     return im;
   }
-  // The owner's exact logo: an image, so it needs no autoplay (the canvas ending uses it too). A slot may add
-  // `exact2x`, the same PNG at exactly twice the size. The file is picked here rather than by srcset (which gives every
-  // 1x screen the 1x file): the 2x file wherever the logo, once the frame has settled, would be drawn larger than the
-  // 1x file's pixels in device px. That is every 2x or 3x screen, and a big 1x screen, which can then settle to its
-  // usual size (see exactCap). Its density (_dens) is set at once, so the ending is planned for that file while it
-  // loads (a late file never moves the frame). If the 2x file fails, the 1x file is loaded instead, and if the ending
-  // is already under way the frame eases to the 1x file's size (RESETTLE s) rather than jumping.
-  function exactSrc() { var s = slots['film-s4-03']; return s && s.exact ? s.exact : ''; }
-  function exactNeed(g) {   // device px per pixel of the 1x file where the frame settles, before any cap
-    return exactFit(g, true).s * (g.kind === 'canvas' ? 1 : settleBase()[2]) * (window.devicePixelRatio || 1);
+  /* ---- The owner's image of the logo, the film's last frame (FINAL) ---- */
+  function finalOn() { var s = slots['film-s4-03']; return !!(s && s.final && s.finalTall); }
+  function finalSrc(kind, small) {
+    var s = slots['film-s4-03'] || {};
+    return kind === 'wide' ? (small ? s.finalSmall : s.final) : (small ? s.finalTallSmall : s.finalTall);
   }
-  function exactImg(s, g) {
-    var two = !!s.exact2x && exactNeed(g) > 1.001;
-    var im = img(two ? s.exact2x : s.exact, 'intro__exact', function () {
-      im._dens = Math.max(1, im.naturalWidth / EXACT.w);   // 2 for the 2x file
-      late(im, '_at');
-    }, function () {
-      if (two) {
-        two = false; im._bad = false;
-        console.warn('[film] "film-s4-03" exact2x ' + s.exact2x + ' did not load; using ' + s.exact + '.');
-        if (curSeg && isLast(curSeg) && exactOf(curSeg) === im && !paused()) { im._capFrom = exactCap(im); im._capAt = loc; }
-        im._dens = 1;
-        im.src = s.exact;
-        return;
-      }
-      late(im, '_badAt');
+  // Which one: the image for the screen's shape (landscape: wide, portrait: tall), unless the other covers clearly more
+  // of the screen with the logo in view (a nearly square screen shows the tall one whole, the wide one only with bands).
+  function finalKind() {
+    var a = W >= H ? 'wide' : 'tall', b = a === 'wide' ? 'tall' : 'wide';
+    return finalFit(b).cov > finalFit(a).cov + 0.05 ? b : a;
+  }
+  // Where it goes (CSS px in the media box). Its registered place on the frame before it (reg), if the U and the word
+  // are in view there, clear of the header and of the title card (a touch larger where that covers the screen);
+  // otherwise as large as covers the screen but no larger than keeps them in view, the logo's centre kept where it was
+  // as far as the room allows (where it cannot cover the height, its top edge at the screen's top instead).
+  // cov: the share of the screen it covers; gap: from the word down to the title card.
+  function finalFit(kind) {
+    var bw = W / dpr, bh = H / dpr, F = FINAL[kind], key = bw.toFixed(1) + 'x' + bh.toFixed(1) + ' ' + HEAD + ' ' + ROOM;
+    if (F.fit && F.fit.key === key) return F.fit;
+    var K = F.keep, ar = F.ar, side = Math.max(6, 0.012 * bw), top = HEAD + 8, bot = bh - ROOM - 14;
+    // the frame it replaces: s4-03's 16:9 frame (object-fit: cover), or the phones' lit 9:16 still (full width, centred)
+    var fw = kind === 'wide' ? Math.max(bw, bh * 16 / 9) : bw, fh = kind === 'wide' ? fw * 9 / 16 : fw * 16 / 9;
+    var reg = rectAR((bw - fw) / 2 + F.reg.x * fw, (bh - fh) / 2 + F.reg.y * fh, F.reg.w * fw, ar);
+    function fits(r) { return r.x + K.l * r.w >= side - 0.5 && r.x + K.r * r.w <= bw - side + 0.5 && r.y + K.t * r.h >= top - 0.5 && r.y + K.b * r.h <= bot + 0.5; }
+    function covers(r) { return r.x <= 0.5 && r.y <= 0.5 && r.x + r.w >= bw - 0.5 && r.y + r.h >= bh - 0.5; }
+    function around(w) {
+      var h = w / ar, mx = (K.l + K.r) / 2, my = (K.t + K.b) / 2, vy = reg.y + my * reg.h - my * h;
+      // (too short to cover the height: its top edge stays at the screen's top, as far as the logo allows, so what is
+      // left uncovered is at the bottom, under the title card's dark band)
+      if (h < bh - 0.5) vy = Math.min(vy, 0);
+      var y = pick(vy, top - K.t * h, bot - K.b * h, bh - h, 0);
+      // (and where its bottom edge is above the screen's anyway, the word keeps up to 20 px more clear of the card, as
+      // far as the U's top allows, so the band's fade has room below the word: see measureEnd)
+      if (y + h < bh - 0.5) y = Math.max(Math.min(y, bot - 20 - K.b * h), Math.min(y, top - K.t * h));
+      return rectAR(pick(reg.x + mx * reg.w - mx * w, side - K.l * w, bw - side - K.r * w, bw - w, 0), y, w, ar);
+    }
+    var cw = Math.max(bw, bh * ar), r = reg, c;
+    if (!fits(reg)) r = around(Math.min(cw, (bw - 2 * side) / (K.r - K.l), Math.max(1, bot - top) / (K.b - K.t) * ar));
+    else if (!covers(reg) && cw / reg.w < 1.04 && fits(c = around(cw))) r = c;
+    r.cov = Math.max(0, Math.min(bw, r.x + r.w) - Math.max(0, r.x)) * Math.max(0, Math.min(bh, r.y + r.h) - Math.max(0, r.y)) / (bw * bh);
+    r.gap = bh - ROOM - (r.y + K.b * r.h);
+    r.reg = reg; r.key = key; r.kind = kind;
+    return (F.fit = r);
+  }
+  function rectAR(x, y, w, ar) { return { x: x, y: y, w: w, h: w / ar }; }
+  // v, moved into [k0, k1] (the logo in view: always met), and into [c0, c1] (the screen covered) where both can be
+  function pick(v, k0, k1, c0, c1) {
+    if (k1 < k0) k0 = k1 = (k0 + k1) / 2;
+    var lo = Math.max(k0, c0), hi = Math.min(k1, c1);
+    return lo <= hi ? clamp(v, lo, hi) : clamp(v, k0, k1);
+  }
+  // The image for a shape, made once the ending is near: the small file where it has the pixels for its place on this
+  // screen (at its pixel density), the full one otherwise; if one fails to load, the other is tried.
+  function finalImg(kind) {
+    if (FIN[kind] || !finalOn()) return FIN[kind];
+    var small = finalSrc(kind, true), big = finalSrc(kind, false);
+    var useSmall = !!small && finalFit(kind).w * (window.devicePixelRatio || 1) <= FINAL[kind].smallW * 1.05;
+    var im = FIN[kind] = img(useSmall ? small : big, 'intro__final', function () { late(im); }, function () {
+      var alt = im._alt;
+      console.warn('[film] "film-s4-03" ' + im.getAttribute('src') + ' did not load' + (alt ? '; trying ' + alt + '.' : '; the film ends on the frame before it.'));
+      if (alt) { im._alt = ''; im._bad = false; im.src = alt; return; }
+      late(im);
     });
-    im._dens = two ? 2 : 1;
+    im._kind = kind; im._alt = useSmall ? big : small;
+    raise(im);
     return im;
   }
-  function logoExact(g) { if (!logoX && exactSrc()) logoX = exactImg(slots['film-s4-03'], g); return logoX; }
-  function exactOf(g) { return !g ? null : g.kind === 'canvas' ? (g.world === 'logo' ? logoX : null) : g.clip.exact; }
-  // The exact logo arrived (or failed) after its moment, with the film under the title: its dissolve (or the frame's
-  // re-settle) runs from now rather than cutting in, and the clock starts again for it. (With Pause motion it simply shows.)
-  function late(im, key) {
-    if (curSeg && isLast(curSeg) && exactOf(curSeg) === im && !paused()) im[key] = loc;
+  // The image on screen at the end: the one for the screen's shape or, after the screen is turned, the other one
+  // until that has loaded.
+  function finalEl() {
+    if (!finalOn()) return null;
+    var k = finalKind(), a = FIN[k], b = FIN[k === 'wide' ? 'tall' : 'wide'];
+    return a && a._ok ? a : b && b._ok ? b : null;
+  }
+  function raiseFinal() { var k = finalKind(); raise(FIN[k === 'wide' ? 'tall' : 'wide']); raise(FIN[k]); }
+  function dropFinal() { ['wide', 'tall'].forEach(function (k) { if (FIN[k]) { FIN[k].remove(); FIN[k] = null; } }); }
+  // The image arrived (or failed) after its moment: its dissolve runs from now rather than cutting in, and the clock
+  // starts again for it. (With Pause motion it simply shows; after the screen is turned it replaces the other at once.)
+  function late(im) {
+    var other = FIN[im._kind === 'wide' ? 'tall' : 'wide'];
+    if (curSeg && isLast(curSeg) && !paused() && im._ok && loc > curSeg.mixAt && !(other && other._ok)) im._at = loc;
     kick();
     if (!raf && curSeg) draw();
   }
   function ensure(g, preload) {
     if (!g) return;
-    if (g.kind === 'canvas') { if (g.world === 'logo') logoExact(g); return; }
+    if (isLast(g)) finalImg(finalKind());
+    if (g.kind === 'canvas') return;
     var c = g.clip, s = c.slot;
     if (g.kind === 'stills') {
       if (!c.dark) {
@@ -4835,15 +4932,12 @@
         c.dark = img(s.phoneStills[0], 'intro__still is-fitw', ok, bad);
         c.lit = img(s.phoneStills[1], 'intro__still is-fitw', ok, bad);
       }
-      if (s.exact && !c.exact) c.exact = exactImg(s, g);
       return;
     }
     if (!c.el) makeVideo(c, preload);
     else if (preload === 'auto' && c.el.preload !== 'auto') { c.el.preload = 'auto'; c.autoAt = performance.now(); }
-    if (s.hold && !PHONE && !c.hold) c.hold = img(s.hold, 'intro__still');
     if (s.phoneEnd && PHONE && !c.end) c.end = img(s.phoneEnd, 'intro__still');
     if (s.overlay && !c.over) c.over = img(s.overlay, 'intro__still is-screen');
-    if (s.exact && !c.exact) c.exact = exactImg(s, g);
   }
   function makeVideo(c, preload) {
     var v = document.createElement('video'), s = c.slot;
@@ -4910,8 +5004,8 @@
   }
   function drop(c) {   // let go of a clip's elements (they are made again if the clip is needed again)
     if (c.el) { try { c.el.pause(); c.el.removeAttribute('src'); c.el.load(); } catch (e) { /* ignore */ } c.el.remove(); c.el = null; }
-    [c.hold, c.end, c.over, c.dark, c.lit, c.exact].forEach(function (im) { if (im) im.remove(); });
-    c.hold = c.end = c.over = c.dark = c.lit = c.exact = null;
+    [c.end, c.over, c.dark, c.lit].forEach(function (im) { if (im) im.remove(); });
+    c.end = c.over = c.dark = c.lit = null;
     c.meta = c.ready = c.done = c.shown = c.warm = false; c.seekTo = -1; c.stillsOk = 0;
     arm(c);
   }
@@ -4945,31 +5039,33 @@
   function pauseV(c) { if (c && c.el && !c.el.paused) c.el.pause(); }
   function layersOf(g) {
     if (!g) return [];
-    if (g.kind === 'canvas') return [canvas, exactOf(g)];
+    if (g.kind === 'canvas') return [canvas];
     var c = g.clip;
-    return g.kind === 'stills' ? [c.dark, c.lit, c.exact] : [c.el, c.hold, c.end, c.over, c.exact];
+    return g.kind === 'stills' ? [c.dark, c.lit] : [c.el, c.end, c.over];
   }
   function hide(g) {
     layersOf(g).forEach(function (el) { setOp(el, 0); });
     if (g && g.clip) { pauseV(g.clip); if (g.clip.name === 'film-s1-08') setOp(tint, 0); }
+    follow(g, null);
   }
 
   // Enter a segment: bring its layers to the top (the canvas stays above the footage in the match cut).
   function enter(g, l, jump) {
     ensure(g, 'auto');
-    var ex = exactOf(g);
-    if (ex) ex._at = ex._badAt = ex._capAt = undefined;   // a new pass: the exact logo's dissolve is on its planned time again
-    if (g.kind === 'canvas') { raise(canvas); raise(ex); return; }
+    if (isLast(g)) ['wide', 'tall'].forEach(function (k) { if (FIN[k]) FIN[k]._at = undefined; });   // a new pass: the dissolve is on its planned time again
+    follow(g, null);
+    if (g.kind === 'canvas') { raise(canvas); if (isLast(g)) raiseFinal(); return; }
     var c = g.clip;
     arm(c);
     if (g.kind === 'clip') {
       if (jump || l > 0.05) seekClip(c, l); else { c.done = false; if (c.meta && Math.abs(c.el.currentTime - c.in) > 0.05) seekClip(c, 0); }
       // until its first frame, a clip shows its poster only at its start, and only the full-size file (see makeVideo)
       c.posterOk = !!c.slot.poster && c.src === c.slot.src && l <= 0.05;
-      raise(c.el); raise(c.over); raise(c.hold); raise(c.end); raise(c.exact);
+      raise(c.el); raise(c.over); raise(c.end);
       if (c.name === 'film-s1-08') { tintEl(); raise(tint); }
       if (g.join.type === 'match' && !jump) raise(canvas);
-    } else { raise(c.dark); raise(c.lit); raise(c.exact); }
+    } else { raise(c.dark); raise(c.lit); }
+    if (isLast(g)) raiseFinal();
   }
   function tintEl() {
     if (!tint) { tint = document.createElement('div'); tint.className = 'intro__tint'; box().appendChild(tint); setOp(tint, 0); }
@@ -4989,11 +5085,12 @@
     var i = SEG.indexOf(curSeg), keep = [curSeg, prevSeg];
     for (var k = i + 1; k < SEG.length && k <= i + 2; k++) {
       if (SEG[k].kind !== 'canvas') keep.push(SEG[k]);
-      ensure(SEG[k], k === i + 1 ? 'auto' : 'metadata');   // (for the canvas logo: its exact logo)
+      ensure(SEG[k], k === i + 1 ? 'auto' : 'metadata');   // (the last segment: the owner's image too)
     }
+    if (i < SEG.length - 3) dropFinal();   // (the ending is more than two segments away: its image is made again when near)
     Object.keys(CLIPS).forEach(function (name) {
       var c = CLIPS[name];
-      if (!c || (!c.el && !c.dark && !c.hold && !c.end && !c.over && !c.exact)) return;
+      if (!c || (!c.el && !c.dark && !c.end && !c.over)) return;
       for (var j = 0; j < keep.length; j++) if (keep[j] && keep[j].clip === c) return;
       drop(c);
     });
@@ -5055,7 +5152,7 @@
         loc = clamp(ct - c.in, 0, c.dur);
         if (c.el.ended || loc >= c.dur - 0.04) { c.done = true; loc = c.dur; pauseV(c); }
       } else if (!c.done) return;
-      else if (!nx) loc += dt;   // the last clip: its end frame holds, then the hold still and the title
+      else if (!nx) loc += dt;   // the last clip: its end frame holds while the owner's image dissolves in, then the title
       else loc = Math.max(loc, c.dur);
     } else if (g.kind === 'stills') {
       var s = g.clip;
@@ -5092,31 +5189,24 @@
       if (cv.world === 'logo') renderLogo(lt); else render(cv.t0 + Math.min(lt, cv.len));
       CAM_X = 0;
     }
-    // the canvas (its ending, the canvas logo, dissolves into the exact logo too: see xfade)
-    var cA = 0, blend = '', lx = g.kind === 'canvas' && isLast(g) ? exactMix(g, loc) : 0, LX = xfade(lx);
-    if (g.kind === 'canvas') cA = inK * outK * LX.oU;
+    // the last segment hands over to the owner's image (fo: how much of the frame before it still shows)
+    var fo = finalLayer(g, loc, inK * outK);
+    // the canvas (its ending, the canvas logo, dissolves into the owner's image too)
+    var cA = 0, blend = '';
+    if (g.kind === 'canvas') cA = inK * outK * fo;
     else if (p && p.kind === 'canvas') {
       cA = 1;
       if (j.type === 'match') { blend = 'screen'; cA = 1 - smooth(clamp((loc - 0.6) / 0.4, 0, 1)); }
     }
     setOp(canvas, cA);
     if (canvas._blend !== blend) { canvas.style.mixBlendMode = blend; canvas._blend = blend; }
-    if (logoX) {
-      var lo = exactOf(g) === logoX;
-      if (lo) { placeExact(g); splitX(g, lx, LX, [canvas]); } else split(canvas, 0, 0, 1);
-      setOp(logoX, lo && logoX._ok ? inK * outK * LX.eU : 0);
-    }
     // footage
-    if (p && p.kind !== 'canvas') footage(p, ploc, 1);
-    if (g.kind !== 'canvas') footage(g, loc, (j.type === 'match' ? smooth(clamp(loc / 0.6, 0, 1)) : inK) * outK);
-    settle(g);
+    if (p && p.kind !== 'canvas') footage(p, ploc, 1, 1);
+    if (g.kind !== 'canvas') footage(g, loc, (j.type === 'match' ? smooth(clamp(loc / 0.6, 0, 1)) : inK) * outK, fo);
     hud(g);
   }
-  function footage(g, l, a) {
+  function footage(g, l, a, xo) {
     var c = g.clip;
-    // the last frame hands over to the exact logo: it fades in over the frame, then the frame under it fades out
-    var x = exactMix(g, l), X = xfade(x), xo = X.oU;
-    if (c.exact) { placeExact(g); setOp(c.exact, c.exact._ok ? a * X.eU : 0); }
     if (g.kind === 'stills') {
       setOp(c.dark, c.dark && c.dark._ok ? a * xo : 0);
       var w = smooth(span(l, STILLS.wipe));
@@ -5131,9 +5221,7 @@
       }
       return;
     }
-    if (c.exact) splitX(g, x, X, [c.el, c.hold]);
     setOp(c.el, c.shown || c.posterOk ? a * xo : 0);   // invisible until it has a frame (iOS would show an empty box or a play glyph)
-    if (c.hold) setOp(c.hold, c.hold._ok ? a * xo * smooth(clamp((l - c.dur) / 0.4, 0, 1)) : 0);
     if (c.end) setOp(c.end, c.end._ok ? a * xo * smooth(clamp((l - (c.dur - 0.8)) / 0.8, 0, 1)) : 0);
     if (c.over) setOp(c.over, c.over._ok ? a * xo * 0.9 * smooth(clamp((l - 0.1) / 0.6, 0, 1)) : 0);   // lime lines traced over a locked shot (S1-07)
     if (c.name === 'film-s1-08' && c.el) {
@@ -5147,101 +5235,90 @@
       setOp(tint, tk * a);
     }
   }
-  // The exact logo's place in the media box (CSS px, before the settle transform) and its scale (1 = its own
-  // pixels): its U over the U of the frame it replaces, but never so wide that the word would leave the screen.
-  // g0-g1: the gap under the U in the replaced layers' own box (for split). The canvas logo is matched as it rests
-  // (after its settle), and there the scale is capped at once (the canvas camera does not make room for it);
-  // raw: without that cap (exactNeed).
-  function exactFit(g, raw) {
-    var bw = W / dpr, bh = H / dpr, s;
-    if (g.kind === 'canvas') {
-      var c = logoCam(LG.settle[1]), ux, uy, uw, ub;
-      pj(c, 0, (U_TOP + U_BASE) / 2, 0); ux = PX / dpr; uy = PY / dpr;
-      pj(c, -U_ARM - U_HALF, 7, 0); uw = PX;
-      pj(c, U_ARM + U_HALF, 7, 0); uw = (PX - uw) / dpr;
-      pj(c, 0, U_BASE, 0); ub = PY / dpr;
-      pj(c, 0, W_CAP, W_Z);   // the top of the word (it stands in front of the U)
-      s = Math.min(uw / EXACT.uw, (bw - 32) / EXACT.ww, raw ? Infinity : exactCap(logoX));
-      return { s: s, x: ux - EXACT.ux * s, y: uy - EXACT.uy * s, g0: ub, g1: Math.max(ub + 2, PY / dpr) };
-    }
-    var r = g.kind === 'stills' ? EXREF.tall : EXREF.wide, fw;
-    if (g.kind === 'stills') fw = bw;   // .is-fitw: the full width, centred
-    else fw = g.clip.contain ? Math.min(bw, bh * r.ar) : Math.max(bw, bh * r.ar);   // object-fit: cover (or contain)
-    var fh = fw / r.ar, top = (bh - fh) / 2;
-    s = Math.min(r.w * fw / EXACT.uw, (bw - 32) / EXACT.ww);
-    return { s: s, x: (bw - fw) / 2 + r.x * fw - EXACT.ux * s, y: top + r.y * fh - EXACT.uy * s, g0: top + (r.g0 || 0) * fh, g1: top + (r.g1 || 0) * fh };
+  // 0 → 1 over FINAL.fade s: the dissolve into the owner's image (e), from the segment's mixAt or, if the image only
+  // arrived after that, from then (see late).
+  function finalMix(g, l, e) {
+    if (!e || !isLast(g)) return 0;
+    return clamp((l - (e._at > g.mixAt ? e._at : g.mixAt)) / FINAL.fade, 0, 1);
   }
-  function placeExact(g) {
-    var e = exactOf(g), f = exactFit(g), key = f.x.toFixed(1) + ' ' + f.y.toFixed(1) + ' ' + f.s.toFixed(4);
+  // The owner's image over the last segment: it fades in over the frame before it, then that frame fades out under
+  // it (returned: how much of that frame still shows). Where the two share a composition (s4-03's last frame and the
+  // wide image; the phones' lit still and the tall one) the image comes in on its registered place (reg) and, if its
+  // fit is elsewhere, glides there during the dissolve with that frame following it (follow), so the two stay
+  // registered. After the dissolve it stays where it is, full screen.
+  function finalLayer(g, l, a) {
+    var e = isLast(g) ? finalEl() : null;
+    if (FIN.wide && FIN.wide !== e) setOp(FIN.wide, 0);
+    if (FIN.tall && FIN.tall !== e) setOp(FIN.tall, 0);
+    if (!e) { if (isLast(g)) follow(g, null); return 1; }
+    var x = finalMix(g, l, e), f = finalFit(e._kind);
+    var reg = (g.kind === 'clip' && !g.clip.contain && e._kind === 'wide') || (g.kind === 'stills' && e._kind === 'tall') ? f.reg : null;
+    var k = reg ? smooth(x) : 1, r = reg ? { x: lerp(reg.x, f.x, k), y: lerp(reg.y, f.y, k), w: lerp(reg.w, f.w, k), h: lerp(reg.h, f.h, k) } : f;
+    placeFinal(e, r);
+    setOp(e, a * smooth(clamp(x / 0.75, 0, 1)));
+    var s = reg ? r.w / reg.w : 1;
+    follow(g, reg && x < 1 ? { s: s, x: r.x - s * reg.x, y: r.y - s * reg.y } : null);
+    return 1 - smooth(clamp((x - 0.4) / 0.6, 0, 1));
+  }
+  // Its place (CSS px in the media box). Where it does not reach an edge of the screen, its own edge there is
+  // feathered into the page (as the phones' stills are, top and bottom).
+  function placeFinal(e, r) {
+    var bw = W / dpr, bh = H / dpr, key = [r.x, r.y, r.w, r.h, bw, bh].map(function (v) { return v.toFixed(1); }).join(' ');
     if (e._fit === key) return;
     e._fit = key;
-    e.style.left = f.x.toFixed(1) + 'px'; e.style.top = f.y.toFixed(1) + 'px';
-    e.style.width = (EXACT.w * f.s).toFixed(1) + 'px'; e.style.height = (EXACT.h * f.s).toFixed(1) + 'px';
+    e.style.left = r.x.toFixed(1) + 'px'; e.style.top = r.y.toFixed(1) + 'px';
+    e.style.width = r.w.toFixed(1) + 'px'; e.style.height = r.h.toFixed(1) + 'px';
+    function fz(band, most) { return band > 0.5 ? Math.min(most, Math.max(8, band * 1.5)) : 0; }
+    var ft = fz(r.y, 0.09 * r.h), fb = fz(bh - r.y - r.h, 0.09 * r.h), fl = fz(r.x, 0.04 * r.w), fr = fz(bw - r.x - r.w, 0.04 * r.w), m = [];
+    if (ft || fb) m.push('linear-gradient(to bottom, transparent, #000 ' + ft.toFixed(1) + 'px, #000 ' + (r.h - fb).toFixed(1) + 'px, transparent)');
+    if (fl || fr) m.push('linear-gradient(to right, transparent, #000 ' + fl.toFixed(1) + 'px, #000 ' + (r.w - fr).toFixed(1) + 'px, transparent)');
+    var mask = m.join(', ');
+    e.style.webkitMaskImage = mask; e.style.maskImage = mask;
+    e.style.webkitMaskComposite = m.length > 1 ? 'source-in' : ''; e.style.maskComposite = m.length > 1 ? 'intersect' : '';
   }
-  // "Never larger than its own pixels", as a scale of the 1x file (1 = one CSS px per pixel of it). With only the 1x
-  // file it holds in CSS px, so a 2x or 3x screen upscales the logo like any 1x image on the web: holding it in device
-  // px there would halve it. With the 2x file (slot `exact2x`, picked in exactImg) it holds in device px: up to 2 CSS px
-  // per 1x pixel on a 1x screen (so a big 1x screen settles to its usual size), 1 on a 2x screen. It never drops below
-  // the 1x file's 1, so a 3x screen (there is no 3x file) draws the 2x file at up to 1.5 device px per pixel rather than
-  // settling smaller than it did with the 1x file alone. Both files come from the owner's 557 px logo (the 2x one by
-  // enlargement); a larger (or vector) master is the real fix.
-  function exactCap(e) {
-    var c = e && e._dens > 1 ? Math.max(1, e._dens / Math.max(1, window.devicePixelRatio || 1)) : 1;
-    return e && e._capAt >= 0 ? lerp(e._capFrom, c, smooth(clamp((loc - e._capAt) / RESETTLE, 0, 1))) : c;   // (the 2x file failed late)
-  }
-  // 0 → 1 over EXACT.fade s: the dissolve into the exact logo. It starts with the title card or, where the logo
-  // would still be larger than its own pixels, later in the settle, once the shrinking frame has brought it down
-  // (the canvas logo: once it has settled). If the logo only arrived later than that, it runs from then (see late).
-  function exactMix(g, l) {
-    var e = exactOf(g), start;
-    if (!e || !e._ok || !isLast(g)) return 0;
-    if (g.kind === 'canvas') start = LG.settle[1];
-    else {
-      var s = exactFit(g).s, C = exactCap(e), k = s <= C ? 0 : clamp((1 - C / s) / (1 - settleTo(g)[2]), 0, 1);
-      var u = k < 0.5 ? Math.cbrt(k / 4) : 1 - Math.cbrt(2 * (1 - k)) / 2;   // the settle's inOut, inverted
-      start = g.titleAt + SETTLE * u;
+  // The frame the image replaces follows its glide (M: a screen point p goes to M.s * p + (M.x, M.y)); null puts it back.
+  // While it moves, a clip's box is its whole 16:9 frame (not the screen, which object-fit: cover crops it to), so
+  // no cropped edge comes into view; a phone still (.is-fitw) is a full-width box at top: 50%, whose own
+  // translateY(-50%) this replaces while it moves.
+  function follow(g, M) {
+    if (!g || !g.clip) return;
+    var c = g.clip, id = !M || (Math.abs(M.s - 1) < 1e-4 && Math.abs(M.x) < 0.05 && Math.abs(M.y) < 0.05), bw = W / dpr, bh = H / dpr, tf = '';
+    if (g.kind === 'clip') {
+      var v = c.el, fw = Math.max(bw, bh * 16 / 9), fh = fw * 9 / 16, fx = (bw - fw) / 2, fy = (bh - fh) / 2;
+      if (!v) return;
+      if (!id) tf = 'translate(' + (M.s * fx + M.x - fx).toFixed(2) + 'px, ' + (M.s * fy + M.y - fy).toFixed(2) + 'px) scale(' + M.s.toFixed(5) + ')';
+      var bx = id ? ['', '', '', ''] : [fx, fy, fw, fh].map(function (n) { return n.toFixed(1) + 'px'; });
+      if ((v._box || ',,,') !== bx.join()) {
+        v._box = bx.join(); v.style.left = bx[0]; v.style.top = bx[1]; v.style.width = bx[2]; v.style.height = bx[3];
+        v.style.maxWidth = id ? '' : 'none';   // (the site's img, video { max-width: 100% } would clamp it to the screen)
+      }
+      move(v, tf);
+      return;
     }
-    if (e._at > start) start = e._at;
-    if (e._capAt >= 0) start = Math.max(start, e._capAt + RESETTLE);   // (the 2x file failed late: once the frame has eased down)
-    return clamp((l - start) / EXACT.fade, 0, 1);
+    var sh = bw * 16 / 9;
+    if (!id) tf = 'translate(' + M.x.toFixed(2) + 'px, ' + (M.s * (bh - sh) / 2 + M.y - bh / 2).toFixed(2) + 'px) scale(' + M.s.toFixed(5) + ')';
+    move(c.dark, tf); move(c.lit, tf);
   }
-  // The dissolve (x from exactMix) for the frame it replaces (o) and the exact logo (e), above the gap under the U (U)
-  // and below it (W): the U crossfades in place, registered; below the gap the old word has gone before the exact word
-  // comes in, so the two words, which sit at different heights, are never seen double.
-  function xfade(x) {
-    return { oU: 1 - smooth(clamp((x - 0.35) / 0.65, 0, 1)), oW: 1 - smooth(clamp(x / 0.45, 0, 1)),
-      eU: smooth(clamp(x / 0.7, 0, 1)), eW: smooth(clamp((x - 0.4) / 0.6, 0, 1)) };
+  function move(el, tf) {
+    if (!el || (el._tf || '') === tf) return;
+    el._tf = tf; el.style.transformOrigin = tf ? '0 0' : ''; el.style.transform = tf;
   }
-  // Below the line y0 → y1 (CSS px in the element's own box) the element shows at k of its opacity (k = 1: no mask).
-  function split(el, y0, y1, k) {
-    if (!el) return;
-    var m = k >= 0.999 ? '' : 'linear-gradient(to bottom, #000 ' + y0.toFixed(1) + 'px, rgba(0,0,0,' + Math.max(0, k).toFixed(3) + ') ' + y1.toFixed(1) + 'px)';
-    if (el._split !== m) { el._split = m; el.style.webkitMaskImage = m; el.style.maskImage = m; }
-  }
-  function splitX(g, x, X, olds) {   // olds: the layers of the frame being replaced
-    var on = x > 0 && x < 1, f = on ? exactFit(g) : null;
-    olds.forEach(function (el) { split(el, on ? f.g0 : 0, on ? f.g1 : 0, on ? X.oW / X.oU : 1); });
-    split(exactOf(g), on ? EXACT.g0 * f.s : 0, on ? EXACT.g1 * f.s : 0, on ? (X.eU > 0 ? X.eW / X.eU : 0) : 1);
-  }
-  // Where footage settles under the title: aside on wide screens, up on tall ones; and no larger than keeps the
-  // exact logo within its own pixels (so on big screens it settles a little smaller). That is planned while the logo
-  // loads; if it fails, the frame eases back out to its usual size from that moment (RESETTLE s).
-  function settleBase() { var aspect = W / H; return aspect >= 1.25 ? [22, -13, 0.42] : aspect >= 1 ? [0, -16, 0.48] : [0, -16, 0.82]; }
-  function settleTo(g) {
-    var to = settleBase(), e = g.clip && g.clip.exact, w;
-    if (e) {
-      w = !e._bad ? 1 : e._badAt >= 0 ? 1 - smooth(clamp((loc - e._badAt) / RESETTLE, 0, 1)) : 0;
-      if (w > 0) to[2] = lerp(to[2], Math.min(to[2], exactCap(e) / exactFit(g).s), w);
+  // The room the page leaves the image: the header's height, and the title card's top as seen from the bottom of the
+  // film (the card is laid out, hidden, from the start). The dark band behind the card is at full strength up to the
+  // top of the eyebrow's letters (--end-top: its line box has a few px of leading above them) and fades out above
+  // them, on an S-curve, over the gap up to the foot of the word (--end-fade; at least 20 px, so it never reads as a
+  // hard line: see .intro.has-final; finalFit leaves that gap wider where it can).
+  function measureEnd() {
+    if (headerEl) HEAD = Math.round(headerEl.getBoundingClientRect().height) || HEAD;
+    if (endInner) ROOM = Math.max(0, Math.round(section.getBoundingClientRect().bottom - endInner.getBoundingClientRect().top));
+    var band = ROOM, eb = endInner && endInner.firstElementChild;
+    if (eb && eb.firstChild && document.createRange) {
+      var rg = document.createRange(); rg.selectNodeContents(eb);
+      var lead = rg.getBoundingClientRect().top - eb.getBoundingClientRect().top;   // (both moved alike by the reveal's translateY)
+      band = Math.max(0, ROOM - (eb.offsetTop - endInner.offsetTop) - clamp(Math.round(lead), 0, 8));
     }
-    return to;
-  }
-  var lastSettle = '';
-  function settle(g) {   // footage hold: under the title the frame shrinks aside (the canvas logo does this with its camera)
-    if (!mediaBox) return;
-    var k = isLast(g) && g.kind !== 'canvas' ? inOut(span(loc, [g.titleAt, g.titleAt + SETTLE])) : 0, to = k > 0 ? settleTo(g) : null;
-    var tf = k > 0 ? 'translate(' + (to[0] * k).toFixed(2) + '%, ' + (to[1] * k).toFixed(2) + '%) scale(' + lerp(1, to[2], k).toFixed(4) + ')' : '';
-    if (tf !== lastSettle) { lastSettle = tf; mediaBox.style.transform = tf; }
-    setOp(vignette, k);
+    section.style.setProperty('--end-top', band + 'px');
+    if (finalOn()) section.style.setProperty('--end-fade', Math.round(clamp(finalFit(finalKind()).gap + ROOM - band, 20, 72)) + 'px');
   }
   function hud(g) {
     if (g.act !== lastAct) { section.setAttribute('data-act', g.act); lastAct = g.act; }
@@ -5287,14 +5364,13 @@
 
   function paused() { return root.classList.contains('motion-paused'); }
   function running() { return inView && !document.hidden && !paused(); }
-  // At rest: the end state is reached, including the exact logo's dissolve (or the re-settle when it failed). While the
-  // logo is still loading the clock rests too; its load handler (late) starts it again for the dissolve.
+  // At rest: the end state is reached, including the dissolve into the owner's image. While the image is still loading
+  // the clock rests too; its load handler (late) starts it again for the dissolve. (If it fails, the frame before stays.)
   function resting() {
     if (!curSeg || !isLast(curSeg) || prevSeg || loc < curSeg.restAt) return false;
-    var e = exactOf(curSeg);
-    if (!e) return true;
-    if (e._bad) return !(e._badAt >= 0) || loc >= e._badAt + RESETTLE;
-    return !e._ok || exactMix(curSeg, loc) >= 1;
+    var e = finalOn() ? FIN[finalKind()] : null;
+    if (!e || !e._ok) return true;
+    return finalMix(curSeg, loc, finalEl()) >= 1;
   }
   function frame(now) {
     raf = 0;
@@ -5321,7 +5397,8 @@
     if (canvas.width !== W) canvas.width = W;
     if (canvas.height !== H) canvas.height = H;
     screen = screenRect();
-    lastSettle = -1;
+    measureEnd();
+    if (curSeg && isLast(curSeg)) finalImg(finalKind());   // (turned at the end: the image for the new shape)
     if (curSeg) draw();
   }
   function loadImage(name, done) {
@@ -5337,16 +5414,17 @@
 
   // Phones get the lighter phone files (pre-cropped 9:16 strips) and the 9:16 stills.
   (function () { var bx = section.getBoundingClientRect(); PHONE = bx.width < 700 || bx.width / Math.max(1, bx.height) < 0.9; })();
+  section.classList.add('has-final');   // the full-screen ending: the title card as a compact block along the bottom (css)
   box();
   resize();
   planSeq();
   if (!isNaN(start) && start >= 0) seekMaster(start);
-  else if (paused()) seekMaster(holdTime());   // Pause motion / reduced motion: one still, the logo hold under the title
+  else if (paused()) seekMaster(holdTime());   // Pause motion / reduced motion: one still, the owner's image with the title card
   else go(SEG[0], 0, true);
   draw();
   // the word is drawn in the site's display face when "Arial Black" is not installed: rebuild it once fonts arrive
-  // (built here, once, so the logo scene never pays for it mid-film)
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { WD = null; LHOLD.W = 0; wordData(); if (!raf && curSeg) draw(); });
+  // (built here, once, so the logo scene never pays for it mid-film); the title card's size changes with them too
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { WD = null; LHOLD.W = 0; wordData(); measureEnd(); if (!raf && curSeg) draw(); });
 
   window.addEventListener('resize', resize);
   if ('IntersectionObserver' in window) {
@@ -5396,6 +5474,17 @@
       // run the clock by hand (the app's browser pane does not animate a hidden tab): n steps of dt seconds
       step: function (dt, n) { for (var i = 0; i < (n || 1); i++) { advance(dt); draw(); } return { seg: curSeg.name || curSeg.world, local: +loc.toFixed(3), m: +(curSeg.m0 + Math.min(loc, curSeg.len)).toFixed(3), prev: prevSeg ? prevSeg.name || prevSeg.world : null, act: section.getAttribute('data-act'), end: section.classList.contains('is-end'), canvas: canvas.style.opacity }; },
       plan: function () { return SEG.map(function (g) { return { what: g.name || g.world + ' ' + g.t0 + '-' + g.t1, act: g.act, m0: +g.m0.toFixed(2), len: g.len, join: g.join.type }; }); },
+      // fin(): the ending: which image, its file, where it goes (CSS px) and how far its dissolve is
+      fin: function () {
+        var k = finalKind(), e = finalEl(), f = finalFit(k), r = function (o) { return { x: +o.x.toFixed(1), y: +o.y.toFixed(1), w: +o.w.toFixed(1), h: +o.h.toFixed(1) }; };
+        return { kind: k, src: e ? e.currentSrc.replace(/^.*\/media\//, 'media/') : null, head: HEAD, room: ROOM, fit: r(f), reg: r(f.reg), cov: +f.cov.toFixed(3), gap: +f.gap.toFixed(1),
+          op: e ? e.style.opacity : null, mix: curSeg ? +finalMix(curSeg, loc, e).toFixed(3) : 0, titleAt: SEG[SEG.length - 1].titleAt, mixAt: SEG[SEG.length - 1].mixAt, end: section.classList.contains('is-end') };
+      },
+      // lfit(): the canvas ending's glide onto the image (fitLogo): its scale, and the U's and word's own fit (x and y scale)
+      lfit: function () {
+        var F = fitLogo(), q = function (M) { return M ? { ax: +M.ax.toFixed(4), ay: +M.ay.toFixed(4), bx: +(M.bx / dpr).toFixed(1), by: +(M.by / dpr).toFixed(1) } : null; };
+        return { s: +F.s.toFixed(4), from: F.from.map(function (v) { return +(v / dpr).toFixed(1); }), to: F.to.map(function (v) { return +(v / dpr).toFixed(1); }), U: q(F.mU), word: q(F.mW) };
+      },
       at: function (t, p, x) { CAM_X = x || 0; var c = cameraB(t); CAM_X = 0; return pj(c, p[0], p[1], p[2]) ? [PX / dpr, PY / dpr, PZ] : null; } };
   }
   kick();
