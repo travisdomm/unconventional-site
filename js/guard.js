@@ -1,15 +1,4 @@
-/* TEMPORARY FRONT DOOR — js/guard.js
-   Loaded synchronously in the head of every inner page, before anything paints:
-   visitors who have not come through the front door are sent back to it, with
-   ?next=<this page> so the door can bring them straight back here afterwards.
-   Delete this file (and its script tags) when the gate comes down. */
-(function () {
-  var TOKEN_KEY = 'uc-gate';
-  var TOKEN = 'door-open-7f3a'; // must match js/gate.js
-  try { if (localStorage.getItem(TOKEN_KEY) === TOKEN) return; } catch (e) { /* storage blocked */ }
-  try { if (sessionStorage.getItem(TOKEN_KEY) === TOKEN) return; } catch (e) { /* storage blocked */ }
-  document.documentElement.classList.add('gated');
-  var page = location.pathname.split('/').pop();
-  var here = /^[a-z0-9-]+\.html$/.test(page) ? page + (/^#[a-z0-9-]+$/.test(location.hash) ? location.hash : '') : '';
-  location.replace('./' + (here ? '?next=' + encodeURIComponent(here) : ''));
-})();
+/* js/guard.js: retired.
+   The temporary front door came down on 2026-09-27 (the owner's call: "Take the door down, open it").
+   This file now does nothing. It stays only so the unlisted review pages that still load it
+   (preview.html, preview2.html, preview-beta.html, dailies.html, home.html) open without a 404. */
