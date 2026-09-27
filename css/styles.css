@@ -939,6 +939,50 @@ html:not(.js) .intro__caption { display: none; }
   .intro__brief,
   .intro__caption p { transition: none; }
 }
+/* Film v3's last frame (js/film3.js adds .has-final; Preview 2 and Preview Beta keep the card above): the owner's
+   image of the logo fills the screen and stays there (film3.js places .intro__final and fits it around the card),
+   and the title card is a compact block along the bottom, over the floor, clear of the word. Behind it a dark band
+   is 88% dark up to the top of the eyebrow's letters (so even over a white reflection the text keeps better than
+   4.5:1) and fades out above them on an S-curve, over the gap up to the word (--end-top and --end-fade are set by
+   film3.js; the fade is at least 20 px, so it never reads as a hard line). */
+.intro__final {
+  position: absolute;
+  display: block;
+  max-width: none;
+  pointer-events: none;
+  opacity: 0;
+}
+.intro.has-final .intro__scrim {
+  background: linear-gradient(to top, rgba(11, 11, 12, .9), rgba(11, 11, 12, .88) var(--end-top, 160px),
+    rgba(11, 11, 12, .743) calc(var(--end-top, 160px) + var(--end-fade, 40px) * .25),
+    rgba(11, 11, 12, .44) calc(var(--end-top, 160px) + var(--end-fade, 40px) * .5),
+    rgba(11, 11, 12, .137) calc(var(--end-top, 160px) + var(--end-fade, 40px) * .75),
+    rgba(11, 11, 12, 0) calc(var(--end-top, 160px) + var(--end-fade, 40px)));
+}
+.intro.has-final .intro__end { bottom: clamp(20px, 3.2vh, 34px); }
+.intro.has-final .intro__end > .container { padding-right: calc(var(--gutter) + 168px); }   /* clear of Pause motion (bottom right) */
+.intro.has-final .intro__end-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 6px clamp(20px, 3vw, 44px);
+}
+.intro.has-final .intro__end-inner > .eyebrow { flex: 0 0 100%; }
+.intro.has-final .intro__title {
+  flex: 0 1 auto;
+  max-width: none;
+  font-size: clamp(1.45rem, 1rem + 1.5vw, 2.5rem);
+  line-height: 1.04;
+  letter-spacing: -.03em;
+}
+.intro.has-final .intro__actions { flex: 0 1 auto; gap: 10px; margin-top: 6px; }   /* (on a narrow phone its two buttons wrap) */
+.intro.has-final .intro__actions .btn { min-height: 44px; }
+@media (max-width: 599px) {
+  .intro.has-final .intro__end { bottom: 70px; }   /* above Pause motion and the previews' links */
+  .intro.has-final .intro__end > .container { padding-right: var(--gutter); }
+  .intro.has-final .intro__actions { gap: 8px; }
+  .intro.has-final .intro__actions .btn { padding: 12px 18px; }
+}
 
 /* ---- Bridge (home → Who we are) ---------------------------------------- */
 .bridge { padding-block: clamp(64px, 9vw, 120px); }
