@@ -115,12 +115,54 @@
     <!-- ===== Brands ===================================================
          Populated from content/brands.js. Stays hidden until at least one
          brand is confirmed there; nothing unconfirmed ever reaches the page. -->
-    <section class="brands" id="brands" aria-labelledby="brands-title" data-brands hidden>
+    <section class="brands" id="brands" aria-labelledby="brands-title" data-brands>
       <div class="container brands__head">
         <h2 class="eyebrow brands__title" id="brands-title">The company we keep</h2>
         <p class="brands__note">Shown with permission. The work stays between us.</p>
       </div>
-      <div class="marquee marquee--brands">
+      <!-- The names behind the logos, in the page itself for screen readers, search engines and AI crawlers
+           (the owner asked for this on 2026-09-27). The logo bars below are drawn by js/main.js and marked
+           decorative, so each name is read once. Regenerate after any change to content/brands.js:
+           bash tools/sync-brand-names.sh -->
+      <ul class="visually-hidden">
+        <!-- brand-names:start -->
+        <li>Netflix</li>
+        <li>EA</li>
+        <li>Coca-Cola</li>
+        <li>Louis Vuitton</li>
+        <li>Cisco</li>
+        <li>Riot Games</li>
+        <li>Nike</li>
+        <li>HP</li>
+        <li>Blizzard Entertainment</li>
+        <li>Hublot</li>
+        <li>YouTube</li>
+        <li>Volkswagen</li>
+        <li>League of Legends</li>
+        <li>Metallica</li>
+        <li>Akamai</li>
+        <li>Bud Light</li>
+        <li>FX Networks</li>
+        <li>Cloudera</li>
+        <li>Iron Maiden</li>
+        <li>PHP</li>
+        <li>Stranger Things</li>
+        <li>FIFA</li>
+        <li>Marshmello</li>
+        <li>ServiceNow</li>
+        <li>OVO</li>
+        <li>Formula E</li>
+        <li>U2</li>
+        <li>Mana</li>
+        <li>Coachella</li>
+        <li>The Chainsmokers</li>
+        <li>Goldenvoice</li>
+        <li>Governors Ball</li>
+        <li>CRSSD Festival</li>
+        <li>H.E.R.</li>
+        <!-- brand-names:end -->
+      </ul>
+      <div class="marquee marquee--brands" aria-hidden="true">
         <div class="marquee__track" data-marquee>
           <ul class="marquee__group" data-brands-list></ul>
         </div>
