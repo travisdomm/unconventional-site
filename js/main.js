@@ -192,35 +192,56 @@
 
   /* ---- 4. Brand wall ---------------------------------------------------- */
   // Only confirmed brands with a logo file are rendered; the strip stays hidden otherwise.
+  // The bars are laid out at once, so nothing below them moves later, but the logo files are fetched only after
+  // the page's load event (on the home page that comes once the film's first clip can show a frame), or after
+  // 3 s at the latest, so they never compete with the first screen. A link straight to the strip (#brands)
+  // fetches them at once.
   var brandsSection = document.querySelector('[data-brands]');
   var brandsLists = [].slice.call(document.querySelectorAll('[data-brands-list]'));
   var brands = (window.BRANDS || []).filter(function (brand) {
     return brand && brand.status === 'confirmed' && brand.logo && brand.name;
   });
+  var brandLogos = [];
+
+  function loadBrandLogos() {
+    var pending = brandLogos;
+    brandLogos = [];
+    pending.forEach(function (entry) {
+      entry.img.alt = entry.alt;
+      entry.img.src = entry.src;
+    });
+  }
 
   if (brandsSection && brandsLists.length && brands.length) {
     brandsLists.forEach(function (list) {
       // A list marked "reverse" gets the marks in the opposite order, so the two bars never mirror each other.
       var order = list.getAttribute('data-brands-list') === 'reverse' ? brands.slice().reverse() : brands;
-      // Bars marked decorative (aria-hidden, as on the home page, which lists the names as hidden text instead)
-      // get empty alt text, so each name is read, and indexed, once.
+      // Bars marked decorative (aria-hidden, as on the home page, which lists the names as text for screen
+      // readers instead) get empty alt text, so each name is read once.
       var decorative = !!list.closest('[aria-hidden="true"]');
       order.forEach(function (brand) {
         var item = document.createElement('li');
         var img = document.createElement('img');
         img.className = 'brand-logo';
-        img.src = brand.logo;
-        img.alt = decorative ? '' : brand.name;
+        img.alt = ''; // the real alt is set with the file, so no name shows as text while it waits
         img.decoding = 'async';
+        img.fetchPriority = 'low';
         img.addEventListener('load', scheduleMarquee);
         item.appendChild(img);
         list.appendChild(item);
+        brandLogos.push({ img: img, src: brand.logo, alt: decorative ? '' : brand.name });
       });
     });
     brandsSection.hidden = false;
-    // A link straight to the strip (#brands) could not scroll there while it was hidden: do it now.
     if (window.location.hash === '#' + brandsSection.id) {
+      // A link straight to the strip (#brands) could not scroll there while it was hidden: do it now.
+      loadBrandLogos();
       window.requestAnimationFrame(function () { brandsSection.scrollIntoView(); });
+    } else if (document.readyState === 'complete') {
+      loadBrandLogos();
+    } else {
+      window.addEventListener('load', loadBrandLogos);
+      setTimeout(loadBrandLogos, 3000);
     }
   }
 
