@@ -30,8 +30,7 @@
   <meta name="twitter:image:alt" content="The Unconventional logo, a steel U above the word UNCONVENTIONAL, on a stage in the desert at night.">
 
   <!-- Structured data for search engines and AI crawlers. A data block: browsers never run it, and the CSP allows it.
-       The full Organization lives here only; other pages refer to it by @id. Keep name, description and slogan
-       word for word the same as on LinkedIn and every other profile (strategy-v2.md §2.3). -->
+       The full Organization lives here only; other pages refer to it by @id. -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -60,7 +59,6 @@
           "@type": "ContactPoint",
           "contactType": "new business",
           "email": "hello@unconventional.pro",
-          "areaServed": "US",
           "availableLanguage": "en"
         },
         "knowsAbout": [
@@ -83,7 +81,7 @@
           "itemListElement": [
             { "@type": "Offer", "itemOffered": { "@type": "Service", "@id": "https://www.unconventional.pro/cultural-moments.html#service", "name": "Flagship cultural moments", "url": "https://www.unconventional.pro/cultural-moments.html" } },
             { "@type": "Offer", "itemOffered": { "@type": "Service", "@id": "https://www.unconventional.pro/agencies.html#service", "name": "Embedded experiential production partner", "url": "https://www.unconventional.pro/agencies.html" } },
-            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Artist- and athlete-led platforms", "url": "https://www.unconventional.pro/cultural-moments.html#build" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "@id": "https://www.unconventional.pro/cultural-moments.html#build", "name": "Artist- and athlete-led platforms", "url": "https://www.unconventional.pro/cultural-moments.html#build" } },
             { "@type": "Offer", "itemOffered": { "@type": "Service", "@id": "https://www.unconventional.pro/conferences.html#service", "name": "Conference and keynote production", "url": "https://www.unconventional.pro/conferences.html" } }
           ]
         }
@@ -114,6 +112,7 @@
         "description": "The moments that can't be briefed. Live experiential production, inside agencies or direct with brands. No reel: the brands we work with speak for us.",
         "isPartOf": { "@id": "https://www.unconventional.pro/#website" },
         "about": { "@id": "https://www.unconventional.pro/#organization" },
+        "publisher": { "@id": "https://www.unconventional.pro/#organization" },
         "primaryImageOfPage": { "@id": "https://www.unconventional.pro/#share-image" },
         "inLanguage": "en-US"
       }
@@ -134,7 +133,7 @@
   <script src="js/boot.js?v=20260927"></script>
   <script src="content/media.js?v=20260927" defer></script>
   <script src="content/brands.js?v=20260927" defer></script>
-  <script src="js/main.js?v=20260927" defer></script>
+  <script src="js/main.js?v=20260928" defer></script>
   <script src="js/film3.js?v=20260927" defer></script>
 </head>
 
@@ -169,8 +168,7 @@
          then footage); the guests arrive at a mountain-top show; the logo is
          built and brought into place. Played by js/film3.js: footage from the
          film-s… slots in content/media.js, and the live canvas wherever a
-         scene's footage is missing. preview.html plays the same cut;
-         preview2.html keeps the first cut. -->
+         scene's footage is missing. -->
     <section class="intro" id="top" aria-labelledby="intro-title" data-intro>
       <canvas class="intro__canvas" data-intro-canvas aria-hidden="true"></canvas>
       <p class="visually-hidden">A short film by Unconventional, a live experiential production company, about how an event comes together, told through an imagined brief for a fictional event. Two people meet and agree to work together, and their team plans the site, the marketing and the sponsorship. The stage is drawn, then built: the survey, the ground works, cranes, scaffolding, towers, motors, video, sound and light. Guests fly in, arrive at a mountain-top venue, and a huge crowd fills the field. Finally the Unconventional logo is built, lowered into place and lit.</p>
@@ -217,8 +215,7 @@
         <h2 class="eyebrow brands__title" id="brands-title">The company we keep</h2>
         <p class="brands__note">Shown with permission. The work stays between us.</p>
       </div>
-      <!-- The names behind the logos, in the page itself for screen readers, search engines and AI crawlers
-           (the owner asked for this on 2026-09-27). The logo bars below are drawn by js/main.js and marked
+      <!-- The names behind the logos, for screen readers. The logo bars below are drawn by js/main.js and marked
            decorative, so each name is read once. Regenerate after any change to content/brands.js:
            bash tools/sync-brand-names.sh -->
       <ul class="visually-hidden">

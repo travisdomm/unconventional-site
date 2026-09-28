@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://www.unconventional.pro/</loc><lastmod>2026-09-27</lastmod></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url><loc>https://www.unconventional.pro/</loc><lastmod>2026-09-27T19:42:42-05:00</lastmod></url>
   <url><loc>https://www.unconventional.pro/about.html</loc><lastmod>2026-09-27</lastmod></url>
   <url><loc>https://www.unconventional.pro/cultural-moments.html</loc><lastmod>2026-09-27</lastmod></url>
   <url><loc>https://www.unconventional.pro/agencies.html</loc><lastmod>2026-09-27</lastmod></url>
   <url><loc>https://www.unconventional.pro/conferences.html</loc><lastmod>2026-09-27</lastmod></url>
-  <url><loc>https://www.unconventional.pro/production-ip.html</loc><lastmod>2026-09-27</lastmod></url>
+  <url>
+    <loc>https://www.unconventional.pro/production-ip.html</loc>
+    <lastmod>2026-09-27T19:42:42-05:00</lastmod>
+    <image:image><image:loc>https://www.unconventional.pro/media/prodos/prodos-today.jpg</image:loc></image:image>
+    <image:image><image:loc>https://www.unconventional.pro/media/prodos/prodos-budget.jpg</image:loc></image:image>
+    <image:image><image:loc>https://www.unconventional.pro/media/prodos/prodos-schedule.jpg</image:loc></image:image>
+    <image:image><image:loc>https://www.unconventional.pro/media/prodos/prodos-day-sheet.jpg</image:loc></image:image>
+    <image:image><image:loc>https://www.unconventional.pro/media/prodos/prodos-cues.jpg</image:loc></image:image>
+    <image:image><image:loc>https://www.unconventional.pro/media/prodos/prodos-show-call.jpg</image:loc></image:image>
+    <image:image><image:loc>https://www.unconventional.pro/media/prodos/prodos-timecards.jpg</image:loc></image:image>
+    <image:image><image:loc>https://www.unconventional.pro/media/prodos/prodos-approvals.jpg</image:loc></image:image>
+    <image:image><image:loc>https://www.unconventional.pro/media/prodos/prodos-invoice.jpg</image:loc></image:image>
+    <image:image><image:loc>https://www.unconventional.pro/media/prodos/prodos-review.jpg</image:loc></image:image>
+  </url>
+  <url><loc>https://www.unconventional.pro/video-game-events.html</loc><lastmod>2026-09-27T20:03:16-05:00</lastmod></url>
 </urlset>
