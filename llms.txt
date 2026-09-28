@@ -2,9 +2,10 @@
 
 > Unconventional (unconventional.pro) is a live experiential production company for the moments that can't be briefed. It works inside agencies or directly with brands.
 
+- Produces keynotes and conferences, corporate events, product and car launches, and trade shows; live entertainment, from concerts and tours to sports events; and brand activations, sponsorships and experiential marketing. Provides executive production teams.
 - Produces flagship cultural moments: sports, music and fandom; brand-owned cultural platforms; league-, artist- and athlete-led moments; live systems for tours and fan experiences.
 - Works as an embedded experiential production partner inside agencies, brought in when the stakes are too high to miss.
-- Produces conferences, keynotes and launches for technology, finance and pharma companies.
+- Produces keynotes, conferences and launches for technology, finance and pharma companies.
 - Creative that is technical, in one team. A core team, never compromised. Three broadcast systems, live in 45 minutes, anywhere in the USA. Global crews, same standard. Decisions in writing.
 - Built PRODOS, its own production operating system, in-house.
 - Does not publish its work: no reel, no case studies online. The brands on the home page are shown with permission; the work stays private.
@@ -14,10 +15,20 @@
 
 - [Home](https://www.unconventional.pro/): the film, and the brands Unconventional works with
 - [Who we are](https://www.unconventional.pro/about.html): why it exists, what it does, how it works, contact
+- [Live events](https://www.unconventional.pro/events.html): the events Unconventional produces, in one index
+- [Keynotes and conferences](https://www.unconventional.pro/conferences.html): keynotes and general sessions, user, developer and partner conferences, and product launches for technology, finance and pharma
+- [Corporate events](https://www.unconventional.pro/corporate-events.html): sales kickoffs, national sales meetings, leadership summits, all-hands and town halls, for a company's own people
+- [Product launches](https://www.unconventional.pro/product-launches.html): reveals, launch keynotes, and press and media launches, for brands and their agencies
+- [Car launches](https://www.unconventional.pro/car-launches.html): automotive launch events and vehicle reveals for automakers, inside their agency of record or direct
+- [Trade shows](https://www.unconventional.pro/trade-shows.html): trade show experiences for brands and B2B companies: the exhibit, demo stages, press moments and the night after the floor closes
+- [Concerts and tours](https://www.unconventional.pro/concerts-tours.html): concerts and concert tours, and the fan and brand experiences that travel with them, for artist teams and brands
+- [Sports events](https://www.unconventional.pro/sports-events.html): fan zones and fan experiences for leagues, teams, athletes and brands
+- [Brand activations and sponsorships](https://www.unconventional.pro/brand-activations.html): brand activations, pop-ups, immersive brand experiences, experiential marketing and sponsorship activation
 - [Flagship cultural moments](https://www.unconventional.pro/cultural-moments.html): sports, music and fandom; artist- and athlete-led platforms
+- [Executive production teams](https://www.unconventional.pro/executive-production.html): production management, show calling, technical direction and broadcast, from the first budget line to the show call
 - [For agencies](https://www.unconventional.pro/agencies.html): the embedded experiential production partner
-- [Conferences and keynotes](https://www.unconventional.pro/conferences.html): keynotes, conferences and launches for technology, finance and pharma
 - [PRODOS](https://www.unconventional.pro/production-ip.html): PRODOS, Unconventional's Production Operating System, built in-house
+- [Video game launches and events](https://www.unconventional.pro/video-game-events.html): video game launches, game conferences and live events for the companies that make them, direct or inside their agencies
 
 ## Contact
 

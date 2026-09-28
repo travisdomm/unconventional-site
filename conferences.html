@@ -55,8 +55,8 @@
         "@type": "Service",
         "@id": "https://www.unconventional.pro/conferences.html#service",
         "name": "Conference and keynote production",
-        "serviceType": "Keynote, conference and product launch production",
-        "description": "Conferences, keynotes and launches for technology, finance and pharma companies, produced like flagship moments by one team from the first idea to the last cue, with three broadcast systems live in 45 minutes anywhere in the USA.",
+        "serviceType": "Keynote and conference production",
+        "description": "Keynotes and general sessions, user, developer and partner conferences, and product launches for technology, finance and pharma companies, produced like flagship moments by one team from the first idea to the last cue, with three broadcast systems live in 45 minutes anywhere in the USA.",
         "provider": { "@id": "https://www.unconventional.pro/#organization" },
         "audience": { "@type": "BusinessAudience", "audienceType": "Technology, finance and pharma companies" },
         "url": "https://www.unconventional.pro/conferences.html"
@@ -66,7 +66,8 @@
         "@id": "https://www.unconventional.pro/conferences.html#breadcrumb",
         "itemListElement": [
           { "@type": "ListItem", "position": 1, "name": "Unconventional", "item": "https://www.unconventional.pro/" },
-          { "@type": "ListItem", "position": 2, "name": "Conferences and keynotes", "item": "https://www.unconventional.pro/conferences.html" }
+          { "@type": "ListItem", "position": 2, "name": "Live events", "item": "https://www.unconventional.pro/events.html" },
+          { "@type": "ListItem", "position": 3, "name": "Keynotes and conferences", "item": "https://www.unconventional.pro/conferences.html" }
         ]
       }
     ]
@@ -81,7 +82,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400;500;600&display=swap">
-  <link rel="stylesheet" href="css/styles.css?v=20260927">
+  <link rel="stylesheet" href="css/styles.css?v=20260929">
 
   <script src="js/boot.js?v=20260927"></script>
   <script src="content/media.js?v=20260927" defer></script>
@@ -111,13 +112,13 @@
     </div>
   </header>
 
-  <!-- ===== Conferences and keynotes: text only, in the style of about.html ===== -->
+  <!-- ===== Keynotes and conferences: text only, in the style of about.html ===== -->
   <main id="main">
 
     <!-- ===== Opening ===================================================== -->
     <section class="page-hero" id="top" aria-labelledby="page-title">
       <div class="container page-hero__content">
-        <p class="eyebrow">Conferences and keynotes</p>
+        <p class="eyebrow"><a href="events.html">Live events</a></p>
         <h1 class="page-hero__title page-hero__title--wide" id="page-title">Keynotes and conferences, <em>produced like flagship moments.</em></h1>
         <p class="page-hero__lede">Unconventional produces conferences, keynotes and launches for technology, finance and pharma companies. One team, from the first idea to the last&nbsp;cue.</p>
       </div>
@@ -131,10 +132,11 @@
           <div class="part__body">
             <h2 class="part__title reveal" id="produce-title">The moment the announcement <span class="muted">lands.</span></h2>
             <ul class="part__points reveal">
-              <li>Keynotes</li>
+              <li>Keynotes and general sessions</li>
               <li>Product launches</li>
-              <li>Conferences</li>
+              <li>User, developer and partner conferences</li>
             </ul>
+            <a class="text-link reveal" href="corporate-events.html">Corporate events</a>
           </div>
         </div>
       </div>
@@ -146,13 +148,12 @@
         <div class="part__grid">
           <p class="eyebrow part__label reveal">Why us</p>
           <div class="part__body">
-            <h2 class="part__title reveal" id="why-title">Judgment under pressure, <span class="muted nowrap">not process.</span></h2>
+            <h2 class="part__title reveal" id="why-title">Technical innovation, <span class="muted">flawless live execution.</span></h2>
             <ul class="part__points reveal">
-              <li>Creative that is technical, in one team</li>
+              <li>Cultural translation for technology, finance and pharma audiences</li>
               <li>Three broadcast systems, live in 45&nbsp;minutes, anywhere in the USA</li>
               <li>The show called from a cue list the whole stage follows</li>
               <li>Budget, schedule and crew time on one record</li>
-              <li>Decisions and change orders in writing</li>
             </ul>
             <a class="text-link reveal" href="production-ip.html">How PRODOS runs a show</a>
           </div>
@@ -168,11 +169,8 @@
           <div class="part__body">
             <h2 class="part__title reveal" id="how-title">Direct with your team, <span class="muted">or inside your agency.</span></h2>
             <ul class="part__points reveal">
-              <li>Partners from day one</li>
-              <li>A core team, never&nbsp;compromised</li>
-              <li>Global crews, same standard</li>
+              <li>Turnkey, at global scale</li>
             </ul>
-            <p class="closing-line reveal">Clear with you. <span class="muted nowrap">Quiet about you.</span></p>
           </div>
         </div>
       </div>
@@ -184,7 +182,7 @@
         <div class="cta-panel cta-panel--plain reveal">
           <div class="cta-panel__content">
             <p class="eyebrow">Contact</p>
-            <h2 class="cta-panel__title" id="contact-title">Planning the next one? <em>Start early.</em></h2>
+            <h2 class="cta-panel__title" id="contact-title">Early <em>is better.</em></h2>
             <p class="cta-panel__lede"><span class="sentence">Tell us in confidence.</span> <span class="sentence">What we can show, we show in person.</span></p>
             <a class="btn btn--accent btn--lg" href="mailto:hello@unconventional.pro">hello@unconventional.pro</a>
             <p class="cta-panel__small">Selective by design. Referrals welcome.</p>
@@ -199,19 +197,23 @@
     <div class="container site-footer__inner">
       <a class="wordmark wordmark--lg" href="./" aria-label="Unconventional, home">unconventional<span class="wordmark__dot" aria-hidden="true">.</span></a>
 
-      <nav aria-label="Footer">
+      <details class="site-footer__index">
+        <summary>Index</summary>
+        <nav aria-label="Footer">
         <ul class="site-footer__nav">
           <li><a href="./">The film</a></li>
           <li><a href="about.html">Who we are</a></li>
+          <li><a href="events.html">Events we produce</a></li>
           <li><a href="cultural-moments.html">Cultural moments</a></li>
           <li><a href="agencies.html">For agencies</a></li>
-          <li><a href="conferences.html" aria-current="page">Conferences &amp; keynotes</a></li>
+          <li><a href="conferences.html" aria-current="page">Keynotes &amp; conferences</a></li>
           <li><a href="production-ip.html">Production IP</a></li>
           <li><a href="about.html#how">How we work</a></li>
           <li><a href="about.html#discretion">Discretion</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
-      </nav>
+        </nav>
+      </details>
 
       <p class="site-footer__legal">&copy; <span data-year>2026</span> Unconventional. Live experiential production.</p>
     </div>
