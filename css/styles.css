@@ -1502,3 +1502,41 @@ html:not(.js) .intro__caption { display: none; }
 
 /* Events index: two entries per row from 1100px (four = two rows of two), not three with one left over. */
 @media (min-width: 1100px) { .part__list--pairs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* ===== Privacy (2026-09-28) ==============================================
+   Every public page's footer line carries a visible "Privacy" link: full ink and an accent underline, so it reads
+   as a link next to the muted words. privacy.html reuses the Who we are rows; .legal-prose sets its paragraphs and
+   lists at a reading measure (its own name, so the older, unused .prose rules above never add to its spacing), and
+   .measure holds the switch that turns visit measurement off (js/measure.js). */
+.site-footer__legal a {
+  padding-block: 4px; /* a 24px-tall tap target; vertical padding on a link never moves the line */
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: hsl(var(--accent-hsl) / .55);
+  text-underline-offset: .25em;
+  transition: color .3s var(--ease);
+}
+.site-footer__legal a:hover { color: var(--accent); }
+/* A little air before it where the line has room (from 640px); below that it follows a normal word space, and on a
+   phone it wraps and starts its own line flush left. */
+@media (min-width: 640px) { .site-footer__legal a { margin-left: .75em; } }
+.page-hero__note { color: var(--ink-muted); font-size: .9rem; }
+.legal-prose { display: grid; gap: 1em; max-width: 64ch; color: var(--ink-muted); }
+.legal-prose strong, .legal-prose a { color: var(--ink); }
+.legal-prose strong { font-weight: 600; }
+.legal-prose a { text-decoration: underline; text-decoration-color: hsl(var(--accent-hsl) / .55); text-underline-offset: .2em; transition: color .3s var(--ease); }
+.legal-prose a:hover { color: var(--accent); }
+.legal-prose ul { display: grid; gap: .6em; padding-left: 1.2em; list-style: disc; }
+.legal-prose li::marker { color: var(--accent); }
+/* Cookie names: mono, in the text's own muted colour, so they sit in the sentence instead of outweighing it. */
+.legal-prose code { font-family: var(--font-mono); font-size: .85em; color: inherit; }
+.measure {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px;
+  padding: 18px 20px;
+  border: 1px solid var(--line); border-radius: var(--radius);
+  background: var(--bg-raised);
+}
+.measure__state { color: var(--ink); }
+.measure .btn::after { content: none; }
+.motion-paused .site-footer__legal a, .motion-paused .legal-prose a { transition: none; }
+@media (prefers-reduced-motion: reduce) { .site-footer__legal a, .legal-prose a { transition: none; } }
