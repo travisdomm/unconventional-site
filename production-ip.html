@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Security policy: only this site's own files, plus Google Fonts, may load. -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; media-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self'">
+  <!-- Security policy: only this site's own files, Google Fonts and HubSpot's visit measurement may load. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://js-na2.hs-scripts.com https://js-na2.hs-analytics.net https://js-na2.hs-banner.com https://js-na2.hscollectedforms.net; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://track-na2.hubspot.com; media-src 'self'; connect-src 'self' https://forms-na2.hscollectedforms.net; base-uri 'self'; form-action 'self'">
 
 
   <title>PRODOS — Production Operating System by Unconventional</title>
@@ -101,11 +101,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400;500;600&display=swap">
-  <link rel="stylesheet" href="css/styles.css?v=20260929">
+  <link rel="stylesheet" href="css/styles.css?v=20260930">
 
   <script src="js/boot.js?v=20260927"></script>
   <script src="content/media.js?v=20260927" defer></script>
   <script src="js/main.js?v=20260928" defer></script>
+  <script src="js/measure.js?v=20260930" defer></script>
 </head>
 
 <body>
@@ -271,7 +272,7 @@
         </nav>
       </details>
 
-      <p class="site-footer__legal">&copy; <span data-year>2026</span> Unconventional. Live experiential production.</p>
+      <p class="site-footer__legal">&copy; <span data-year>2026</span> Unconventional. Live experiential production. <a href="privacy.html">Privacy</a></p>
     </div>
   </footer>
 </body>

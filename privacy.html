@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Security policy: only this site's own files, Google Fonts and HubSpot's visit measurement may load. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://js-na2.hs-scripts.com https://js-na2.hs-analytics.net https://js-na2.hs-banner.com https://js-na2.hscollectedforms.net; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://track-na2.hubspot.com; media-src 'self'; connect-src 'self' https://forms-na2.hscollectedforms.net; base-uri 'self'; form-action 'self'">
+
+  <title>Privacy — Unconventional</title>
+  <meta name="description" content="How unconventional.pro measures visits with HubSpot, what that collects, and how to switch it off or ask about your data.">
+  <!-- Linked from every page's footer, kept out of search results and the sitemap. -->
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#0b0b0c">
+
+  <link rel="icon" href="favicon.ico" sizes="64x64">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="css/styles.css?v=20260930">
+
+  <script src="js/boot.js?v=20260927"></script>
+  <script src="content/media.js?v=20260927" defer></script>
+  <script src="js/main.js?v=20260928" defer></script>
+  <script src="js/measure.js?v=20260930" defer></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ===== Header ===================================================== -->
+  <header class="site-header" data-header>
+    <div class="container site-header__inner">
+      <a class="wordmark" href="./" aria-label="Unconventional, home">unconventional<span class="wordmark__dot" aria-hidden="true">.</span></a>
+
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-nav-toggle>
+        <span class="nav-toggle__bars" aria-hidden="true"></span>
+        <span class="visually-hidden">Menu</span>
+      </button>
+
+      <nav class="site-nav" id="site-nav" aria-label="Primary">
+        <ul class="site-nav__list">
+          <li><a href="about.html">Who we are</a></li>
+          <li><a href="production-ip.html">Production IP</a></li>
+        </ul>
+        <a class="btn btn--accent btn--sm" href="about.html#contact">Start a conversation</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== Privacy: text only, in the style of about.html ============== -->
+  <main id="main">
+
+    <!-- ===== Opening ===================================================== -->
+    <section class="page-hero" id="top" aria-labelledby="page-title">
+      <div class="container page-hero__content">
+        <p class="eyebrow">Privacy</p>
+        <h1 class="page-hero__title page-hero__title--wide" id="page-title">What this site collects. <em>In&nbsp;plain words.</em></h1>
+        <p class="page-hero__lede">We measure visits so we can make the site better. We don't sell what we learn, and we don't use it to advertise to&nbsp;you.</p>
+        <p class="page-hero__note">Last updated <time datetime="2026-09-29">September 29, 2026</time>.</p>
+      </div>
+    </section>
+
+    <!-- ===== What we measure ============================================= -->
+    <section class="section part" id="measure" aria-labelledby="measure-title">
+      <div class="container">
+        <div class="part__grid">
+          <p class="eyebrow part__label reveal">What we measure</p>
+          <div class="part__body">
+            <h2 class="part__title reveal" id="measure-title">How the site is used.</h2>
+            <div class="legal-prose reveal">
+              <p>We use HubSpot, a US software company, to see how this site is used. When you open a page, HubSpot records:</p>
+              <ul>
+                <li>the page, the time, and the site that sent you here</li>
+                <li>your browser, device, screen size and language, and a code HubSpot works out from your browser's settings and hardware to tell browsers apart, even without cookies</li>
+                <li>your IP address, which HubSpot uses to estimate your location and may use to recognize the organization whose network you're on</li>
+                <li>a random ID in a cookie, so a return visit counts as the same browser</li>
+                <li>the links and buttons you press: their wording, where they lead, and where on the screen you pressed</li>
+              </ul>
+              <p>We use this to understand what works and to improve the site. We don't tie visits to names, and there are no forms and no advertising pixels here. HubSpot's visit cookies sit on this site's own address, www.unconventional.pro, and other websites can't read them. Even so, HubSpot, as a third party, may collect information about your visits over time, here and on other sites that use it. One short-lived cookie, <code>__cf_bm</code>, sits on HubSpot's own addresses and is there to screen out bots. HubSpot uses what it sees here to produce our reports, under its data processing agreement with&nbsp;us.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Your choice ================================================= -->
+    <section class="section part" id="choice" aria-labelledby="choice-title">
+      <div class="container">
+        <div class="part__grid">
+          <p class="eyebrow part__label reveal">Your choice</p>
+          <div class="part__body">
+            <h2 class="part__title reveal" id="choice-title">Say no, and it stops.</h2>
+            <div class="legal-prose reveal">
+              <p>Wherever you are, you can switch measurement off for this browser. HubSpot is then not loaded on this site at all, and the cookies it set here are cleared.</p>
+              <div class="measure" data-measure hidden>
+                <p class="measure__state" data-measure-state role="status"></p>
+                <button class="btn btn--ghost btn--sm" type="button" data-measure-toggle></button>
+              </div>
+              <noscript><p>With JavaScript off, nothing is measured and no switch is needed.</p></noscript>
+              <p>If your browser sends Global Privacy Control or Do Not Track, we take that as a no, and HubSpot is not loaded.</p>
+              <p>If your device is set to a time zone in Europe, or in one of the EU's regions elsewhere, HubSpot is not loaded either. In the EU, the EEA and the UK the law generally asks for your consent before cookies like HubSpot's are used. Rather than ask, we don't measure visits from those time zones at all.</p>
+              <p>If your browser blocks cookies for this site, we take that as a no too, and HubSpot is not loaded.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== When you write to us ======================================== -->
+    <section class="section part" id="email" aria-labelledby="email-title">
+      <div class="container">
+        <div class="part__grid">
+          <p class="eyebrow part__label reveal">When you write</p>
+          <div class="part__body">
+            <h2 class="part__title reveal" id="email-title">Your email stays a conversation.</h2>
+            <div class="legal-prose reveal">
+              <p>If you email <a href="mailto:hello@unconventional.pro">hello@unconventional.pro</a>, we receive your address and whatever you choose to tell us. We use it to reply and to handle what you ask about. Our email runs on Google Workspace. We keep messages for as long as the conversation, and any work that comes from it, needs them.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Who else is involved ======================================== -->
+    <section class="section part" id="others" aria-labelledby="others-title">
+      <div class="container">
+        <div class="part__grid">
+          <p class="eyebrow part__label reveal">Who else</p>
+          <div class="part__body">
+            <h2 class="part__title reveal" id="others-title">A few companies help run this site.</h2>
+            <div class="legal-prose reveal">
+              <ul>
+                <li><strong>HubSpot</strong> measures visits for us, under a data processing agreement that limits what it can do with the data. HubSpot's data sharing for its own products is switched off for our account. <a href="https://legal.hubspot.com/privacy-policy">HubSpot's privacy policy</a> covers the rest.</li>
+                <li><strong>GitHub</strong> hosts the site and logs visitors' IP addresses for security.</li>
+                <li><strong>Google</strong> serves our typefaces and receives your IP address to do it. Google says it sets no cookies for this and builds no profiles from it. Google also hosts our email.</li>
+              </ul>
+              <p>We don't sell your personal information, and we don't share it for cross-context behavioral advertising.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Where, and for how long ===================================== -->
+    <section class="section part" id="storage" aria-labelledby="storage-title">
+      <div class="container">
+        <div class="part__grid">
+          <p class="eyebrow part__label reveal">Where and how long</p>
+          <div class="part__body">
+            <h2 class="part__title reveal" id="storage-title">Where it's kept, and for how long.</h2>
+            <div class="legal-prose reveal">
+              <p>HubSpot holds visit data for us in North America. It is certified under the EU-U.S. Data Privacy Framework, its UK Extension and the Swiss-U.S. framework. Visit reports stay in our HubSpot account while we use it, and HubSpot deletes them under its terms if the account closes. GitHub and Google keep their logs under their own policies.</p>
+              <p>The cookies:</p>
+              <ul>
+                <li><code>__hstc</code> and <code>hubspotutk</code>: the random ID and your visit times, six months</li>
+                <li><code>__hssc</code>: the current visit, 30 minutes</li>
+                <li><code>__hssrc</code>: notices a browser restart, until you close the browser</li>
+                <li><code>__hs_do_not_track</code>: set only when you switch measurement off, six months</li>
+                <li><code>__cf_bm</code>: set by HubSpot's delivery network to screen out bots, 30 minutes</li>
+                <li><code>__measure_check</code> (ours) and <code>cookietest</code> (HubSpot's): check that your browser keeps cookies, deleted the moment they're read</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Your rights ================================================= -->
+    <section class="section part" id="rights" aria-labelledby="rights-title">
+      <div class="container">
+        <div class="part__grid">
+          <p class="eyebrow part__label reveal">Your rights</p>
+          <div class="part__body">
+            <h2 class="part__title reveal" id="rights-title">Ask, and we'll answer.</h2>
+            <div class="legal-prose reveal">
+              <p>You can ask what we hold about you, and ask us to correct it, delete it or send you a copy. Email <a href="mailto:hello@unconventional.pro?subject=Privacy">hello@unconventional.pro</a> with "Privacy" in the subject. Someone you authorize can ask for you. We may need to check it's you. Visits aren't tied to names, and HubSpot doesn't let us pick one anonymous visitor's history out and delete it. Switching measurement off deletes the random ID from your browser, so what was recorded can no longer be linked to you. Emails you've sent us we can find, correct, copy or delete. We answer as soon as we can, within the time the law allows. If you disagree with our answer, reply and we'll look again. Asking never changes how we treat you.</p>
+              <p>In the EU, the EEA and the UK: if a visit of yours is measured anyway, for example because your device is set to another time zone, switch it off above, which deletes the ID that links those visits to your browser, and ask us about anything else we hold. We answer email because we have a legitimate interest in replying to you. You can also complain to your local data protection authority.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== In California's terms ======================================= -->
+    <section class="section part" id="california" aria-labelledby="california-title">
+      <div class="container">
+        <div class="part__grid">
+          <p class="eyebrow part__label reveal">California</p>
+          <div class="part__body">
+            <h2 class="part__title reveal" id="california-title">In California's terms.</h2>
+            <div class="legal-prose reveal">
+              <ul>
+                <li><strong>Collected:</strong> identifiers (IP address, a cookie ID, a browser fingerprint code, and your email address if you write); internet activity (pages viewed, links and buttons pressed, the site that sent you, browser and device details); approximate location from your IP address; and anything you put in an email, which may include professional details.</li>
+                <li><strong>Why:</strong> to measure and improve the site, and to reply to you.</li>
+                <li><strong>Disclosed to:</strong> HubSpot, GitHub and Google, as described above.</li>
+                <li><strong>Sold or shared:</strong> none.</li>
+                <li><strong>Kept:</strong> cookies up to six months; visit data while we use HubSpot; email as long as the conversation needs it.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Small print ================================================= -->
+    <section class="section part" id="small-print" aria-labelledby="small-print-title">
+      <div class="container">
+        <div class="part__grid">
+          <p class="eyebrow part__label reveal">Small print</p>
+          <div class="part__body">
+            <h2 class="part__title reveal" id="small-print-title">Everything else.</h2>
+            <div class="legal-prose reveal">
+              <p>If you press Pause motion on the home page, your browser remembers that choice on your own device. It never leaves it.</p>
+              <p>This site is for businesses and isn't aimed at children.</p>
+              <p>When this notice changes, the date at the top changes with it. Questions: <a href="mailto:hello@unconventional.pro">hello@unconventional.pro</a>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== Footer ===================================================== -->
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <a class="wordmark wordmark--lg" href="./" aria-label="Unconventional, home">unconventional<span class="wordmark__dot" aria-hidden="true">.</span></a>
+
+      <details class="site-footer__index">
+        <summary>Index</summary>
+        <nav aria-label="Footer">
+        <ul class="site-footer__nav">
+          <li><a href="./">The film</a></li>
+          <li><a href="about.html">Who we are</a></li>
+          <li><a href="events.html">Events we produce</a></li>
+          <li><a href="cultural-moments.html">Cultural moments</a></li>
+          <li><a href="agencies.html">For agencies</a></li>
+          <li><a href="conferences.html">Keynotes &amp; conferences</a></li>
+          <li><a href="production-ip.html">Production IP</a></li>
+          <li><a href="about.html#how">How we work</a></li>
+          <li><a href="about.html#discretion">Discretion</a></li>
+          <li><a href="about.html#contact">Contact</a></li>
+        </ul>
+        </nav>
+      </details>
+
+      <p class="site-footer__legal">&copy; <span data-year>2026</span> Unconventional. Live experiential production. <a href="privacy.html" aria-current="page">Privacy</a></p>
+    </div>
+  </footer>
+</body>
+</html>
