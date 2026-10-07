@@ -136,6 +136,8 @@
   <script src="content/brands.js?v=20260927" defer></script>
   <script src="js/main.js?v=20260928" defer></script>
   <script src="js/film3.js?v=20260927" defer></script>
+  <script src="js/endreel.js?v=20261006" defer></script>
+  <script src="js/endreel-hook.js?v=20261006" defer></script>
   <script src="js/measure.js?v=20260930" defer></script>
 </head>
 
@@ -170,10 +172,12 @@
          then footage); the guests arrive at a mountain-top show; the logo is
          built and brought into place. Played by js/film3.js: footage from the
          film-s… slots in content/media.js, and the live canvas wherever a
-         scene's footage is missing. -->
+         scene's footage is missing. After its last frame (the owner's logo,
+         full screen, with the title card) the end reel (js/endreel.js, wired
+         in by js/endreel-hook.js) takes over the background and loops. -->
     <section class="intro" id="top" aria-labelledby="intro-title" data-intro>
       <canvas class="intro__canvas" data-intro-canvas aria-hidden="true"></canvas>
-      <p class="visually-hidden">A short film by Unconventional, a live experiential production company, about how an event comes together, told through an imagined brief for a fictional event. Two people meet and agree to work together, and their team plans the site, the marketing and the sponsorship. The stage is drawn, then built: the survey, the ground works, cranes, scaffolding, towers, motors, video, sound and light. Guests fly in, arrive at a mountain-top venue, and a huge crowd fills the field. Finally the Unconventional logo is built, lowered into place and lit.</p>
+      <p class="visually-hidden">A short film by Unconventional, a live experiential production company, about how an event comes together, told through an imagined brief for a fictional event. Two people meet and agree to work together, and their team plans the site, the marketing and the sponsorship. The stage is drawn, then built: the survey, the ground works, cranes, scaffolding, towers, motors, video, sound and light. Guests fly in, arrive at a mountain-top venue, and a huge crowd fills the field. Finally the Unconventional logo is built, lowered into place and lit. Behind the closing title, a loop: the camera flies into the U of the logo and down a long truss, past the words Concept, Culture and Technical reality. The truss bursts apart and five short scenes play, each named: Keynotes, a microscope that looks into a keynote stage; Activations, a button that bursts into a build; Experiential, a headset whose lenses look onto a projection-mapped tower; Live Entertainment, a drummer looking out over a crowd; Sports, a swing that opens onto a public viewing. The picture folds to a line of light, and the truss pulls back into the U.</p>
       <div class="intro__scrim" aria-hidden="true"></div>
 
       <div class="intro__hud" aria-hidden="true">
